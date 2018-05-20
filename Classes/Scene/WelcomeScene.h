@@ -3,20 +3,20 @@
 
 #include "cocos2d.h"
 
-class Welcome : public cocos2d::Layer
+class WelcomeScene : public cocos2d::Layer
 {
 public:
-    static cocos2d::Scene* createScene();
+	static cocos2d::Scene* createScene();
 
-    virtual bool init();
-    
-    // a selector callback
-    void menuCloseCallback(cocos2d::Ref* pSender);
+	virtual bool init();
+
+	// a selector callback
+	void menuCloseCallback(cocos2d::Ref* pSender);
 
 	void enterGameScene(Ref *pSender);
-    
-    // implement the "static create()" method manually
-    CREATE_FUNC(Welcome);
+
+	// implement the "static create()" method manually
+	CREATE_FUNC(WelcomeScene);
 
 	/**
 	@brief  从精灵图集中获取动画相关的精灵帧的Vector

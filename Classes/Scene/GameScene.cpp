@@ -10,11 +10,11 @@ static void problemLoading(const char* filename)
 	printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in WelcomeScene.cpp\n");
 }
 
-Scene* Game::createScene()
+Scene* GameScene::createScene()
 {
 	auto scene = Scene::create();
 
-	auto layer = Game::create();
+	auto layer = GameScene::create();
 
 	scene->addChild(layer);
 
@@ -23,7 +23,7 @@ Scene* Game::createScene()
 
 }
 
-bool Game::init()
+bool GameScene::init()
 {
 	if (!Layer::init())
 	{
@@ -41,7 +41,7 @@ bool Game::init()
 	auto backItem = MenuItemImage::create(
 		"backNormal.png",
 		"backSelected.png",
-		CC_CALLBACK_1(Game::enterWelcomeScene, this));
+		CC_CALLBACK_1(GameScene::goToWelcomeScene, this));
 
 	if (backItem == nullptr ||
 		backItem->getContentSize().width <= 0 ||
@@ -66,9 +66,8 @@ bool Game::init()
 
 	return true;
 }
-void Game::enterWelcomeScene(Ref *pSender)
+
+void GameScene::goToWelcomeScene(Ref *pSender)
 {
-	//跳转到第一个场景，记得包含第一个场景的头文件：GameScene.h  
-	//Director::getInstance()->replaceScene(MyFirstScene::createScene());  
-	Director::getInstance()->popScene();
+	Director::getInstance()->replaceScene(WelcomeScene::createScene());
 }
