@@ -1,9 +1,10 @@
-#ifndef __Game_SCENE_H__
-#define __Game_SCENE_H__
+#ifndef __SCENE_HELPSCENE_H__
+#define __SCENE_HELPSCENE_H__
 
 #include "cocos2d.h"
+#include"ui/UIButton.h"
 
-class GameScene : public cocos2d::Layer
+class HelpScene : public cocos2d::Layer
 {
 public:
 	static cocos2d::Scene* createScene();
@@ -11,9 +12,9 @@ public:
 	virtual bool init();
 
 	// implement the "static create()" method manually
-	CREATE_FUNC(GameScene);
+	CREATE_FUNC(HelpScene);
 
 	void menuBackCallback(Ref *pSender);
 };
 
-#endif // __Welcome_SCENE_H__
+#endif // __HELP_SCENE_H__
