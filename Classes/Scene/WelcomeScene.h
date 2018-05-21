@@ -25,7 +25,7 @@ public:
 	@param  count          变量3 相关图片的数量
 	@return Vector<SpriteFrame*>
 	*/
-	cocos2d::Vector<cocos2d::SpriteFrame*> getAnimation(const char* sheetPlistName, const char* format, int count);
+	cocos2d::Vector<cocos2d::SpriteFrame*> getAnimation(const char* format, int count);
 };
 
 #endif // __Welcome_SCENE_H__

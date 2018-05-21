@@ -126,8 +126,3 @@ void LoginScene::onEnter()
     Layer::onEnter();
     GameAudio::getInstance()->playBgm("Sound/WelcomeScene.mp3");
 }
-
-void LoginScene::menuBackCallback(cocos2d::Ref* pSender)
-{
-    Director::getInstance()->popScene();
-}

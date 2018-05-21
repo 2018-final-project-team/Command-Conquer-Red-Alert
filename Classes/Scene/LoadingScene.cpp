@@ -36,12 +36,12 @@ void LoadingScene::loadImage() {
 
 void LoadingScene::loadSpriteFrame()
 {
-    auto cache = SpriteFrameCache::getInstance();
+    auto spriteframecache = SpriteFrameCache::getInstance();
 
 	//c++11 基于范围的for循环
     for (auto plist : Preload::plists)
     {
-        cache->addSpriteFramesWithFile(plist);
+        spriteframecache->addSpriteFramesWithFile(plist);
     }
 }
 

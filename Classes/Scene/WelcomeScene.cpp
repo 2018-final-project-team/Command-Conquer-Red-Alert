@@ -148,7 +148,7 @@ bool WelcomeScene::init()
 
 	//====================场景中的动画效果============================
 	//1.爆炸动画
-	Vector<SpriteFrame*> animFramesExplosion = getAnimation("Animation/explosion.plist", "explosion_air_%d.png", 10);
+	Vector<SpriteFrame*> animFramesExplosion = getAnimation("explosion_air_%d.png", 10);
 	auto explosion = Sprite::createWithSpriteFrame(animFramesExplosion.front());
 	explosion->setPosition(350, 100);
 
@@ -162,7 +162,7 @@ bool WelcomeScene::init()
 	this->addChild(explosion, 3);
 
 	//2.龙卷风动画
-	Vector<SpriteFrame*> animFramesWind = getAnimation("Animation/wind.plist", "ArchMageTwister_%d.png", 12);
+	Vector<SpriteFrame*> animFramesWind = getAnimation("ArchMageTwister_%d.png", 12);
 	auto wind = Sprite::createWithSpriteFrame(animFramesWind.front());
 	wind->setPosition(650, 175);
 
@@ -206,16 +206,14 @@ void WelcomeScene::enterGameScene(Ref *pSender)
 	Director::getInstance()->replaceScene(GameScene::createScene());  
 }
 
-Vector<SpriteFrame*> WelcomeScene::getAnimation(const char* sheetPlistName, const char* format, int count)
+Vector<SpriteFrame*> WelcomeScene::getAnimation(const char* format, int count)
 {
-	auto spritecache = SpriteFrameCache::getInstance();
-	spritecache->addSpriteFramesWithFile(sheetPlistName);
 	Vector<SpriteFrame*> animFrames;
 	char str[100];
 	for (int i = 1; i <= count; i++)
 	{
 		sprintf(str, format, i);
-		animFrames.pushBack(spritecache->getSpriteFrameByName(str));
+		animFrames.pushBack(SpriteFrameCache::getInstance()->getSpriteFrameByName(str));
 	}
 	return animFrames;
 }
