@@ -12,6 +12,7 @@ private:
     void loadImage();
     void loadSpriteFrame();
 
+	void initBackground(cocos2d::Vec2 origin, cocos2d::Size visibleSize);
     cocos2d::ui::LoadingBar* createLoadingBar();
 public:
     static cocos2d::Scene* createScene();

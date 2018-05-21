@@ -1,6 +1,7 @@
 #include "Scene/WelcomeScene.h"
 #include "Scene/GameScene.h"
 #include "SimpleAudioEngine.h"
+#include "Scene/SettingsScene.h"
 
 USING_NS_CC;
 
@@ -69,7 +70,7 @@ bool WelcomeScene::init()
 	auto startItem = MenuItemImage::create(
 		"StartNormal.png",
 		"StartSelected.png",
-		CC_CALLBACK_1(WelcomeScene::enterGameScene, this));
+		CC_CALLBACK_1(WelcomeScene::menuPlayCallback, this));
 
 	if (startItem == nullptr ||
 		startItem->getContentSize().width <= 0 ||
@@ -89,6 +90,58 @@ bool WelcomeScene::init()
 	auto menu2 = Menu::create(startItem, NULL);
 	menu2->setPosition(Vec2::ZERO);
 	this->addChild(menu2, 1);
+
+
+
+	//add a "setting" icon to enter the SettingsScene. it's an autorelease object
+	auto settingItem = MenuItemImage::create(
+		"settingButton.png",
+		"settingButton.png",
+		CC_CALLBACK_1(WelcomeScene::menuSettingsCallback, this));
+
+	if (settingItem == nullptr ||
+		settingItem->getContentSize().width <= 0 ||
+		settingItem->getContentSize().height <= 0)
+	{
+		problemLoading("'settingButton.png' and 'settingButton.png'");
+	}
+	else
+	{
+		float x = origin.x + visibleSize.width - settingItem->getContentSize().width / 2;
+		float y = origin.y + visibleSize.height - settingItem->getContentSize().height / 2-180;
+		settingItem->setPosition(Vec2(x, y));
+	}
+
+	// create menu, it's an autorelease object
+	auto settingMenu = Menu::create(settingItem, NULL);
+	settingMenu->setPosition(Vec2::ZERO);
+	this->addChild(settingMenu, 1);
+
+
+
+	//add a "help" icon to enter the HelpScene. it's an autorelease object
+	auto helpItem = MenuItemImage::create(
+		"helpButton.png",
+		"helpButton.png",
+		CC_CALLBACK_1(WelcomeScene::menuPlayCallback, this));
+
+	if (helpItem == nullptr ||
+		helpItem->getContentSize().width <= 0 ||
+		helpItem->getContentSize().height <= 0)
+	{
+		problemLoading("'helpButton.png' and 'helpButton.png'");
+	}
+	else
+	{
+		float x = origin.x + visibleSize.width - helpItem->getContentSize().width / 2;
+		float y = origin.y + visibleSize.height - helpItem->getContentSize().height / 2 -300;
+		helpItem->setPosition(Vec2(x, y));
+	}
+
+	// create menu, it's an autorelease object
+	auto helpMenu = Menu::create(helpItem, NULL);
+	helpMenu->setPosition(Vec2::ZERO);
+	this->addChild(helpMenu, 1);
 
 	/////////////////////////////
 	// 3. add your codes below...
@@ -199,11 +252,13 @@ void WelcomeScene::menuCloseCallback(Ref* pSender)
 }
 
 
-void WelcomeScene::enterGameScene(Ref *pSender)
+void WelcomeScene::menuPlayCallback(Ref *pSender)
 {
-	//使用Director类实现场景的跳转 
-	// Director::getInstance()->end();  
-	Director::getInstance()->replaceScene(GameScene::createScene());  
+	Director::getInstance()->pushScene(TransitionFade::create(1, GameScene::createScene()));
+}
+
+void WelcomeScene::menuSettingsCallback(cocos2d::Ref * pSender) {
+	Director::getInstance()->pushScene(TransitionFade::create(1, SettingsScene::createScene()));
 }
 
 Vector<SpriteFrame*> WelcomeScene::getAnimation(const char* format, int count)

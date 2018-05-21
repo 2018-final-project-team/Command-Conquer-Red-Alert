@@ -53,22 +53,47 @@ bool LoadingScene::init()
         return false;
     }
 
+	Vec2 origin = Director::getInstance()->getVisibleOrigin();
     const auto visibleSize = Director::getInstance()->getVisibleSize();
     const auto baseY = visibleSize.height * 0.35f;
 
+	initBackground(origin, visibleSize);
     addChild(createLoadingBar());
     
     scheduleOnce(CC_SCHEDULE_SELECTOR(LoadingScene::endLoading), 0.5);  //0.5s后执行endLoading()
     return true;
 }
 
+void LoadingScene::initBackground(Vec2 origin, Size visibleSize)
+{
+	auto background = Sprite::create("LoadingScene/loadingbg.png");
+	if (background == nullptr)
+	{
+		log("'loadingbg.png' is not found");
+	}
+	else
+	{
+
+		background->setAnchorPoint(Vec2(0.5, 0.5));
+		// position the sprite on the center of the screen
+		background->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2);
+
+		// add the sprite as a child to this layer
+		this->addChild(background, -1);
+	}
+}
 cocos2d::ui::LoadingBar* LoadingScene::createLoadingBar(){
     const auto visibleSize = Director::getInstance()->getVisibleSize();
-    const auto baseY = visibleSize.height * 0.35f;
+    const auto baseY = visibleSize.height * 0.3f;
 
-    auto loadingBar = ui::LoadingBar::create("StartScene/loading bar.jpg");
+	//进度条的框
+	auto bg = Sprite::create("LoadingScene/loadbarBg.png");
+	bg->setPosition(Vec2(visibleSize.width / 2, baseY));
+	this->addChild(bg);
+
+    auto loadingBar = ui::LoadingBar::create("LoadingScene/loadbar.png");
     loadingBar->setPosition(Vec2(visibleSize.width / 2, baseY));
-    loadingBar->setScale(0.5);
+    loadingBar->setScale(1);
     loadingBar->setDirection(ui::LoadingBar::Direction::LEFT);
     loadingBar->setPercent(10);
 

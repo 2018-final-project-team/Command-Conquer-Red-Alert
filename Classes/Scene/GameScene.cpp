@@ -69,5 +69,6 @@ bool GameScene::init()
 
 void GameScene::goToWelcomeScene(Ref *pSender)
 {
-	Director::getInstance()->replaceScene(WelcomeScene::createScene());
+	const auto transition = TransitionFade::create(1, WelcomeScene::createScene());
+	Director::getInstance()->replaceScene(transition);
 }
