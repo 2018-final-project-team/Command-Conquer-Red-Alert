@@ -15,6 +15,7 @@ public:
 
 	void menuPlayCallback(Ref *pSender);
 	void menuSettingsCallback(cocos2d::Ref * pSender);
+	void menuHelpCallback(cocos2d::Ref * pSender);
 
 	// implement the "static create()" method manually
 	CREATE_FUNC(WelcomeScene);

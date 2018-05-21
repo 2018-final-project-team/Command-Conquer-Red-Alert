@@ -1,5 +1,6 @@
-#include"Scene/WelcomeScene.h"  
-#include"Scene/GameScene.h"  
+#include "HelpScene.h"
+#include "Settings.h"
+#include "Scene/WelcomeScene.h"
 
 USING_NS_CC;
 
@@ -10,11 +11,11 @@ static void problemLoading(const char* filename)
 	printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in WelcomeScene.cpp\n");
 }
 
-Scene* GameScene::createScene()
+Scene* HelpScene::createScene()
 {
 	auto scene = Scene::create();
 
-	auto layer = GameScene::create();
+	auto layer = HelpScene::create();
 
 	scene->addChild(layer);
 
@@ -23,7 +24,7 @@ Scene* GameScene::createScene()
 
 }
 
-bool GameScene::init()
+bool HelpScene::init()
 {
 	if (!Layer::init())
 	{
@@ -33,15 +34,24 @@ bool GameScene::init()
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-	auto label = Label::createWithTTF("Hello,This is GameScene", "fonts/Marker Felt.ttf", 45);
+	auto label = Label::createWithTTF("HelpScene!", "fonts/Marker Felt.ttf", 45);
 	label->setPosition(visibleSize.width / 2, visibleSize.height / 2);
 	this->addChild(label, 0);
+
+
+
+	//±³¾°Í¼Æ¬
+	Sprite * bg = Sprite::create("emptyBg.png");
+	bg->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
+	this->addChild(bg, -1);
+
+
 
 	//·µ»Ø°´Å¥
 	auto backItem = MenuItemImage::create(
 		"backNormal.png",
 		"backSelected.png",
-		CC_CALLBACK_1(GameScene::menuBackCallback, this));
+		CC_CALLBACK_1(HelpScene::menuBackCallback, this));
 
 	if (backItem == nullptr ||
 		backItem->getContentSize().width <= 0 ||
@@ -62,13 +72,10 @@ bool GameScene::init()
 	this->addChild(menu, 1);
 
 
-	
-
 	return true;
 }
 
-void GameScene::menuBackCallback(Ref *pSender)
+void HelpScene::menuBackCallback(Ref *pSender)
 {
-	const auto transition = TransitionFade::create(1, WelcomeScene::createScene());
-	Director::getInstance()->replaceScene(transition);
+	Director::getInstance()->popScene();
 }

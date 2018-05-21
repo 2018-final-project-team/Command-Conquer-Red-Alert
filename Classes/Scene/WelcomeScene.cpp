@@ -2,6 +2,7 @@
 #include "Scene/GameScene.h"
 #include "SimpleAudioEngine.h"
 #include "Scene/SettingsScene.h"
+#include "Scene/HelpScene.h"
 
 USING_NS_CC;
 
@@ -123,7 +124,7 @@ bool WelcomeScene::init()
 	auto helpItem = MenuItemImage::create(
 		"helpButton.png",
 		"helpButton.png",
-		CC_CALLBACK_1(WelcomeScene::menuPlayCallback, this));
+		CC_CALLBACK_1(WelcomeScene::menuHelpCallback, this));
 
 	if (helpItem == nullptr ||
 		helpItem->getContentSize().width <= 0 ||
@@ -259,6 +260,10 @@ void WelcomeScene::menuPlayCallback(Ref *pSender)
 
 void WelcomeScene::menuSettingsCallback(cocos2d::Ref * pSender) {
 	Director::getInstance()->pushScene(TransitionFade::create(1, SettingsScene::createScene()));
+}
+
+void WelcomeScene::menuHelpCallback(cocos2d::Ref * pSender) {
+	Director::getInstance()->pushScene(TransitionFade::create(1, HelpScene::createScene()));
 }
 
 Vector<SpriteFrame*> WelcomeScene::getAnimation(const char* format, int count)
