@@ -34,6 +34,10 @@ private:
     bool _canCreateSoldier;
 //===================================
 
+//==========Attack================
+    Soldier* _enemy;              //被选中的士兵或建筑
+    Building* _building;
+
 public:
 
     /**
@@ -58,7 +62,7 @@ public:
     * @brief Manager的setBool函数
     * @return  void
     */
-    void setBool();
+    void setDatas();
 
     bool getCanCreateBuilding() { return _canCreateBuilding; }
 
@@ -106,6 +110,16 @@ public:
     */
     void createSoldier();
 //============================================================
+
+//====================attack============================
+    
+    void setEnemy(Soldier* enemy);
+    void setBuilding(Building* building);
+
+    /**
+    * @brief 攻击 在Update函数里调用
+    */
+    void attack();
 
 };
 

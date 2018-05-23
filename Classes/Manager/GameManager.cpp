@@ -6,6 +6,8 @@
 #include "GameManager.h"
 #include "../Data/BuildingData.hpp"
 
+USING_NS_CC;
+
 Manager* Manager::create(GameScene* gameScene)
 {
     Manager* manager = new Manager();
@@ -13,7 +15,7 @@ Manager* Manager::create(GameScene* gameScene)
     {
         manager->setGameScene(gameScene);
         manager->setMoveController(gameScene);
-        manager->setBool();
+        manager->setDatas();
         manager->autorelease();
         return manager;
     }
@@ -32,10 +34,11 @@ void Manager::setMoveController(GameScene* gameScene)
     _moveController = MoveController::create(gameScene);
 }
 
-void Manager::setBool()
+void Manager::setDatas()
 {
     _waitToCreateBuilding = _waitToCreateSoldier = false;
     _canCreateBuilding = _canCreateSoldier = false;
+    _enemy = _building = nullptr;
 }
 
 void Manager::clickCreateBuildingByTag(Tag building_tag, clock_t start_time)
@@ -150,7 +153,7 @@ void Manager::createBuilding(cocos2d::Vec2 position)
 {
     if (_canCreateBuilding)
     {
-        Building* building = Building::createByTag(_buildingTag);
+        Building* building = Building::createByTag(_buildingTag, position);
         switch (_buildingTag)
         {
         case POWER_PLANT_TAG:
@@ -181,4 +184,21 @@ void Manager::createSoldier()
         _canCreateSoldier = false;
         _waitToCreateSoldier = false;
     }
+}
+
+void Manager::setEnemy(Soldier* enemy)
+{
+    _enemy = enemy;
+    _building = nullptr;
+}
+
+void Manager::setBuilding(Building* building)
+{
+    _building = building;
+    _enemy = nullptr;
+}
+
+void Manager::attack()
+{
+
 }
