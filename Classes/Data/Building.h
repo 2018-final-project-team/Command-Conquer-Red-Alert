@@ -19,24 +19,26 @@ public:
 	//构造函数
 	Building();
 
-	//建筑物的id， 1，2，3，4,5（基地、电厂、矿场、兵营、战车工厂）
-	Tag _tag;
+	//建筑物的tag（基地、电厂、矿场、兵营、战车工厂）
+	CC_SYNTHESIZE(Tag, _tag, BuildingTag);
 
 	////建筑的级别，1，2，3
 	//int level;
 
+	//建筑物的血量
+	CC_SYNTHESIZE(int, _hp, HP);
 	//建造建筑物需要的金钱数
-	int value;
+	CC_SYNTHESIZE(int, _value, BuildingValue);
 	////升级建筑物需要的金钱数
 	//int upValue;
 	//卖掉建筑物得到的金钱
-	int sellValue;
+	CC_SYNTHESIZE(int, _sellValue, SellValue);
 
 	////更新建筑物的标志位
 	//bool updateMark;
 
 	//建造建筑物的方法
-	static Building* create(Tag _tag, cocos2d::Vec2 _pos);
+	static Building* create(Tag _tag);
 
 
 	//////升级建筑物的方法
