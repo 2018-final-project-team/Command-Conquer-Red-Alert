@@ -1,6 +1,5 @@
 #include"Scene/WelcomeScene.h"  
 #include"Scene/GameScene.h"  
-#include"Data/Building.h"
 
 USING_NS_CC;
 
@@ -34,33 +33,9 @@ bool GameScene::init()
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-
-	//----------test Building class----------------------
-	auto label = LabelTTF::create("Create Building1", "Courier", 30);
-	label->setPosition(Point(150, 150));
-	addChild(label);
-
-	auto Listener = EventListenerTouchOneByOne::create();
-	Listener->onTouchBegan = [label, this](Touch* t, Event* e) {
-		if (label->getBoundingBox().containsPoint(t->getLocation())) {
-			auto b1 = Building::create(BASE_TAG);
-			b1->setPosition(Vec2(150, 400));
-			this->addChild(b1);
-			
-		}
-		return false;
-	};
-
-	Director::getInstance()->getEventDispatcher()->
-		addEventListenerWithSceneGraphPriority(Listener, label);
-	//---------------end-----------------------------------
-
-
-
-
-	//auto label = Label::createWithTTF("Hello,This is GameScene", "fonts/Marker Felt.ttf", 45);
-	//label->setPosition(visibleSize.width / 2, visibleSize.height / 2);
-	//this->addChild(label, 0);
+	auto label = Label::createWithTTF("Hello,This is GameScene", "fonts/Marker Felt.ttf", 45);
+	label->setPosition(visibleSize.width / 2, visibleSize.height / 2);
+	this->addChild(label, 0);
 
 	//·µ»Ø°´Å¥
 	auto backItem = MenuItemImage::create(
