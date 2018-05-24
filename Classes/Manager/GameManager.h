@@ -8,6 +8,7 @@
 
 #include "MoveController.h"
 #include "../Scene/GameScene.h"
+#include "../Data/Building.h"
 #include "cocos2d.h""
 #include <iostream>
 #include <time.h>
@@ -35,8 +36,8 @@ private:
 //===================================
 
 //==========Attack================
-    Soldier* _enemy;              //被选中的士兵或建筑
-    Building* _building;
+    Soldier* _selectedEnemy;              //被选中的士兵或建筑
+    Building* _selectedBuilding;
 
 public:
 

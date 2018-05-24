@@ -1,23 +1,20 @@
 /*
 *  @file     MoveController.cpp
 *  @brief    各种兵的移动控制
-*  @author   何立仁
-*  @email    hlr12138@outlook.com
 */
 
 #include "MoveController.h"
-#include "../Scene/GameScene.h"
 #include <time.h>
 
 USING_NS_CC;
 
-MoveController* MoveController::create(Game* game)
+MoveController* MoveController::create(GameScene* gameScene)
 {
     MoveController* move_controller = new MoveController();
     if (move_controller)
     {
-        move_controller->setGameScene(game);
-        move_controller->_selectedSoldiers = game->getSelectedSoldiers();
+        move_controller->setGameScene(gameScene);
+        move_controller->setSelectedSoldiers(gameScene->getSelectedSoldiers());
         move_controller->autorelease();
         return move_controller;
     }
@@ -26,9 +23,14 @@ MoveController* MoveController::create(Game* game)
     return nullptr;
 }
 
-void MoveController::setGameScene(Game* game)
+void MoveController::setGameScene(GameScene* gameScene)
 {
-    _game = game;
+    _gameScene = gameScene;
+}
+
+void MoveController::setSelectedSoldiers(cocos2d::Vector<Soldier*>* selectedSoldiers)
+{
+    _selectedSoldiers = selectedSoldiers;
 }
 
 void MoveController::selectSoldiersWithMouse(cocos2d::Vec2 mouseDownPoint, cocos2d::Vec2 mouseUpPoint)
@@ -37,7 +39,7 @@ void MoveController::selectSoldiersWithMouse(cocos2d::Vec2 mouseDownPoint, cocos
     float rect_width = fabs(mouseUpPoint.x - mouseDownPoint.x);
     float rect_height = fabs(mouseUpPoint.y - mouseDownPoint.y);
     Rect rect(MIN(mouseDownPoint.x, mouseUpPoint.x), MIN(mouseDownPoint.y, mouseUpPoint.y), rect_width, rect_height);
-    for (auto& soldier : _game->getSoldiers())
+    for (auto& soldier : _gameScene->getSoldiers())
     {
         if (rect.containsPoint(soldier->getPosition()))
         {
@@ -50,7 +52,7 @@ void MoveController::selectSoldiersWithMouse(cocos2d::Vec2 mouseDownPoint, cocos
 void MoveController::selectSoldiersWithName(const std::string& name)
 {
     _selectedSoldiers.clean();
-    for (auto& soldier : _game->getSoldiers())
+    for (auto& soldier : _gameScene->getSoldiers())
     {
         if (soldier->getName() == name)
         {
@@ -63,7 +65,7 @@ void MoveController::selectSoldiersWithName(const std::string& name)
 void MoveController::setDestination(cocos2d::Vec2 position)
 {
     // 检测是否障碍
-    if (_game->isCollision(position))
+    if (_gameScene->isCollision(position))
     {
         return;
     }
@@ -79,19 +81,19 @@ void MoveController::setDestination(cocos2d::Vec2 position)
 
 bool MoveController::willHitInFiveTiles(Vec2 nowPosition, Vec2 direction)
 {
-    float tile_size = _game->getTileMap()->getTileSize().width;
+    float tile_size = _gameScene->getTileMap()->getTileSize().width;
     if (_isFirstMove)
     {
         for (int i = 0; i < 5; ++i)
         {
             nowPosition += direction * tile_size;
-            if (_game->isCollision(nowPosition))
+            if (_gameScene->isCollision(nowPosition))
             {
                 return true;
             }
         }
     }
-    else if (_game->isCollision(nowPosition + direction * tile_size * 5))
+    else if (_gameScene->isCollision(nowPosition + direction * tile_size * 5))
     {
         return true;
     }
@@ -101,12 +103,12 @@ bool MoveController::willHitInFiveTiles(Vec2 nowPosition, Vec2 direction)
 
 Vec2 MoveController::changeDirection(cocos2d::Vec2 nowPosition, cocos2d::Vec2 direction)
 {
-    float tile_size = _game->getTileMap()->getTileSize().width;
+    float tile_size = _gameScene->getTileMap()->getTileSize().width;
     bool store_is_first_move = _isFirstMove;
     _isFirstMove = true;
 
 //================ To Do : 此处的转向bug十分严重,奈何本人能力有限,暂时想不出好的方法 ==================
-    if (_game->getMapType() == 0)
+    if (_gameScene->getMapType() == 0)
     {
         Vec2 up(0, 1);
         Vec2 down(0, -1);
@@ -198,107 +200,17 @@ Vec2 MoveController::changeDirection(cocos2d::Vec2 nowPosition, cocos2d::Vec2 di
                 return -direction;
         }
     }
-    else if (_game->getMapType() == 45)
-    {
-        Vec2 up(1, 1);
-        Vec2 down(-1, -1);
-        Vec2 right(1, -1);
-        Vec2 left(-1, 1);
-        if (direction.x > direction.y)
-        {
-            if (direction.y < -direction.x)                                         //right up
-            {
-                if (!willHitInFiveTiles(nowPosition, up))       // up
-                    return up;
-                else if (!willHitInFiveTiles(nowPosition, right))   // right
-                    return right;
-                else if (!willHitInFiveTiles(nowPosition, left))  //left
-                    return left;
-                else if (!willHitInFiveTiles(nowPosition, down))   // down
-                    return down;
-                else
-                    return -direction;
-            }
-            else if (direction.y > -direction.y)                                   // right down
-            {
-                if (!willHitInFiveTiles(nowPosition, down))     // down
-                    return down;
-                else if (!willHitInFiveTiles(nowPosition, right)) // right
-                    return right;
-                else if (!willHitInFiveTiles(nowPosition, left)) // left
-                    return left;
-                else if (!willHitInFiveTiles(nowPosition, up)) // up
-                    return up;
-                else
-                    return -direction;
-            }
-            else                                                         // right
-            {
-                if (!willHitInFiveTiles(nowPosition, up))        // up
-                    return up;
-                else if (!willHitInFiveTiles(nowPosition, down))  // down
-                    return down;
-                else
-                    return -direction;
-            }
-        }
-        else if (direction.x < direction.y)
-        {
-            if (direction.y < -direction.x)                                               // left up
-            {
-                if (!willHitInFiveTiles(nowPosition, up))     // up
-                    return up;
-                else if (!willHitInFiveTiles(nowPosition, left)) // left
-                    return left;
-                else if (!willHitInFiveTiles(nowPosition, right)) // right
-                    return right;
-                else if (!willHitInFiveTiles(nowPosition, down)) // down
-                    return down;
-                else
-                    return -direction;
-            }
-            else if (direction.y > -direction.x)                                         //left down
-            {
-                if (!willHitInFiveTiles(nowPosition, down))     // down
-                    return down;
-                else if (!willHitInFiveTiles(nowPosition, left)) // left
-                    return left;
-                else if (!willHitInFiveTiles(nowPosition, right)) // right
-                    return right;
-                else if (!willHitInFiveTiles(nowPosition, up)) // up
-                    return up;
-                else
-                    return -direction;
-            }
-            else                                                            //left
-            {
-                if (!willHitInFiveTiles(nowPosition, down))     // down
-                    return down;
-                else if (!willHitInFiveTiles(nowPosition, up)) // up
-                    return up;
-                else
-                    return -direction;
-            }
-        }
-        else                                               // up or down                          
-        {
-            if (!willHitInFiveTiles(nowPosition, right)) // right
-                return right;
-            else if (!willHitInFiveTiles(nowPosition, left)) // left
-                return left;
-            else
-                return -direction;
-        }
-    }
+
+    _isFirstMove = store_is_first_move;
 }
 
 void MoveController::moveSoldiers()
 {
     static clock_t preT = clock();
     clock_t nowT = clock();
-    float interval = (nowT - preT) / 1000;
+    float interval = nowT - preT;
     preT = nowT;
-    for (auto& soldier : _game->getSoldiers())
+    for (auto& soldier : _gameScene->getSoldiers())
     {
         if (!soldier->getIfGetDestination())
         {
@@ -326,15 +238,18 @@ void MoveController::moveSoldiers()
             {
                 soldier->moveTo(destination);
                 soldier->setGetDestination(true);
+                _isFirstMove = true;
                 return;
             }
             
             // 检测碰撞
-            if (_game->isCollision(move + nowPosition))
+            if (_gameScene->isCollision(move + nowPosition))
             {
                 return;
             }
             soldier->moveTo(move + nowPosition);
+
+            _isFirstMove = false;
         }
     }
 }

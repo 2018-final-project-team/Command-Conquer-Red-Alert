@@ -1,17 +1,16 @@
 /*
 *  @file     MoveController.h
 *  @brief    各种兵的移动类
-*  @author   何立仁
-*  @email    hlr12138@outlook.com
 */
 
 #ifndef __MoveController_H_
 #define __MoveController_H_
 
-#include <cocos2d.h>
+#include "cocos2d.h""
 #include <iostream>
+#include "../Scene/GameScene.h"
 
-class Game;
+class GameScene;
 
 /*
 *@brief 各种兵的移动控制类
@@ -24,7 +23,7 @@ class MoveController : public cocos2d::Node
 
 protected:
 
-    Game* _game;                                      // game 场景类
+    GameScene* _gameScene;                                      // game 场景类
     cocos2d::Vector<Soldier*>* _selectedSoldiers;     // selected soldiers
     bool _isFirstMove;                               //用来减少障碍判断次数
 
@@ -32,17 +31,21 @@ public:
 
     /**
     * @brief MoveController的静态构造函数
-    * @param game 参数1
     * @return  MoveController*
     */
-    static MoveController* create(Game* game);
+    static MoveController* create(GameScene* gameScene);
 
     /**
     * @brief MoveController的setGameScene函数
-    * @param game 参数1
     * @return  void
     */
-    void setGameScene(Game* game);
+    void setGameScene(GameScene* gameScene);
+
+    /**
+    * @brief MoveController的setSelectedSoldier函数
+    * @return  void
+    */
+    void setSelectedSoldiers(cocos2d::Vector<Soldier*>* selectedSoldiers);
 
     /**
     * @brief 用鼠标选择士兵坦克
@@ -83,7 +86,7 @@ public:
     cocos2d::Vec2 changeDirection(cocos2d::Vec2 nowPosition, cocos2d::Vec2 direction);
 
     /**
-    * @brief 移动士兵坦克
+    * @brief 移动士兵坦克 在Update函数里调用
     * @return  void
     */
     void moveSoldiers();
