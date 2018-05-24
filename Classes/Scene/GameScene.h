@@ -5,10 +5,15 @@
 
 class GameScene : public cocos2d::Layer
 {
+
+	cocos2d::TMXTiledMap* _tileMap;
+
 public:
 	static cocos2d::Scene* createScene();
 
 	virtual bool init();
+
+	void update(float time);
 
 	// implement the "static create()" method manually
 	CREATE_FUNC(GameScene);
