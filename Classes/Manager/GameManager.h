@@ -32,7 +32,6 @@ private:
     bool _waitToCreateBuilding;
     bool _canCreateBuilding;
     bool _waitToCreateSoldier;
-    bool _canCreateSoldier;
 //===================================
 
 //==========Attack================
@@ -66,8 +65,6 @@ public:
     void setDatas();
 
     bool getCanCreateBuilding() { return _canCreateBuilding; }
-
-    bool getCanCreateSoldier() { return _canCreateSoldier; }
 
 //=====================CreateController========================
     /**
@@ -105,11 +102,6 @@ public:
     */
     void createBuilding(cocos2d::Vec2 position);
 
-    /**
-    * @brief 建造士兵 在GameScene中调用
-    * @return  void
-    */
-    void createSoldier();
 //============================================================
 
 //====================attack============================
@@ -121,6 +113,11 @@ public:
     * @brief 攻击 在Update函数里调用
     */
     void attack();
+
+    /**
+    * @brief 加钱 在Update函数里调用
+    */
+    void addMoney();
 
 };
 
