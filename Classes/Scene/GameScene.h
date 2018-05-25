@@ -1,3 +1,9 @@
+/*
+*  @file     GameScene.h
+*  @brief    游戏场景类
+*  @author   王亮
+*/
+
 #ifndef __Game_SCENE_H__
 #define __Game_SCENE_H__
 

@@ -1,3 +1,9 @@
+/*
+*  @file     SettingsScene.cpp
+*  @brief    设置场景类，可设置音乐、音效的打开/关闭
+*  @author   王亮
+*/
+
 #include "SettingsScene.h"
 #include "Settings.h"
 #include "Util/GameAudio.h"
@@ -29,10 +35,12 @@ bool SettingsScene::init()
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
     auto middleX = visibleSize.width / 2;
 
+	//=====================背景图片============================
     Sprite * bg = Sprite::create("emptyBg.png");
     bg->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
     this->addChild(bg, -1);
 
+	//=====================文本label：music============================
     auto musicLabel = createLabel("Background Music");
     auto musicCheckBox = createCheckBox([=](Ref*, ui::CheckBox::EventType type) {
         GameAudio::getInstance()->setBgmOn(type == ui::CheckBox::EventType::SELECTED);
@@ -43,6 +51,7 @@ bool SettingsScene::init()
     addChild(musicLabel);
     addChild(musicCheckBox);
 
+	//=====================文本label：effect============================
     auto effectLabel = createLabel("Effect Music");
     auto effectCheckBox = createCheckBox([=](Ref*, ui::CheckBox::EventType type)
     {
@@ -54,8 +63,10 @@ bool SettingsScene::init()
     addChild(effectLabel);
     addChild(effectCheckBox);
 
+	//=====================“OK”按钮============================
     addChild(createText());
 
+	//=====================键盘事件：按ESC退出该场景============================
     auto keyEventListener = EventListenerKeyboard::create();
     keyEventListener->onKeyReleased = [](EventKeyboard::KeyCode code, Event* event)
     {

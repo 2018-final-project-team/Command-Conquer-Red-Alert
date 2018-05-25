@@ -1,3 +1,9 @@
+/*
+*  @file     GameScene.cpp
+*  @brief    游戏场景类
+*  @author   王亮
+*/
+
 #include"Scene/WelcomeScene.h"  
 #include"Scene/GameScene.h"  
 
@@ -37,7 +43,8 @@ bool GameScene::init()
 	label->setPosition(visibleSize.width / 2, visibleSize.height / 2);
 	this->addChild(label, 0);
 
-	//返回按钮
+
+	//=====================返回按钮============================
 	auto backItem = MenuItemImage::create(
 		"backNormal.png",
 		"backSelected.png",

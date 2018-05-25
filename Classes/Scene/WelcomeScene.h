@@ -1,3 +1,9 @@
+/*
+*  @file     WelcomeScene.h
+*  @brief    欢迎（主）场景类，可通过此场景进入游戏、设置、帮助场景，可退出游戏
+*  @author   王亮
+*/
+
 #ifndef __Welcome_SCENE_H__
 #define __Welcome_SCENE_H__
 
@@ -10,21 +16,19 @@ public:
 
 	virtual bool init();
 
-	// a selector callback
 	void menuCloseCallback(cocos2d::Ref* pSender);
 
+	// 用于跳转到其他场景的menu回调函数
 	void menuPlayCallback(Ref *pSender);
 	void menuSettingsCallback(cocos2d::Ref * pSender);
 	void menuHelpCallback(cocos2d::Ref * pSender);
 
-	// implement the "static create()" method manually
 	CREATE_FUNC(WelcomeScene);
 
 	/**
-	@brief  从精灵图集中获取动画相关的精灵帧的Vector
-	@param  sheetPlistName 变量1 精灵图集对应plist的文件名称，注意要包含路径
-	@param  format         变量2 精灵图集中与动画相关图片名称的格式，注意要包含路径
-	@param  count          变量3 相关图片的数量
+	@brief  从精灵图集缓存中获取动画相关的精灵帧的Vector
+	@param  format         变量1 精灵图集中与动画相关图片名称的格式，注意要包含路径
+	@param  count          变量2 相关图片的数量
 	@return Vector<SpriteFrame*>
 	*/
 	cocos2d::Vector<cocos2d::SpriteFrame*> getAnimation(const char* format, int count);
