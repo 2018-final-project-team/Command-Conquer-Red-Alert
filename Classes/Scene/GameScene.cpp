@@ -1,8 +1,12 @@
-#include"Scene/WelcomeScene.h"  
-#include"Scene/GameScene.h"  
-
+#include"Scene/GameScene.h" 
+#include"Scene/WelcomeScene.h"   
+#include "ui\CocosGUI.h"
+#define MAPX 5765
+#define MAPY 5376
+#define MINLENTH 15
+#define SPEED 20
 USING_NS_CC;
-
+using namespace ui;
 // Print useful error message instead of segfaulting when files are not there.
 static void problemLoading(const char* filename)
 {
@@ -38,19 +42,36 @@ bool GameScene::init()
 	_tileMap = TMXTiledMap::create("GameItem/map/map1.tmx");
 	this->addChild(_tileMap);
 
+	
+	/*小地图 by czd*/	
+	Sprite* small_map = Sprite::create("GameItem/map/small_map.png");
+	small_map->setPosition(Point(visibleSize.width-358/2, visibleSize.height-334/2));
+	this->addChild(small_map);
+
+	auto _smallMapListener = EventListenerTouchOneByOne::create();
+	_smallMapListener->onTouchBegan = [=](Touch* touch, Event* event) {
+		Point pos2 = touch->getLocationInView();
+		Point position = Director::getInstance()->convertToGL(pos2);
+		if (position.x > visibleSize.width - 358 && position.y > visibleSize.height - 334) {
+			auto X = (position.x - (visibleSize.width - 358)) / 358*MAPX-visibleSize.width/2;
+			auto Y = (position.y - (visibleSize.height - 334)) / 334 * MAPY - visibleSize.width / 2;
+			_tileMap->runAction(MoveTo::create(0.1, Point(-X, -Y)));
+		}		
+		return true;
+	};
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(_smallMapListener, this);
 
 
 
-
-
-
-
-	auto label = Label::createWithTTF("Hello,This is GameScene", "fonts/Marker Felt.ttf", 45);
-	label->setPosition(visibleSize.width / 2, visibleSize.height / 2);
-	this->addChild(label, 0);
-
-
-
+	/*鼠标移到边上地图移动 by czd */
+	auto _mouseOutBoradListener = EventListenerMouse::create();
+	_mouseOutBoradListener->onMouseMove = [&]( Event* event) {
+		EventMouse* pem = static_cast<EventMouse*>(event);
+		_cursorPosition = Vec2(pem->getCursorX(), pem->getCursorY());
+		log("HelloWorldScene onTouchBegan! pos3 x=%f, y=%f", _cursorPosition.x, _cursorPosition.y);
+	};	
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(_mouseOutBoradListener, 1);
+	
 
 
 	//==============为了在此场景中调试地图，暂时注释掉返回按钮，merge前取消注释=======
@@ -80,8 +101,9 @@ bool GameScene::init()
 
 
 	//更新函数  
+	
 	scheduleUpdate();
-
+	
 	return true;
 }
 
@@ -95,14 +117,37 @@ void GameScene::menuBackCallback(Ref *pSender)
 
 void GameScene::update(float time)
 {
-	//每一帧地图向左移动5个像素  
-	_tileMap->setPositionY(_tileMap->getPositionY() - 5);
+	////每一帧地图向左移动5个像素  
+	//_tileMap->setPositionY(_tileMap->getPositionY() - 5);
 
-	//当第一张地图的最右端和窗口的最左端重合时  
-	if (_tileMap->getPositionY() + _tileMap->getContentSize().height <= 0)
-	{
-		//将第一张地图位置重置
-		_tileMap->setPositionY(_tileMap->getPositionY() + _tileMap->getContentSize().height);
-	}
+	////当第一张地图的最右端和窗口的最左端重合时  
+	//if (_tileMap->getPositionY() + _tileMap->getContentSize().height <= 0)
+	//{
+	//	//将第一张地图位置重置
+	//	_tileMap->setPositionY(_tileMap->getPositionY() + _tileMap->getContentSize().height);
+	//}
+
+	scrollMap();
 
 }
+
+/*鼠标移到边上地图移动 by czd */
+void GameScene::scrollMap() {
+	auto visibleSize=Director::getInstance()->getVisibleSize();
+	auto X = _cursorPosition.x;
+	auto Y = _cursorPosition.y;
+	if (X < MINLENTH) {
+		_tileMap->runAction(MoveBy::create(0.1, Point(SPEED, 0)));
+	}
+	if (Y < MINLENTH) {
+		_tileMap->runAction(MoveBy::create(0.1, Point(0, SPEED)));
+	}
+	if (X > visibleSize.width - MINLENTH) {
+		_tileMap->runAction(MoveBy::create(0.1, Point(-SPEED, 0)));
+	}
+	if (Y >visibleSize.height - MINLENTH) {
+		_tileMap->runAction(MoveBy::create(0.1, Point(0, -SPEED)));
+	}
+	log("HelloWorldScene onTouchBegan! pos3 x=%f, y=%f", _cursorPosition.x, _cursorPosition.y);
+}
+
