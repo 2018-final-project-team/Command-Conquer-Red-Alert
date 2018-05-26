@@ -21,11 +21,16 @@ typedef enum
 class GameScene : public cocos2d::Layer
 {
 private:
+    cocos2d::TMXTiledMap* _tileMap;
+    cocos2d::TMXLayer* _ground;
+    cocos2d::Point _cursorPosition{ 0,0 };  // C++ 11 允许这样初始化
+    void scrollMap();
+
     cocos2d::Vector<Unit*> _selectedSoldiers;
     cocos2d::Vector<Unit*> _soldiers;
     cocos2d::Vector<Building*> _buildings;
 
-    Manager* manager;
+    Manager* _manager;
 
 public:
     CC_SYNTHESIZE(int, _money, Money);
@@ -47,6 +52,8 @@ public:
 	static cocos2d::Scene* createScene();
 
 	virtual bool init();
+
+    void update(float time);
 
 	// implement the "static create()" method manually
 	CREATE_FUNC(GameScene);
@@ -73,78 +80,91 @@ public:
    
     /**
     * @brief addMoney
-    * @param Ôö¼ÓµÄÇ®
+    * @param 增加的钱
     * @return void
     */
     void addMoney(int money);
 
     /**
     * @brief decreaseMoney
-    * @param ¼õÉÙµÄÇ®
+    * @param 减少的钱
     * @return void
     */
     void decreaseMoney(int money);
 
     /**
-    * @brief addPower Ôö¼Ó100µç
+    * @brief addPower 增加100电
     * @return void
     */
     void addPower();
 
     /**
     * @brief decreasePower
-    * @param ¼õÉÙµÄµç
+    * @param 减少的电
     * @return void
     */
     void decreasePower(int power);
 
     /*
-    * @brief µç³§ÊýÁ¿¼ÓÒ»
+    * @brief 电厂数量加一
     * @return void
     */
     void addPowerPlant() { _powerPlantNum++; }
 
     /*
-    * @brief µç³§ÊýÁ¿¼õÒ»
+    * @brief 电厂数量减一
     * @return void
     */
     void decreasePowerPlant() { _powerPlantNum--; }
 
     /*
-    * @brief ³µ³§ÊýÁ¿¼ÓÒ»
+    * @brief 车厂数量加一
     * @return void
     */
     void addCarFactory() { _carFactoryNum++; }
 
     /*
-    * @brief ³µ³§ÊýÁ¿¼õÒ»
+    * @brief 车厂数量减一
     * @return void
     */
     void decreaseCarFactory() { _carFactoryNum--; }
 
     /*
-    * @brief ±øÓªÊýÁ¿¼ÓÒ»
+    * @brief 兵营数量加一
     * @return void
     */
     void addBarracks() { _barracksNum++; }
 
     /*
-    * @brief ±øÓªÊýÁ¿¼õÒ»
+    * @brief 兵营数量减一
     * @return void
     */
     void decreaseBarracks() { _barracksNum--; }
 
     /*
-    * @brief ¿ó³§ÊýÁ¿¼ÓÒ»
+    * @brief 矿厂数量加一
     * @return void
     */
     void addMine() { _mineNum++; }
 
     /*
-    * @brief ¿ó²úÊýÁ¿¼õÒ»
+    * @brief 矿产数量减一
     * @return void
     */
     void decreaseMine() { _mineNum--; }
+
+    /*
+    * @brief isCollision
+    * @param the position
+    * @return bool
+    */
+    bool isCollision(cocos2d::Vec2 position);
+
+    /*
+    * @brief getTileSize
+    * @return the size of tile
+    */
+    float getTileSize();
 
 };
 

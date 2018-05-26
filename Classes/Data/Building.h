@@ -12,6 +12,22 @@
 #include "cocos2d.h"
 #include "Scene/GameScene.h"
 
+namespace buildingData
+{
+    const int powerPlantCastMoney = 0; 
+    const int powerPlantCastPower = 0;
+    const int powerPlantWait = 0;
+    const int mineCastMoney = 0;
+    const int mineCastPower = 0;
+    const int mineWait = 0;
+    const int barracksCastMoney = 0;
+    const int barracksCastPower = 0;
+    const int barracksWait = 0;
+    const int carFactoryCastMoney = 0;
+    const int carFactoryCastPower = 0;
+    const int carFactoryWait = 0;
+}
+
 class Building : public cocos2d::Sprite
 {
 

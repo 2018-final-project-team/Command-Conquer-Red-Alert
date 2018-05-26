@@ -14,6 +14,18 @@
 USING_NS_CC;
 //TODO: 加入动画和图片素材，之后实现。
 
+namespace unitData
+{
+    const int infantryCastMoney = 0;
+    const int infantryCastPower = 0;
+    const int infantryWait = 0;
+    const int dogCastMoney = 0;
+    const int dogCastPower = 0;
+    const int dogWait = 0;
+    const int tankCastMoney = 0;
+    const int tankCastPower = 0;
+    const int tankWait = 0;
+}
 
 //单位状态
 typedef enum
@@ -66,6 +78,18 @@ public:
     
     //攻击区域
     CC_SYNTHESIZE(unsigned int, _ATKLimit, UnitATKLimit);
+
+    //目的地
+    CC_SYNTHESIZE(cocos2d::Vec2, _destination, Destination);
+
+    //用于转向的第二方向
+    CC_SYNTHESIZE(cocos2d::Vec2, _secondDirection, SecondDirection);
+
+    //是否到达目的地
+    CC_SYNTHESIZE(bool, _getDestination, GetDestination);
+
+    //是否被选中
+    CC_SYNTHESIZE(bool, _isSelected, IsSelected);
     
 //    //动画名字
 //    CC_SYNTHESIZE(std::string, _AnimationName, UnitAnimationName);
@@ -75,6 +99,12 @@ public:
     
     //单位名字
     CC_SYNTHESIZE(std::string, _UnitName, _UnitName);
+
+    //moveTo
+    void moveTo(cocos2d::Vec2 destination)
+    {
+        //To Do:
+    }
     
     //生成单位的方法
     static Unit * create(Tag _tag);

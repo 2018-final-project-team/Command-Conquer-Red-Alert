@@ -1,15 +1,15 @@
 /*
 *  @file     GameManager.h
-*  @brief    ÓÎÏ·µÄ¿ØÖÆÀà
+*  @brief    游戏的控制类
 */
 
 #ifndef __GameManager_H_
 #define __GameManager_H_
 
 #include "MoveController.h"
-#include "Scene\GameScene.h"
-#include "Data\Building.h"
-#include "Data\UnitData.h"
+#include "../Scene/GameScene.h"
+#include "../Data/Building.h"
+#include "../Data/UnitData.h"
 #include "cocos2d.h""
 #include <iostream>
 #include <time.h>
@@ -24,7 +24,7 @@ private:
     MoveController* _moveController;
 
 //========CreateController===========
-    clock_t _timeToCreateBuilding;               // µ¥Î»ºÁÃë
+    clock_t _timeToCreateBuilding;               // 单位毫秒
     clock_t _waitToCreateBuilding;
     clock_t _timeToCreateSoldier;
     clock_t _waitToCreateSoldier;
@@ -36,13 +36,13 @@ private:
 //===================================
 
 //==========Attack================
-    Unit* _selectedEnemy;              //±»Ñ¡ÖÐµÄÊ¿±ø»ò½¨Öþ
+    Unit* _selectedEnemy;              //被选中的士兵或建筑
     Building* _selectedBuilding;
 
 public:
 
     /**
-    * @brief ManagerµÄ¾²Ì¬¹¹Ôìº¯Êý
+    * @brief Manager的静态构造函数
     * @return  Manager*
     */
     static Manager* createWithGameScene(GameScene* gameScene);
@@ -57,36 +57,36 @@ public:
 
 //=====================CreateController========================
     /**
-    * @brief µã»÷½¨Ôì½¨ÖþµÄ¿ªÊ¼
-    * @param1 ½¨ÖþµÄTag
-    * @param2 ¿ªÊ¼µÈ´ýµÄÊ±¼ä
+    * @brief 点击建造建筑的开始
+    * @param1 建筑的Tag
+    * @param2 开始等待的时间
     * @return  void
     */
     void clickCreateBuildingByTag(Tag building_tag, clock_t start_time);
 
     /**
-    * @brief µã»÷½¨ÔìÊ¿±øµÄ¿ªÊ¼
-    * @param1 Ê¿±øµÄTag
-    * @param2 ¿ªÊ¼µÈ´ýµÄÊ±¼ä
+    * @brief 点击建造士兵的开始
+    * @param1 士兵的Tag
+    * @param2 开始等待的时间
     * @return  void
     */
     void clickCreateSoldierByTag(Tag soldier_tag, clock_t start_time);
 
     /**
-    * @brief ½¨Ôì½¨ÖþµÄµÈ´ý ÐèÒªÔÚupdateº¯ÊýÀïµ÷ÓÃ
+    * @brief 建造建筑的等待 需要在update函数里调用
     * @return  void
     */
     void waitCreateBuilding();
 
     /**
-    * @brief ½¨ÔìÊ¿±øµÄµÈ´ý ÐèÒªÔÚupdateº¯ÊýÀïµ÷ÓÃ
+    * @brief 建造士兵的等待 需要在update函数里调用
     * @return  void
     */
     void waitCreateSoldier();
 
     /**
-    * @brief ½¨Ôì½¨Öþ ÔÚGameSceneÖÐµ÷ÓÃ
-    * @pamra Ôì½¨Öþµã
+    * @brief 建造建筑 在GameScene中调用
+    * @pamra 造建筑点
     * @return  void
     */
     void createBuilding(cocos2d::Vec2 position);
@@ -99,14 +99,23 @@ public:
     void setBuilding(Building* building);
 
     /**
-    * @brief ¹¥»÷ ÔÚUpdateº¯ÊýÀïµ÷ÓÃ
+    * @brief 攻击 在Update函数里调用
     */
     void attack();
 
     /**
-    * @brief ¼ÓÇ® ÔÚUpdateº¯ÊýÀïµ÷ÓÃ
+    * @brief 加钱 在Update函数里调用
     */
     void addMoneyUpdate();
+
+    /*
+    * @brief get _moveController
+    * @return the  _movecontroller( a point )
+    */
+    MoveController* getMoveController()
+    {
+        return _moveController;
+    }
 
 };
 

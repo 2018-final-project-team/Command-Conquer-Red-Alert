@@ -1,6 +1,6 @@
 /*
 *  @file     MoveController.cpp
-*  @brief    ¸÷ÖÖ±øµÄÒÆ¶¯¿ØÖÆ
+*  @brief    各种兵的移动控制
 */
 
 #include "MoveController.h"
@@ -44,12 +44,12 @@ void MoveController::selectSoldiersWithMouse(cocos2d::Vec2 mouseDownPoint, cocos
     }
 }
 
-void MoveController::selectSoldiersWithName(const std::string& name)
+void MoveController::selectSoldiersWithTag(Tag tag)
 {
     _selectedSoldiers->clear();
     for (auto& soldier : *(_gameScene->getSoldiers()))
     {
-        if (soldier->getName() == name)
+        if (soldier->getTag() == tag)
         {
             soldier->setIsSelected(true);
             _selectedSoldiers->pushBack(soldier);
@@ -59,7 +59,7 @@ void MoveController::selectSoldiersWithName(const std::string& name)
 
 void MoveController::setDestination(cocos2d::Vec2 position)
 {
-    // ¼ì²âÊÇ·ñÕÏ°­
+    // 检测是否障碍
     if (_gameScene->isCollision(position))
     {
         return;
@@ -76,7 +76,7 @@ void MoveController::setDestination(cocos2d::Vec2 position)
 
 bool MoveController::willHitInFiveTiles(Vec2 nowPosition, Vec2 direction)
 {
-    float tile_size = _gameScene->getTileMap()->getTileSize().width;
+    float tile_size = _gameScene->getTileSize();
     if (_isFirstMove)
     {
         for (int i = 0; i < 5; ++i)
@@ -98,11 +98,11 @@ bool MoveController::willHitInFiveTiles(Vec2 nowPosition, Vec2 direction)
 
 Vec2 MoveController::changeDirection(cocos2d::Vec2 nowPosition, cocos2d::Vec2 direction)
 {
-    float tile_size = _gameScene->getTileMap()->getTileSize().width;
+    float tile_size = _gameScene->getTileSize();
     bool store_is_first_move = _isFirstMove;
     _isFirstMove = true;
 
-//================ To Do : ´Ë´¦µÄ×ªÏòbugÊ®·ÖÑÏÖØ,ÄÎºÎ±¾ÈËÄÜÁ¦ÓÐÏÞ,ÔÝÊ±Ïë²»³öºÃµÄ·½·¨ ==================
+//================ To Do : 此处的转向bug十分严重,奈何本人能力有限,暂时想不出好的方法 ==================
     Vec2 up(0, 1);
     Vec2 down(0, -1);
     Vec2 right(1, 0);
@@ -204,14 +204,14 @@ void MoveController::moveSoldiers()
     preT = nowT;
     for (auto& soldier : *(_gameScene->getSoldiers()))
     {
-        if (!soldier->getIfGetDestination())
+        if (!soldier->getGetDestination())
         {
             Vec2 nowPosition = soldier->getPosition();
             Vec2 destination = soldier->getDestination();
             Vec2 direction = destination - nowPosition;
             direction.normalize();
             float distance = destination.distance(nowPosition);
-//================ To Do : ´Ë´¦µÄ×ªÏòbugÊ®·ÖÑÏÖØ,ÄÎºÎ±¾ÈËÄÜÁ¦ÓÐÏÞ,ÔÝÊ±Ïë²»³öºÃµÄ·½·¨ ==================
+//================ To Do : 此处的转向bug十分严重,奈何本人能力有限,暂时想不出好的方法 ==================
             if (willHitInFiveTiles(nowPosition, direction))
             {
                 if (soldier->getSecondDirection() != Vec2::ZERO)
@@ -234,7 +234,7 @@ void MoveController::moveSoldiers()
                 return;
             }
             
-            // ¼ì²âÅö×²
+            // 检测碰撞
             if (_gameScene->isCollision(move + nowPosition))
             {
                 return;

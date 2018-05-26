@@ -1,6 +1,6 @@
 /*
 *  @file     GameManager.cpp
-*  @brief    ÓÎÏ·µÄ¿ØÖÆÀà
+*  @brief    游戏的控制类
 */
 
 #include "GameManager.h"
@@ -39,24 +39,24 @@ void Manager::clickCreateBuildingByTag(Tag building_tag, clock_t start_time)
         switch (building_tag)
         {
         case POWER_PLANT_TAG:
-            castMoney = powerPlantCastMoney;       //  in BuildingData.h
-            castPower = powerPlantCastPower;  
-            _waitToCreateBuilding = powerPlantWait;
+            castMoney = buildingData::powerPlantCastMoney;       //  in BuildingData.h
+            castPower = buildingData::powerPlantCastPower;
+            _waitToCreateBuilding = buildingData::powerPlantWait;
             break;
         case MINE_TAG:
-            castMoney = mineCastMoney;
-            castPower = mineCastPower;
-            _waitToCreateBuilding = mineWait;
+            castMoney = buildingData::mineCastMoney;
+            castPower = buildingData::mineCastPower;
+            _waitToCreateBuilding = buildingData::mineWait;
             break;
         case BARRACKS_TAG:
-            castMoney = barrackCastMoney;
-            castPower = barrackCastPower;
-            _waitToCreateBuilding = barrackWait;
+            castMoney = buildingData::barracksCastMoney;
+            castPower = buildingData::barracksCastPower;
+            _waitToCreateBuilding = buildingData::barracksWait;
             break;
         case CAR_FACTORY_TAG:
-            castMoney = carFactoryCastMoney;
-            castPower = carFactoryCastPower;
-            _waitToCreateBuilding = carFactoryWait;
+            castMoney = buildingData::carFactoryCastMoney;
+            castPower = buildingData::carFactoryCastPower;
+            _waitToCreateBuilding = buildingData::carFactoryWait;
             break;
         }
 
@@ -84,24 +84,24 @@ void Manager::clickCreateSoldierByTag(Tag soldier_tag, clock_t start_time)
             {
                 return;
             }
-            castMoney = infantryCastMoney;
-            castPower = infantryCastPower;
+            castMoney = unitData::infantryCastMoney;
+            castPower = unitData::infantryCastPower;
             break;
         case DOG_TAG:
             if (_gameScene->getBarracksNum() == 0)
             {
                 return;
             }
-            castMoney = dogCastMoney;
-            castPower = dogCastPower;
+            castMoney = unitData::dogCastMoney;
+            castPower = unitData::dogCastPower;
             break;
         case TANK_TAG:
             if (_gameScene->getCarFactoryNum() == 0)
             {
                 return;
             }
-            castMoney = tankCastMoney;
-            castPower = tankCastPower;
+            castMoney = unitData::tankCastMoney;
+            castPower = unitData::tankCastPower;
             break;
         }
 
@@ -160,15 +160,15 @@ void Manager::createBuilding(cocos2d::Vec2 position)
         switch (_buildingTag)
         {
         case POWER_PLANT_TAG:
-            _gameScene->addPowerPlant();            // µç³§ÊýÁ¿¼ÓÒ»
-            _gameScene->addPower();                 // ¼Ó100µçÁ¿                 
+            _gameScene->addPowerPlant();            // 电厂数量加一
+            _gameScene->addPower();                 // 加100电量                 
             break;
         case MINE_TAG:
-            _gameScene->addMine();                  // ¿ó³¡ÊýÁ¿¼ÓÒ»
+            _gameScene->addMine();                  // 矿场数量加一
             break;
         case BARRACKS_TAG:
             _gameScene->addBarracks();
-            _gameScene->setBarracksPosition(building->getPosition());  // ±øÓªÎ»ÖÃ
+            _gameScene->setBarracksPosition(building->getPosition());  // 兵营位置
             break;
         case CAR_FACTORY_TAG:
             _gameScene->addCarFactory();
@@ -208,7 +208,7 @@ void Manager::attack()
 
     for (auto& soldier : *(_gameScene->getSoldiers()))
     {
-        if (_selectedEnemy && soldier->canAttack(_selectedEnemy->getPosition()))    // Èç¹ûÑ¡ÖÐÁËµÐ·½Ê¿±ø
+        if (_selectedEnemy && soldier->canAttack(_selectedEnemy->getPosition()))    // 如果选中了敌方士兵
         {
             switch (soldier->getTag())
             {
@@ -258,7 +258,7 @@ void Manager::attack()
 
             continue;
         }
-        else if (_selectedBuilding && soldier->canAttack(_selectedBuilding->getPosition()))  // Èç¹ûÑ¡ÖÐÁËµÐ·½½¨Öþ
+        else if (_selectedBuilding && soldier->canAttack(_selectedBuilding->getPosition()))  // 如果选中了敌方建筑
         {
             switch (soldier->getTag())
             {
@@ -385,14 +385,14 @@ void Manager::attack()
         switch (selectedBuildingTag)
         {
         case POWER_PLANT_TAG:
-            _gameScene->decreasePowerPlant();            // µç³§ÊýÁ¿¼õÒ» Èç¹ûµç³§ÊýÁ¿Îª0
-            if (_gameScene->getPowerPlantNum() == 0)                 // µçÁ¿Îª0    
+            _gameScene->decreasePowerPlant();            // 电厂数量减一 如果电厂数量为0
+            if (_gameScene->getPowerPlantNum() == 0)                 // 电量为0    
             {
                 _gameScene->setPower(0);
             }
             break;
         case MINE_TAG:
-            _gameScene->decreaseMine();                  // ¿ó³¡ÊýÁ¿-1
+            _gameScene->decreaseMine();                  // 矿场数量-1
             break;
         case BARRACKS_TAG:
             _gameScene->decreaseBarracks();         
