@@ -1,20 +1,17 @@
 /*
 *  @file     GameManager.cpp
-*  @brief    游戏的控制类
+*  @brief    ÓÎÏ·µÄ¿ØÖÆÀà
 */
 
 #include "GameManager.h"
 
 USING_NS_CC;
 
-Manager* Manager::create(GameScene* gameScene)
+Manager* Manager::createWithGameScene(GameScene* gameScene)
 {
     Manager* manager = new Manager();
-    if (manager)
+    if (manager -> initWithGameScene(gameScene))
     {
-        manager->setGameScene(gameScene);
-        manager->setMoveController(gameScene);
-        manager->setDatas();
         manager->autorelease();
         return manager;
     }
@@ -23,21 +20,15 @@ Manager* Manager::create(GameScene* gameScene)
     return nullptr;
 }
 
-void Manager::setGameScene(GameScene* gameScene)
+bool Manager::initWithGameScene(GameScene* gameScene)
 {
     _gameScene = gameScene;
-}
+    _moveController = MoveController::createWithGameScene(gameScene);
 
-void Manager::setMoveController(GameScene* gameScene)
-{
-    _moveController = MoveController::create(gameScene);
-}
-
-void Manager::setDatas()
-{
     _waitToCreateBuilding = _waitToCreateSoldier = false;
     _canCreateBuilding = false;
-    _selectedEnemy = _selectedBuilding = nullptr;
+    _selectedEnemy = nullptr;
+    _selectedBuilding = nullptr;
 }
 
 void Manager::clickCreateBuildingByTag(Tag building_tag, clock_t start_time)
@@ -143,7 +134,7 @@ void Manager::waitCreateSoldier()
     {
         if (clock() - _timeToCreateSoldier > _waitToCreateSoldier)
         {
-            Soldier* soldier = Soldier::create(_soldierTag);
+            Unit* soldier = Unit::create(_soldierTag);
             if (_soldierTag == TANK_TAG)
             {
                 soldier->setPosition(_gameScene->getCarFactoryPosition());
@@ -153,7 +144,7 @@ void Manager::waitCreateSoldier()
                 soldier->setPosition(_gameScene->getBarracksPosition());
             }
             _gameScene->addChild(soldier);
-            _gameScene->getSoldiers().pushBack(soldier);
+            _gameScene->getSoldiers()->pushBack(soldier);
             _waitToCreateSoldier = false;
         }
     }
@@ -169,28 +160,28 @@ void Manager::createBuilding(cocos2d::Vec2 position)
         switch (_buildingTag)
         {
         case POWER_PLANT_TAG:
-            _gameScene->addPowerPlant();            // 电厂数量加一
-            _gameScene->addPower();                 // 加100电量                 
+            _gameScene->addPowerPlant();            // µç³§ÊýÁ¿¼ÓÒ»
+            _gameScene->addPower();                 // ¼Ó100µçÁ¿                 
             break;
         case MINE_TAG:
-            _gameScene->addMine();                  // 矿场数量加一
+            _gameScene->addMine();                  // ¿ó³¡ÊýÁ¿¼ÓÒ»
             break;
         case BARRACKS_TAG:
             _gameScene->addBarracks();
-            _gameScene->setBarracksPosition(building->getPosition());  // 兵营位置
+            _gameScene->setBarracksPosition(building->getPosition());  // ±øÓªÎ»ÖÃ
             break;
         case CAR_FACTORY_TAG:
             _gameScene->addCarFactory();
             _gameScene->setCarFactoryPosition(building->getPosition());
             break;
         }
-        _gameScene->getBuildings().pushBack(building);
+        _gameScene->getBuildings()->pushBack(building);
         _canCreateBuilding = false;
         _waitToCreateBuilding = false;
     }
 }
 
-void Manager::setEnemy(Soldier* enemy)
+void Manager::setEnemy(Unit* enemy)
 {
     _selectedEnemy = enemy;
     _selectedBuilding = nullptr;
@@ -212,20 +203,20 @@ void Manager::attack()
     bool isTankAttack = false;
     bool isBuildingDied = false;
     Tag selectedBuildingTag;
-    Vector<Soldier*>& enemySoldiers = _gameScene->getEnemySoldiers();
+    Vector<Unit*>& enemySoldiers = _gameScene->getEnemySoldiers();
     clock_t nowT = clock();
 
-    for (auto& soldier : _gameScene->getSoldiers())
+    for (auto& soldier : *(_gameScene->getSoldiers()))
     {
-        if (_selectedEnemy && soldier->canAttack(_selectedEnemy->getPosition()))    // 如果选中了敌方士兵
+        if (_selectedEnemy && soldier->canAttack(_selectedEnemy->getPosition()))    // Èç¹ûÑ¡ÖÐÁËµÐ·½Ê¿±ø
         {
             switch (soldier->getTag())
             {
             case INFANTRY_TAG:
-                if (nowT - infantryPreT >= soldier->getDelay())
+                if (nowT - infantryPreT >= soldier->getUnitCD())
                 {
                     soldier->attack(_selectedEnemy);
-                    if (_selectedEnemy->getHP() <= 0)
+                    if (_selectedEnemy->getUnitHP() <= 0)
                     {
                         _selectedEnemy->setDeath();
                         enemySoldiers.eraseObject(_selectedEnemy);
@@ -236,10 +227,10 @@ void Manager::attack()
                 }
                 break;
             case DOG_TAG:
-                if (nowT - dogPreT >= soldier->getDelay())
+                if (nowT - dogPreT >= soldier->getUnitCD())
                 {
                     soldier->attack(_selectedEnemy);
-                    if (_selectedEnemy->getHP() <= 0)
+                    if (_selectedEnemy->getUnitHP() <= 0)
                     {
                         _selectedEnemy->setDeath();
                         enemySoldiers.eraseObject(_selectedEnemy);
@@ -250,10 +241,10 @@ void Manager::attack()
                 }
                 break;
             case TANK_TAG:
-                if (nowT - tankPreT >= soldier->getDelay())
+                if (nowT - tankPreT >= soldier->getUnitCD())
                 {
                     soldier->attack(_selectedEnemy);
-                    if (_selectedEnemy->getHP() <= 0)
+                    if (_selectedEnemy->getUnitHP() <= 0)
                     {
                         _selectedEnemy->setDeath();
                         enemySoldiers.eraseObject(_selectedEnemy);
@@ -267,12 +258,12 @@ void Manager::attack()
 
             continue;
         }
-        else if (_selectedBuilding && soldier->canAttack(_selectedBuilding->getPosition()))  // 如果选中了敌方建筑
+        else if (_selectedBuilding && soldier->canAttack(_selectedBuilding->getPosition()))  // Èç¹ûÑ¡ÖÐÁËµÐ·½½¨Öþ
         {
             switch (soldier->getTag())
             {
             case INFANTRY_TAG:
-                if (nowT - infantryPreT >= soldier->getDelay())
+                if (nowT - infantryPreT >= soldier->getUnitCD())
                 {
                     soldier->attack(_selectedBuilding);
                     if (_selectedBuilding->getHP() <= 0)
@@ -280,7 +271,7 @@ void Manager::attack()
                         _selectedBuilding->setDeath();
                         isBuildingDied = true;
                         selectedBuildingTag = _selectedBuilding->getBuildingTag();
-                        _gameScene->getBuildings().eraseObject(_selectedBuilding);
+                        _gameScene->getBuildings()->eraseObject(_selectedBuilding);
                         _gameScene->removeChild(_selectedBuilding);
                         _selectedBuilding = nullptr;
                     }
@@ -288,7 +279,7 @@ void Manager::attack()
                 }
                 break;
             case DOG_TAG:
-                if (nowT - dogPreT >= soldier->getDelay())
+                if (nowT - dogPreT >= soldier->getUnitCD())
                 {
                     soldier->attack(_selectedBuilding);
                     if (_selectedBuilding->getHP() <= 0)
@@ -296,7 +287,7 @@ void Manager::attack()
                         _selectedBuilding->setDeath();
                         isBuildingDied = true;
                         selectedBuildingTag = _selectedBuilding->getBuildingTag();
-                        _gameScene->getBuildings().eraseObject(_selectedBuilding);
+                        _gameScene->getBuildings()->eraseObject(_selectedBuilding);
                         _gameScene->removeChild(_selectedBuilding);
                         _selectedBuilding = nullptr;
                         isBuildingDied = true;
@@ -305,7 +296,7 @@ void Manager::attack()
                 }
                 break;
             case TANK_TAG:
-                if (nowT - tankPreT >= soldier->getDelay())
+                if (nowT - tankPreT >= soldier->getUnitCD())
                 {
                     soldier->attack(_selectedBuilding);
                     if (_selectedBuilding->getHP() <= 0)
@@ -313,7 +304,7 @@ void Manager::attack()
                         _selectedBuilding->setDeath();
                         isBuildingDied = true;
                         selectedBuildingTag = _selectedBuilding->getBuildingTag();
-                        _gameScene->getBuildings().eraseObject(_selectedBuilding);
+                        _gameScene->getBuildings()->eraseObject(_selectedBuilding);
                         _gameScene->removeChild(_selectedBuilding);
                         _selectedBuilding = nullptr;
                         isBuildingDied = true;
@@ -332,10 +323,10 @@ void Manager::attack()
                 switch (soldier->getTag())
                 {
                 case INFANTRY_TAG:
-                    if (nowT - infantryPreT >= soldier->getDelay())
+                    if (nowT - infantryPreT >= soldier->getUnitCD())
                     {
                         soldier->attack(enemy);
-                        if (enemy->getHP() <= 0)
+                        if (enemy->getUnitHP() <= 0)
                         {
                             enemy->setDeath();
                             enemySoldiers.eraseObject(enemy);
@@ -345,10 +336,10 @@ void Manager::attack()
                     }
                     break;
                 case DOG_TAG:
-                    if (nowT - dogPreT >= soldier->getDelay())
+                    if (nowT - dogPreT >= soldier->getUnitCD())
                     {
                         soldier->attack(enemy);
-                        if (enemy->getHP() <= 0)
+                        if (enemy->getUnitHP() <= 0)
                         {
                             enemy->setDeath();
                             enemySoldiers.eraseObject(enemy);
@@ -358,10 +349,10 @@ void Manager::attack()
                     }
                     break;
                 case TANK_TAG:
-                    if (nowT - tankPreT >= soldier->getDelay())
+                    if (nowT - tankPreT >= soldier->getUnitCD())
                     {
                         soldier->attack(enemy);
-                        if (enemy->getHP() <= 0)
+                        if (enemy->getUnitHP() <= 0)
                         {
                             enemy->setDeath();
                             enemySoldiers.eraseObject(enemy);
@@ -394,18 +385,18 @@ void Manager::attack()
         switch (selectedBuildingTag)
         {
         case POWER_PLANT_TAG:
-            _gameScene->decreasePowerPlant();            // 电厂数量减一 如果电厂数量为0
-            if (_gameScene->getPowerPlantNum() == 0)                 // 电量为0    
+            _gameScene->decreasePowerPlant();            // µç³§ÊýÁ¿¼õÒ» Èç¹ûµç³§ÊýÁ¿Îª0
+            if (_gameScene->getPowerPlantNum() == 0)                 // µçÁ¿Îª0    
             {
                 _gameScene->setPower(0);
             }
             break;
         case MINE_TAG:
-            _gameScene->decreaseMine();                  // 矿场数量-1
+            _gameScene->decreaseMine();                  // ¿ó³¡ÊýÁ¿-1
             break;
         case BARRACKS_TAG:
             _gameScene->decreaseBarracks();         
-            for (auto& building : _gameScene->getBuildings())
+            for (auto& building : *(_gameScene->getBuildings()))
             {
                 if (building->getBuildingTag() == BARRACKS_TAG)
                 {
@@ -415,7 +406,7 @@ void Manager::attack()
             break;
         case CAR_FACTORY_TAG:
             _gameScene->decreaseCarFactory();
-            for (auto& building : _gameScene->getBuildings())
+            for (auto& building : *(_gameScene->getBuildings()))
             {
                 if (building->getBuildingTag() == CAR_FACTORY_TAG)
                 {
@@ -427,7 +418,7 @@ void Manager::attack()
     }
 }
 
-void Manager::addMoney()
+void Manager::addMoneyUpdate()
 {
     static clock_t preT = clock();
     clock_t nowT = clock();
@@ -436,6 +427,7 @@ void Manager::addMoney()
         if (nowT - preT >= addMoneyDelay)
         {
             _gameScene->addMoney(_gameScene->getMineNum() * 1000);
+            preT = nowT;
         }
     }
 }

@@ -1,6 +1,6 @@
 /*
 *  @file     MoveController.h
-*  @brief    各种兵的移动类
+*  @brief    ¸÷ÖÖ±øµÄÒÆ¶¯Àà
 */
 
 #ifndef __MoveController_H_
@@ -9,84 +9,80 @@
 #include "cocos2d.h""
 #include <iostream>
 #include "../Scene/GameScene.h"
+#include "../Data/Building.h"
+#include "../Data/UnitData.h"
 
 class GameScene;
 
 /*
-*@brief 各种兵的移动控制类
-*控制兵的移动
+*@brief ¸÷ÖÖ±øµÄÒÆ¶¯¿ØÖÆÀà
+*¿ØÖÆ±øµÄÒÆ¶¯
 */
-//=========================To Do: 排队型 和 没有bug的转向==========================
+//=========================To Do: ÅÅ¶ÓÐÍ ºÍ Ã»ÓÐbugµÄ×ªÏò==========================
 
 class MoveController : public cocos2d::Node
 {
 
 protected:
 
-    GameScene* _gameScene;                                      // game 场景类
-    cocos2d::Vector<Soldier*>* _selectedSoldiers;     // selected soldiers
-    bool _isFirstMove;                               //用来减少障碍判断次数
+    GameScene* _gameScene;                                      // game ³¡¾°Àà
+    cocos2d::Vector<Unit*>* _selectedSoldiers;     // selected soldiers
+    bool _isFirstMove;                               //ÓÃÀ´¼õÉÙÕÏ°­ÅÐ¶Ï´ÎÊý
 
 public:
 
     /**
-    * @brief MoveController的静态构造函数
+    * @brief MoveControllerµÄ¾²Ì¬¹¹Ôìº¯Êý
     * @return  MoveController*
     */
-    static MoveController* create(GameScene* gameScene);
+    static MoveController* createWithGameScene(GameScene* gameScene);
 
     /**
-    * @brief MoveController的setGameScene函数
-    * @return  void
+    * @brief initWithGameScene
+    * @return bool
     */
-    void setGameScene(GameScene* gameScene);
+    bool initWithGameScene(GameScene* gameScene);
 
     /**
-    * @brief MoveController的setSelectedSoldier函数
-    * @return  void
-    */
-    void setSelectedSoldiers(cocos2d::Vector<Soldier*>* selectedSoldiers);
-
-    /**
-    * @brief 用鼠标选择士兵坦克
-    * @param 鼠标按下的点
-    * @param 鼠标松开的点
+    * @brief ÓÃÊó±êÑ¡ÔñÊ¿±øÌ¹¿Ë
+    * @param Êó±ê°´ÏÂµÄµã
+    * @param Êó±êËÉ¿ªµÄµã
     * @return  void
     */
     void selectSoldiersWithMouse(cocos2d::Vec2 mouseDownPoint, cocos2d::Vec2 mouseUpPoint);
 
     /**
-    * @brief 用快捷键(传递名字)选择士兵坦克
-    # @param 兵种的名字
+    * @brief ÓÃ¿ì½Ý¼ü(´«µÝÃû×Ö)Ñ¡ÔñÊ¿±øÌ¹¿Ë
+    # @param ±øÖÖµÄÃû×Ö
     * @return  void
     */
     void selectSoldiersWithName(const std::string& name);
 
     /**
-    * @brief 设置士兵坦克目的地(不能是障碍)
-    * @param 目的地点
+    * @brief ÉèÖÃÊ¿±øÌ¹¿ËÄ¿µÄµØ(²»ÄÜÊÇÕÏ°­)
+    * @param Ä¿µÄµØµã
     * @return  void
     */
     void setDestination(cocos2d::Vec2 position);
 
     /**
-    * @brief 判断向前5个瓦片内是否会碰撞
-    * @param 当前位置
-    * @param 方向
+    * @brief ÅÐ¶ÏÏòÇ°5¸öÍßÆ¬ÄÚÊÇ·ñ»áÅö×²
+    * @param µ±Ç°Î»ÖÃ
+    * @param ·½Ïò
     * @return  int
     */
     bool willHitInFiveTiles(cocos2d::Vec2 nowPosition, cocos2d::Vec2 direction);
 
     /**
-    * @brief 遇到障碍物转向
-    * @param 当前位置
-    * @param 方向
-    * @return  转向后方向
+    * @brief Óöµ½ÕÏ°­Îï×ªÏò
+    * @param µ±Ç°Î»ÖÃ
+    * @param ·½Ïò
+    * @return  ×ªÏòºó·½Ïò
     */
     cocos2d::Vec2 changeDirection(cocos2d::Vec2 nowPosition, cocos2d::Vec2 direction);
 
     /**
-    * @brief 移动士兵坦克 在Update函数里调用
+    * @brief ÒÆ¶¯Ê¿±øÌ¹¿Ë ÔÚUpdateº¯ÊýÀïµ÷ÓÃ
     * @return  void
     */
     void moveSoldiers();

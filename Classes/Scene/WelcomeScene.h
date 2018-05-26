@@ -1,31 +1,37 @@
+/*
+*  @file     WelcomeScene.h
+*  @brief    æ¬¢è¿ï¼ˆä¸»ï¼‰åœºæ™¯ç±»ï¼Œå¯é€šè¿‡æ­¤åœºæ™¯è¿›å…¥æ¸¸æˆã€è®¾ç½®ã€å¸®åŠ©åœºæ™¯ï¼Œå¯é€€å‡ºæ¸¸æˆ
+*  @author   ç‹äº®
+*/
+
 #ifndef __Welcome_SCENE_H__
 #define __Welcome_SCENE_H__
 
 #include "cocos2d.h"
 
-class Welcome : public cocos2d::Layer
+class WelcomeScene : public cocos2d::Layer
 {
 public:
-    static cocos2d::Scene* createScene();
+	static cocos2d::Scene* createScene();
 
-    virtual bool init();
-    
-    // a selector callback
-    void menuCloseCallback(cocos2d::Ref* pSender);
+	virtual bool init();
 
-	void enterGameScene(Ref *pSender);
-    
-    // implement the "static create()" method manually
-    CREATE_FUNC(Welcome);
+	void menuCloseCallback(cocos2d::Ref* pSender);
+
+	// ç”¨äºè·³è½¬åˆ°å…¶ä»–åœºæ™¯çš„menuå›è°ƒå‡½æ•°
+	void menuPlayCallback(Ref *pSender);
+	void menuSettingsCallback(cocos2d::Ref * pSender);
+	void menuHelpCallback(cocos2d::Ref * pSender);
+
+	CREATE_FUNC(WelcomeScene);
 
 	/**
-	@brief  ´Ó¾«ÁéÍ¼¼¯ÖĞ»ñÈ¡¶¯»­Ïà¹ØµÄ¾«ÁéÖ¡µÄVector
-	@param  sheetPlistName ±äÁ¿1 ¾«ÁéÍ¼¼¯¶ÔÓ¦plistµÄÎÄ¼şÃû³Æ£¬×¢ÒâÒª°üº¬Â·¾¶
-	@param  format         ±äÁ¿2 ¾«ÁéÍ¼¼¯ÖĞÓë¶¯»­Ïà¹ØÍ¼Æ¬Ãû³ÆµÄ¸ñÊ½£¬×¢ÒâÒª°üº¬Â·¾¶
-	@param  count          ±äÁ¿3 Ïà¹ØÍ¼Æ¬µÄÊıÁ¿
+	@brief  ä»ç²¾çµå›¾é›†ç¼“å­˜ä¸­è·å–åŠ¨ç”»ç›¸å…³çš„ç²¾çµå¸§çš„Vector
+	@param  format         å˜é‡1 ç²¾çµå›¾é›†ä¸­ä¸åŠ¨ç”»ç›¸å…³å›¾ç‰‡åç§°çš„æ ¼å¼ï¼Œæ³¨æ„è¦åŒ…å«è·¯å¾„
+	@param  count          å˜é‡2 ç›¸å…³å›¾ç‰‡çš„æ•°é‡
 	@return Vector<SpriteFrame*>
 	*/
-	cocos2d::Vector<cocos2d::SpriteFrame*> getAnimation(const char* sheetPlistName, const char* format, int count);
+	cocos2d::Vector<cocos2d::SpriteFrame*> getAnimation(const char* format, int count);
 };
 
 #endif // __Welcome_SCENE_H__

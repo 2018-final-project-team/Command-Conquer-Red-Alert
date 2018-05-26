@@ -10,11 +10,11 @@ static void problemLoading(const char* filename)
 	printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in WelcomeScene.cpp\n");
 }
 
-Scene* Game::createScene()
+Scene* GameScene::createScene()
 {
 	auto scene = Scene::create();
 
-	auto layer = Game::create();
+	auto layer = GameScene::create();
 
 	scene->addChild(layer);
 
@@ -23,7 +23,7 @@ Scene* Game::createScene()
 
 }
 
-bool Game::init()
+bool GameScene::init()
 {
 	if (!Layer::init())
 	{
@@ -37,11 +37,11 @@ bool Game::init()
 	label->setPosition(visibleSize.width / 2, visibleSize.height / 2);
 	this->addChild(label, 0);
 
-	//·µ»Ø°´Å¥
+	//Â·ÂµÂ»Ã˜Â°Â´Ã…Â¥
 	auto backItem = MenuItemImage::create(
 		"backNormal.png",
 		"backSelected.png",
-		CC_CALLBACK_1(Game::enterWelcomeScene, this));
+		CC_CALLBACK_1(GameScene::menuBackCallback, this));
 
 	if (backItem == nullptr ||
 		backItem->getContentSize().width <= 0 ||
@@ -62,13 +62,49 @@ bool Game::init()
 	this->addChild(menu, 1);
 
 
-	
 
+    manager = Manager::createWithGameScene(this);
+	
 	return true;
 }
-void Game::enterWelcomeScene(Ref *pSender)
+void GameScene::menuBackCallback(Ref *pSender)
 {
-	//Ìø×ªµ½µÚÒ»¸ö³¡¾°£¬¼ÇµÃ°üº¬µÚÒ»¸ö³¡¾°µÄÍ·ÎÄ¼þ£ºGameScene.h  
+	//ÃŒÃ¸Ã—ÂªÂµÂ½ÂµÃšÃ’Â»Â¸Ã¶Â³Â¡Â¾Â°Â£Â¬Â¼Ã‡ÂµÃƒÂ°Ã¼ÂºÂ¬ÂµÃšÃ’Â»Â¸Ã¶Â³Â¡Â¾Â°ÂµÃ„ÃÂ·ÃŽÃ„Â¼Ã¾Â£ÂºGameScene.h  
 	//Director::getInstance()->replaceScene(MyFirstScene::createScene());  
 	Director::getInstance()->popScene();
+}
+
+Vector<Unit*>* GameScene::getSelectedSoldiers()
+{
+    return &_selectedSoldiers;
+}
+
+Vector<Unit*>* GameScene::getSoldiers()
+{
+    return &_soldiers;
+}
+
+Vector<Building*>* GameScene::getBuildings()
+{
+    return &_buildings;
+}
+
+void GameScene::addMoney(int money)
+{
+    _money += money;
+}
+
+void GameScene::decreaseMoney(int money)
+{
+    _money -= money;
+}
+
+void GameScene::addPower()
+{
+    _power += 100;
+}
+
+void GameScene::decreasePower(int power)
+{
+    _power -= power;
 }
