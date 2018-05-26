@@ -1,7 +1,7 @@
 #include"Scene/GameScene.h" 
 #include"Scene/WelcomeScene.h"   
 #include "ui\CocosGUI.h"
-#define MAPX 5765
+#define MAPX 5760
 #define MAPY 5376
 #define MINLENTH 15
 #define SPEED 20
@@ -55,6 +55,11 @@ bool GameScene::init()
 		if (position.x > visibleSize.width - 358 && position.y > visibleSize.height - 334) {
 			auto X = (position.x - (visibleSize.width - 358)) / 358*MAPX-visibleSize.width/2;
 			auto Y = (position.y - (visibleSize.height - 334)) / 334 * MAPY - visibleSize.width / 2;
+			if (X < 0) X = 0;
+			if (Y < 0) Y = 0;
+			log("%f", X);
+			if (X > MAPX - visibleSize.width) X = MAPX-visibleSize.width;
+			if (Y > MAPX - visibleSize.height) Y = MAPX-visibleSize.height;
 			_tileMap->runAction(MoveTo::create(0.1, Point(-X, -Y)));
 		}		
 		return true;
@@ -68,7 +73,7 @@ bool GameScene::init()
 	_mouseOutBoradListener->onMouseMove = [&]( Event* event) {
 		EventMouse* pem = static_cast<EventMouse*>(event);
 		_cursorPosition = Vec2(pem->getCursorX(), pem->getCursorY());
-		log("HelloWorldScene onTouchBegan! pos3 x=%f, y=%f", _cursorPosition.x, _cursorPosition.y);
+		//log("HelloWorldScene onTouchBegan! pos3 x=%f, y=%f", _cursorPosition.x, _cursorPosition.y);
 	};	
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(_mouseOutBoradListener, 1);
 	
@@ -137,17 +142,36 @@ void GameScene::scrollMap() {
 	auto X = _cursorPosition.x;
 	auto Y = _cursorPosition.y;
 	if (X < MINLENTH) {
-		_tileMap->runAction(MoveBy::create(0.1, Point(SPEED, 0)));
+		if (_tileMap->getPositionX() + SPEED < 0) {
+			_tileMap->runAction(MoveBy::create(0.1, Point(SPEED, 0)));
+		}
+		else {
+			_tileMap->setPositionX(0);
+		}
 	}
 	if (Y < MINLENTH) {
-		_tileMap->runAction(MoveBy::create(0.1, Point(0, SPEED)));
+		if (_tileMap->getPositionY() + SPEED < 0) {
+			_tileMap->runAction(MoveBy::create(0.1, Point(0, SPEED)));
+		}
+		else {
+			_tileMap->setPositionY(0);
+		}
 	}
 	if (X > visibleSize.width - MINLENTH) {
-		_tileMap->runAction(MoveBy::create(0.1, Point(-SPEED, 0)));
+		if (_tileMap->getPositionX() - SPEED > -MAPX+visibleSize.width) {
+			_tileMap->runAction(MoveBy::create(0.1, Point(-SPEED, 0)));
+		}
+		else {
+			_tileMap->setPositionX(-MAPX+visibleSize.width);
+		}
 	}
 	if (Y >visibleSize.height - MINLENTH) {
-		_tileMap->runAction(MoveBy::create(0.1, Point(0, -SPEED)));
+		if (_tileMap->getPositionY() - SPEED > -MAPY + visibleSize.height) {
+			_tileMap->runAction(MoveBy::create(0.1, Point(0, -SPEED)));
+		}
+		else {
+			_tileMap->setPositionY(-MAPY + visibleSize.height);
+		}
 	}
-	log("HelloWorldScene onTouchBegan! pos3 x=%f, y=%f", _cursorPosition.x, _cursorPosition.y);
 }
 
