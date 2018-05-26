@@ -1,7 +1,7 @@
 /*
 *  @file     GameScene.h
-*  @brief    ÓÎÏ·³¡¾°Àà
-*  @author   ÍõÁÁ
+*  @brief    æ¸¸æˆåœºæ™¯ç±»
+*  @author   ç‹äº® è”¡éœ‡æ ‹
 */
 
 #ifndef __Game_SCENE_H__
@@ -9,17 +9,30 @@
 
 #include "cocos2d.h"
 
+USING_NS_CC;
+
 class GameScene : public cocos2d::Layer
 {
+
+	cocos2d::TMXTiledMap* _tileMap;
+
 public:
 	static cocos2d::Scene* createScene();
 
 	virtual bool init();
 
+	void update(float time);
+
 	// implement the "static create()" method manually
 	CREATE_FUNC(GameScene);
 
 	void menuBackCallback(Ref *pSender);
+
+	
+
+private:
+	Point _cursorPosition{ 0,0 };
+	void scrollMap();
 };
 
 #endif // __Welcome_SCENE_H__

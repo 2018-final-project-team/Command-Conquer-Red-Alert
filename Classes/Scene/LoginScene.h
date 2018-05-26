@@ -1,7 +1,7 @@
 /*
 *  @file     LoginScene.h
-*  @brief    登录场景类，显示的第二个场景，输入并持久化保存玩家id
-*  @author   王亮
+*  @brief    鐧诲綍鍦烘櫙绫伙紝鏄剧ず鐨勭浜屼釜鍦烘櫙锛岃緭鍏ュ苟鎸佷箙鍖栦繚瀛樼帺瀹秈d
+*  @author   鐜嬩寒
 */
 
 #ifndef  _LOGINSCENE_SCENE_H__

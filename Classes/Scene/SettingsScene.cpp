@@ -1,7 +1,7 @@
 /*
 *  @file     SettingsScene.cpp
-*  @brief    ÉèÖÃ³¡¾°Àà£¬¿ÉÉèÖÃÒôÀÖ¡¢ÒôÐ§µÄ´ò¿ª/¹Ø±Õ
-*  @author   ÍõÁÁ
+*  @brief    è®¾ç½®åœºæ™¯ç±»ï¼Œå¯è®¾ç½®éŸ³ä¹ã€éŸ³æ•ˆçš„æ‰“å¼€/å…³é—­
+*  @author   çŽ‹äº®
 */
 
 #include "SettingsScene.h"
@@ -35,12 +35,12 @@ bool SettingsScene::init()
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
     auto middleX = visibleSize.width / 2;
 
-	//=====================±³¾°Í¼Æ¬============================
+	//=====================èƒŒæ™¯å›¾ç‰‡============================
     Sprite * bg = Sprite::create("emptyBg.png");
     bg->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
     this->addChild(bg, -1);
 
-	//=====================ÎÄ±¾label£ºmusic============================
+	//=====================æ–‡æœ¬labelï¼šmusic============================
     auto musicLabel = createLabel("Background Music");
     auto musicCheckBox = createCheckBox([=](Ref*, ui::CheckBox::EventType type) {
         GameAudio::getInstance()->setBgmOn(type == ui::CheckBox::EventType::SELECTED);
@@ -51,7 +51,7 @@ bool SettingsScene::init()
     addChild(musicLabel);
     addChild(musicCheckBox);
 
-	//=====================ÎÄ±¾label£ºeffect============================
+	//=====================æ–‡æœ¬labelï¼šeffect============================
     auto effectLabel = createLabel("Effect Music");
     auto effectCheckBox = createCheckBox([=](Ref*, ui::CheckBox::EventType type)
     {
@@ -63,10 +63,10 @@ bool SettingsScene::init()
     addChild(effectLabel);
     addChild(effectCheckBox);
 
-	//=====================¡°OK¡±°´Å¥============================
+	//=====================â€œOKâ€æŒ‰é’®============================
     addChild(createText());
 
-	//=====================¼üÅÌÊÂ¼þ£º°´ESCÍË³ö¸Ã³¡¾°============================
+	//=====================é”®ç›˜äº‹ä»¶ï¼šæŒ‰ESCé€€å‡ºè¯¥åœºæ™¯============================
     auto keyEventListener = EventListenerKeyboard::create();
     keyEventListener->onKeyReleased = [](EventKeyboard::KeyCode code, Event* event)
     {

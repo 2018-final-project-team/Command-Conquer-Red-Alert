@@ -1,7 +1,7 @@
 /*
 *  @file     WelcomeScene.cpp
-*  @brief    »¶Ó­£¨Ö÷£©³¡¾°Àà£¬¿ÉÍ¨¹ı´Ë³¡¾°½øÈëÓÎÏ·¡¢ÉèÖÃ¡¢°ïÖú³¡¾°£¬¿ÉÍË³öÓÎÏ·
-*  @author   ÍõÁÁ
+*  @brief    æ¬¢è¿ï¼ˆä¸»ï¼‰åœºæ™¯ç±»ï¼Œå¯é€šè¿‡æ­¤åœºæ™¯è¿›å…¥æ¸¸æˆã€è®¾ç½®ã€å¸®åŠ©åœºæ™¯ï¼Œå¯é€€å‡ºæ¸¸æˆ
+*  @author   ç‹äº®
 */
 
 #include "Scene/WelcomeScene.h"
@@ -45,8 +45,8 @@ bool WelcomeScene::init()
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-	//=====================¸Ã³¡¾°ÖĞµÄ4¸ömenu============================
-	//=====================¡°¹Ø±Õ¡±menu============================
+	//=====================è¯¥åœºæ™¯ä¸­çš„4ä¸ªmenu============================
+	//=====================â€œå…³é—­â€menu============================
 	auto closeItem = MenuItemImage::create(
 		"myClose1.png",
 		"myClose2.png",
@@ -70,7 +70,7 @@ bool WelcomeScene::init()
 	this->addChild(menu, 1);
 
 
-	//=====================¡°¿ªÊ¼¡±menu============================
+	//=====================â€œå¼€å§‹â€menu============================
 	auto startItem = MenuItemImage::create(
 		"StartNormal.png",
 		"StartSelected.png",
@@ -95,7 +95,7 @@ bool WelcomeScene::init()
 	this->addChild(menu2, 1);
 
 
-	//=====================¡°ÉèÖÃ¡±menu============================
+	//=====================â€œè®¾ç½®â€menu============================
 	auto settingItem = MenuItemImage::create(
 		"settingButton.png",
 		"settingButton.png",
@@ -119,7 +119,7 @@ bool WelcomeScene::init()
 	this->addChild(settingMenu, 1);
 
 
-	//=====================¡°°ïÖú¡±menu============================
+	//=====================â€œå¸®åŠ©â€menu============================
 	auto helpItem = MenuItemImage::create(
 		"helpButton.png",
 		"helpButton.png",
@@ -145,7 +145,7 @@ bool WelcomeScene::init()
 
 
 
-	//=====================label£º"Red Alert Demo"============================
+	//=====================labelï¼š"Red Alert Demo"============================
 	auto label = Label::createWithTTF("Red Alert Demo", "fonts/Marker Felt.ttf", 40);
 	if (label == nullptr)
 	{
@@ -160,7 +160,7 @@ bool WelcomeScene::init()
 	}
 
 
-	//=====================±³¾°Í¼Æ¬============================
+	//=====================èƒŒæ™¯å›¾ç‰‡============================
 	auto background = Sprite::create("background.png");
 	if (background == nullptr)
 	{
@@ -174,7 +174,7 @@ bool WelcomeScene::init()
 		this->addChild(background, -2);
 	}
 
-	//=====================logoÍ¼Æ¬============================
+	//=====================logoå›¾ç‰‡============================
 	auto logo = Sprite::create("logo1.png");
 	if (logo == nullptr)
 	{
@@ -190,8 +190,8 @@ bool WelcomeScene::init()
 
 
 
-	//====================³¡¾°ÖĞµÄ¶¯»­Ğ§¹û============================
-	//1.±¬Õ¨¶¯»­
+	//====================åœºæ™¯ä¸­çš„åŠ¨ç”»æ•ˆæœ============================
+	//1.çˆ†ç‚¸åŠ¨ç”»
 	Vector<SpriteFrame*> animFramesExplosion = getAnimation("explosion_air_%d.png", 10);
 	auto explosion = Sprite::createWithSpriteFrame(animFramesExplosion.front());
 	explosion->setPosition(350, 100);
@@ -205,7 +205,7 @@ bool WelcomeScene::init()
 
 	this->addChild(explosion, 3);
 
-	//2.Áú¾í·ç¶¯»­
+	//2.é¾™å·é£åŠ¨ç”»
 	Vector<SpriteFrame*> animFramesWind = getAnimation("ArchMageTwister_%d.png", 12);
 	auto wind = Sprite::createWithSpriteFrame(animFramesWind.front());
 	wind->setPosition(650, 175);
