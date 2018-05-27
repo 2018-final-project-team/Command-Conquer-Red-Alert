@@ -13,24 +13,38 @@
 #include "Scene/GameScene.h"
 USING_NS_CC;
 //TODO: 加入动画和图片素材，之后实现。
+//TODO: 添加注释。
 
-
-//单位状态
-typedef enum
+namespace unitData
 {
-    //默认状态
-    UNIT_DEFAULT = 0,
-    //守备状态
-    UNIT_DEFENCE = 1,
-    //移动状态
-    UNIT_MOVE = 2,
-    //攻击状态
-    UNIT_ATTACK = 3,
-    //受伤状态
-    UNIT_INJURE = 4,
-    //死亡状态
-    UNIT_DEAD =5;
-}UNIT_STATE;
+    const int infantryCastMoney = 50;
+    const int infantryCastPower = 0;
+    const int infantryWait = 10;
+    const int dogCastMoney = 50;
+    const int dogCastPower = 0;
+    const int dogWait = 10;
+    const int tankCastMoney = 200;
+    const int tankCastPower = 0;
+    const int tankWait = 30;
+}
+
+
+////单位状态
+//typedef enum
+//{
+//    //默认状态
+//    UNIT_DEFAULT = 0,
+//    //守备状态
+//    UNIT_DEFENCE = 1,
+//    //移动状态
+//    UNIT_MOVE = 2,
+//    //攻击状态
+//    UNIT_ATTACK = 3,
+//    //受伤状态
+//    UNIT_INJURE = 4,
+//    //死亡状态
+//    UNIT_DEAD = 5
+//}UNIT_STATE;
 
 
 
@@ -38,10 +52,12 @@ class Unit : public Sprite{
 public:
     //生成宏
     CREATE_FUNC(Unit);
-    virtual bool init();
 public:
     //构造函数
     Unit();
+    
+    //是否被选中
+    CC_SYNTHESIZE(bool, _isSelected, UnitIsSelected)
     
     //单位tag（步兵，狗，矿车，坦克）
     CC_SYNTHESIZE(Tag, _tag, UnitTag);
@@ -51,6 +67,9 @@ public:
     
     //单位攻击力
     CC_SYNTHESIZE(int, _ATK, UnitATK);
+    
+    //单位攻击间隔
+    CC_SYNTHESIZE(float, _ATKCD, UnitATKCD);
     
     //单位速度
     CC_SYNTHESIZE(int, _Speed, UnitSpeed);
@@ -67,6 +86,13 @@ public:
     //攻击区域
     CC_SYNTHESIZE(unsigned int, _ATKLimit, UnitATKLimit);
     
+    //目的地
+    CC_SYNTHESIZE(Vec2, _destination, UnitDestination);
+    
+    //是否抵达目的地
+    CC_SYNTHESIZE(bool, _getDestination, UnitGetDestination);
+    
+    
 //    //动画名字
 //    CC_SYNTHESIZE(std::string, _AnimationName, UnitAnimationName);
 //
@@ -78,6 +104,38 @@ public:
     
     //生成单位的方法
     static Unit * create(Tag _tag);
+    
+public:
+    /*
+     */
+    bool setIsSelected(bool);
+    /*
+     */
+    void moveTo(Vec2(destination),float time);
+    /*
+     */
+    Vec2 getPosition();
+    /*
+     */
+    Vec2 getDestination();
+    /*
+     */
+    bool getGetDestination();
+    /*
+     */
+    void setDestination(Vec2);
+    /*
+     */
+    bool setGetDestination(bool);
+    /*
+     */
+    void getInjuredBy(Unit *);
+    /*
+     */
+    void attak(Unit *);
+    /*
+     */
+    bool canAttack(Vec2);
 };
 
 
@@ -102,13 +160,13 @@ public:
     
     //改变朝向
     void changeToUp();
-    void changeToLeftUp();
+  
     void changeToLeft();
-    void changeToLeftDown();
+
     void changeToDown();
-    void changeToRightDown();
+
     void changeToRight();
-    void changeToRightUp();
+
     
     //改变状态到守备
     void changeToDefence();

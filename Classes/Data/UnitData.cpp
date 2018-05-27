@@ -9,6 +9,7 @@
 #include <string>
 #include "Scene/GameScene.h"
 #include "cocos2d.h"
+#include <math.h>
 
 USING_NS_CC;
 
@@ -25,6 +26,9 @@ Unit * Unit::create(Tag _tag)
     //单位图片
     std::string picture[3] = {};
     
+    //初始化召唤单位是否被选中
+    bool sIsSelected[3] = {false, false, false};
+    
     //初始化召唤单位的金钱消耗
     int sValue[3] = {50, 50, 200};
     
@@ -40,20 +44,26 @@ Unit * Unit::create(Tag _tag)
     //初始化单位准备时间
     int sCD[3] = {10, 10, 30};
     
+    //初始化单位攻击间隔
+    float sATKCD[3] = {0.5,0.5,1};
+    
     //初始化锁敌区域
     int sLockLimit[3] = {50, 50, 50};
     
     //初始化攻击区域
-    int sATKLimit[3] = {20, 20, 30};
+    int sATKLimit[3] = {20, 5, 30};
     
     //初始化单位名字
-    std::string sUnitName[3] = {"步兵","狗","坦克"};
+    std::string sUnitName[3] = {"infantry","dog","tank"};
     
     //初始化精灵对象
     temp -> initWithFile(picture[_tag].c_str());
    
+    //初始化选中
+    temp -> _isSelected = sIsSelected[_tag];
+    
     //获取对应_tag
-    temp -> _tag = _tag - 5;
+    temp -> _tag = _tag;
     
     //设置血量
     temp -> _HP = sHP[_tag];
@@ -70,6 +80,9 @@ Unit * Unit::create(Tag _tag)
     //设置CD时间
     temp -> _CD = sCD[_tag];
     
+    //设置攻击间隔
+    temp -> _ATKCD = sATKCD[_tag];
+    
     //设置单位锁敌区域
     temp -> _LockLimit = sLockLimit[_tag];
     
@@ -82,11 +95,70 @@ Unit * Unit::create(Tag _tag)
     return temp;
 }
 
-bool Unit::init()
+
+bool Unit::setIsSelected(bool mSelect)
 {
-    
-    
-    return true;
+    _isSelected = mSelect;
+    return _isSelected;
+}
+
+
+void Unit::moveTo(Vec2 destination, float time)
+{
+    auto move = MoveTo::create(time, destination);
+    this -> runAction(move);
+}
+
+Vec2 Unit::getPosition()
+{
+    Vec2 position = this -> getPosition();
+    return position;
+}
+
+Vec2 Unit::getDestination()
+{
+    return _destination;
+}
+
+void Unit::setDestination(Vec2 destination)
+{
+    _destination = destination;
+}
+
+bool Unit::setGetDestination(bool set)
+{
+    _getDestination = set;
+    return _getDestination;
+}
+
+bool Unit::getGetDestination()
+{
+    return _getDestination;
+}
+
+void Unit::getInjuredBy(Unit * enemy)
+{
+    _HP -= enemy -> _ATK;
+}
+
+void Unit::attak(Unit * enemy)
+{
+    enemy -> getInjuredBy(this);
+}
+
+
+bool Unit::canAttack(Vec2 position)
+{
+    Vec2 myPosition = this -> getPosition();
+    float distance = sqrt(pow(myPosition.x - position.x, 2) + pow(myPosition.y - position.y, 2));
+    if(distance <= _ATKLimit)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 
