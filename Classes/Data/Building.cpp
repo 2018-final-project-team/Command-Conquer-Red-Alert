@@ -10,7 +10,6 @@
 #include "Scene/GameScene.h"
 #include "cocos2d.h"
 
-
 using namespace cocos2d;
 
 //构造函数
@@ -46,3 +45,7 @@ Building* Building::create(Tag _tag)
 	return temp;
 }
 
+void Building::getInjuredBy(Unit * enemy)
+{
+    _hp -= enemy -> getUnitATK();
+}

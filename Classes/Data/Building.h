@@ -10,9 +10,11 @@
 #define _Building_H_
 
 #include "cocos2d.h"
+#include "UnitData.h"
 #include "Scene/GameScene.h"
+USING_NS_CC;
 
-class Building : public cocos2d::Sprite
+class Building : public Sprite
 {
 
 public:
@@ -50,6 +52,10 @@ public:
 	//系统定义的一个宏，做好相应的初始化与释放工作
 	CREATE_FUNC(Building);
 
+    
+public:
+    void getInjuredBy(Unit * enemy);
+    
 
 };
 

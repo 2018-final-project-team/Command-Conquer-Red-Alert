@@ -95,14 +95,6 @@ Unit * Unit::create(Tag _tag)
     return temp;
 }
 
-
-bool Unit::setIsSelected(bool mSelect)
-{
-    _isSelected = mSelect;
-    return _isSelected;
-}
-
-
 void Unit::moveTo(Vec2 destination, float time)
 {
     auto move = MoveTo::create(time, destination);
@@ -114,11 +106,15 @@ void Unit::getInjuredBy(Unit * enemy)
     _HP -= enemy -> _ATK;
 }
 
-void Unit::attak(Unit * enemy)
+void Unit::attack(Unit * enemy)
 {
     enemy -> getInjuredBy(this);
 }
 
+void Unit::attack(Building * enemyBuilding)
+{
+    enemyBuilding -> getInjuredBy(this);
+}
 
 bool Unit::canAttack(Vec2 position)
 {

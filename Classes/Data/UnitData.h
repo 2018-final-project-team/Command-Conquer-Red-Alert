@@ -11,6 +11,7 @@
 #include "cocos2d.h"
 #include "string"
 #include "Scene/GameScene.h"
+#include "Building.h"
 USING_NS_CC;
 //TODO: 加入动画和图片素材，之后实现。
 //TODO: 添加注释。
@@ -54,7 +55,7 @@ public:
     Unit();
     
     //是否被选中
-    CC_SYNTHESIZE(bool, _isSelected, UnitIsSelected)
+    CC_SYNTHESIZE(bool, _isSelected, IsSelected)
     
     //单位tag（步兵，狗，矿车，坦克）
     CC_SYNTHESIZE(Tag, _tag, UnitTag);
@@ -105,16 +106,16 @@ public:
 public:
     /*
      */
-    bool setIsSelected(bool);
-    /*
-     */
     void moveTo(Vec2(destination),float time);
     /*
      */
     void getInjuredBy(Unit *);
     /*
      */
-    void attak(Unit *);
+    void attack(Unit *);
+    /*
+     */
+    void Unit::attack(Building *);
     /*
      */
     bool canAttack(Vec2);
