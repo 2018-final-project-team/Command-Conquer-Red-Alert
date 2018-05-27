@@ -109,33 +109,6 @@ void Unit::moveTo(Vec2 destination, float time)
     this -> runAction(move);
 }
 
-Vec2 Unit::getPosition()
-{
-    Vec2 position = this -> getPosition();
-    return position;
-}
-
-Vec2 Unit::getDestination()
-{
-    return _destination;
-}
-
-void Unit::setDestination(Vec2 destination)
-{
-    _destination = destination;
-}
-
-bool Unit::setGetDestination(bool set)
-{
-    _getDestination = set;
-    return _getDestination;
-}
-
-bool Unit::getGetDestination()
-{
-    return _getDestination;
-}
-
 void Unit::getInjuredBy(Unit * enemy)
 {
     _HP -= enemy -> _ATK;

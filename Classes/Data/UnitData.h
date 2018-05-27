@@ -18,13 +18,10 @@ USING_NS_CC;
 namespace unitData
 {
     const int infantryCastMoney = 50;
-    const int infantryCastPower = 0;
     const int infantryWait = 10;
     const int dogCastMoney = 50;
-    const int dogCastPower = 0;
     const int dogWait = 10;
     const int tankCastMoney = 200;
-    const int tankCastPower = 0;
     const int tankWait = 30;
 }
 
@@ -87,10 +84,10 @@ public:
     CC_SYNTHESIZE(unsigned int, _ATKLimit, UnitATKLimit);
     
     //目的地
-    CC_SYNTHESIZE(Vec2, _destination, UnitDestination);
+    CC_SYNTHESIZE(Vec2, _destination, Destination);
     
     //是否抵达目的地
-    CC_SYNTHESIZE(bool, _getDestination, UnitGetDestination);
+    CC_SYNTHESIZE(bool, _getDestination, GetDestination);
     
     
 //    //动画名字
@@ -112,21 +109,6 @@ public:
     /*
      */
     void moveTo(Vec2(destination),float time);
-    /*
-     */
-    Vec2 getPosition();
-    /*
-     */
-    Vec2 getDestination();
-    /*
-     */
-    bool getGetDestination();
-    /*
-     */
-    void setDestination(Vec2);
-    /*
-     */
-    bool setGetDestination(bool);
     /*
      */
     void getInjuredBy(Unit *);
