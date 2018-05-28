@@ -259,11 +259,6 @@ void Manager::attack()
     Tag selectedBuildingTag = NONE;
     Vector<Unit*>* enemySoldiers = _gameScene->getEnemySoldiers();
     clock_t nowT = clock();
-    log("nowT %ld", nowT);
-    for (int i = 0; i < 250; ++i)
-    {
-        ;
-    }
 
     for (auto& soldier : *(_gameScene->getSoldiers()))
     {

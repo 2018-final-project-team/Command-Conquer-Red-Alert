@@ -9,7 +9,7 @@
 
 const clock_t addMoneyDelay = 1000 * 10;
 
-typedef enum _Tag
+typedef enum
 {
     BASE_TAG,
     POWER_PLANT_TAG,
