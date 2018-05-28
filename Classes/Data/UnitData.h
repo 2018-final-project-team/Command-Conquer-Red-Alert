@@ -12,7 +12,7 @@
 #include "string"
 #include "Scene/GameScene.h"
 #include "Building.h"
-USING_NS_CC;
+
 //TODO: 加入动画和图片素材，之后实现。
 //TODO: 添加注释。
 
@@ -46,7 +46,7 @@ namespace unitData
 
 
 
-class Unit : public Sprite{
+class Unit : public cocos2d::Sprite{
 public:
     //生成宏
     CREATE_FUNC(Unit);

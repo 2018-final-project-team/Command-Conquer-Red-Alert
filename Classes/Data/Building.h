@@ -12,9 +12,9 @@
 #include "cocos2d.h"
 #include "UnitData.h"
 #include "Scene/GameScene.h"
-USING_NS_CC;
 
-class Building : public Sprite
+
+class Building : public cocos2d::Sprite
 {
 
 public:
