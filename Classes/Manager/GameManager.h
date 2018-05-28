@@ -25,14 +25,14 @@ private:
 
 //========CreateController===========
     clock_t _timeToCreateBuilding;               // 单位毫秒
-    clock_t _waitToCreateBuilding;
+    clock_t _waitTimeToCreateBuilding;
     clock_t _timeToCreateSoldier;
-    clock_t _waitToCreateSoldier;
+    clock_t _waitTimeToCreateSoldier;
     Tag _buildingTag;
     Tag _soldierTag;
-    bool _waitToCreateBuilding;
+    bool _isWaitToCreateBuilding;
     bool _canCreateBuilding;
-    bool _waitToCreateSoldier;
+    bool _isWaitToCreateSoldier;
 //===================================
 
 //==========Attack================
@@ -90,6 +90,12 @@ public:
     * @return  void
     */
     void createBuilding(cocos2d::Vec2 position);
+
+    /**
+    * @brief 重新计算电量
+    * @return  void
+    */
+    void resetPower();
 
 //============================================================
 

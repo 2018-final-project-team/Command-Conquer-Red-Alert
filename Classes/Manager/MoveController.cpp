@@ -4,6 +4,8 @@
 */
 
 #include "MoveController.h"
+#include "../Data/Building.h"
+#include "../Data/UnitData.h"
 #include <time.h>
 
 USING_NS_CC;
@@ -228,7 +230,7 @@ void MoveController::moveSoldiers()
             Vec2 move = soldier->getUnitSpeed() * interval * direction;
             if (move.length > distance)
             {
-                soldier->moveTo(destination);
+                soldier->moveTo(destination, 0.01);
                 soldier->setGetDestination(true);
                 _isFirstMove = true;
                 return;
@@ -239,7 +241,7 @@ void MoveController::moveSoldiers()
             {
                 return;
             }
-            soldier->moveTo(move + nowPosition);
+            soldier->moveTo(move + nowPosition, 0.01);
 
             _isFirstMove = false;
         }

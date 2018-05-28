@@ -36,6 +36,8 @@ bool GameScene::init()
 		return false;
 	}
 
+    this->dataInit();
+
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
@@ -58,6 +60,10 @@ bool GameScene::init()
         if (position.x > visibleSize.width - 358 && position.y > visibleSize.height - 334) {
             auto X = (position.x - (visibleSize.width - 358)) / 358 * MAPX - visibleSize.width / 2;
             auto Y = (position.y - (visibleSize.height - 334)) / 334 * MAPY - visibleSize.width / 2;
+            if (X < 0) X = 0;
+            if (Y < 0) Y = 0;
+            if (X > MAPX - visibleSize.width) X = MAPX - visibleSize.width;
+            if (Y > MAPX - visibleSize.height) Y = MAPX - visibleSize.height;
             _tileMap->runAction(MoveTo::create(0.1, Point(-X, -Y)));
         }
         return true;
@@ -71,7 +77,6 @@ bool GameScene::init()
     _mouseOutBoradListener->onMouseMove = [&](Event* event) {
         EventMouse* pem = static_cast<EventMouse*>(event);
         _cursorPosition = Vec2(pem->getCursorX(), pem->getCursorY());
-        log("HelloWorldScene onTouchBegan! pos3 x=%f, y=%f", _cursorPosition.x, _cursorPosition.y);
     };
     Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(_mouseOutBoradListener, 1);
 
@@ -107,6 +112,23 @@ bool GameScene::init()
     return true;
 }
 
+void GameScene::dataInit()
+{
+    // To Do: 数据合理
+    _isPowerEnough = false;
+    _money = 1000;
+    _power = 0;
+    
+    _barracksNum = 0;
+    _mineNum = 0;
+    _powerPlantNum = 0;
+    _carFactoryNum = 0;
+
+    _carFactoryPosition = _barracksPosition = Vec2::ZERO;
+
+    _isBaseExist = false;
+}
+
 void GameScene::menuBackCallback(Ref *pSender)
 {
 	//跳转到第一个场景，记得包含第一个场景的头文件：GameScene.h  
@@ -139,14 +161,40 @@ void GameScene::decreaseMoney(int money)
     _money -= money;
 }
 
-void GameScene::addPower()
+void GameScene::addPower(int power)
 {
-    _power += 100;
+    _power += power;
+    if (_power >= 0)
+    {
+        _isPowerEnough = true;
+    }
+    else
+    {
+        _isPowerEnough = false;
+    }
 }
 
 void GameScene::decreasePower(int power)
 {
     _power -= power;
+    if (_power >= 0)
+    {
+        _isPowerEnough = true;
+    }
+    else
+    {
+        _isPowerEnough = false;
+    }
+}
+
+void GameScene::addTotalPower(int power)
+{
+    _totalPower += power;
+}
+
+void GameScene::decreaseTotalPower(int power)
+{
+    _totalPower -= power;
 }
 
 void GameScene::update(float time)
@@ -169,18 +217,37 @@ void GameScene::scrollMap() {
     auto X = _cursorPosition.x;
     auto Y = _cursorPosition.y;
     if (X < MINLENTH) {
-        _tileMap->runAction(MoveBy::create(0.1, Point(SPEED, 0)));
+        if (_tileMap->getPositionX() + SPEED < 0) {
+            _tileMap->runAction(MoveBy::create(0.1, Point(SPEED, 0)));
+        }
+        else {
+            _tileMap->setPositionX(0);
+        }
     }
     if (Y < MINLENTH) {
-        _tileMap->runAction(MoveBy::create(0.1, Point(0, SPEED)));
+        if (_tileMap->getPositionY() + SPEED < 0) {
+            _tileMap->runAction(MoveBy::create(0.1, Point(0, SPEED)));
+        }
+        else {
+            _tileMap->setPositionY(0);
+        }
     }
     if (X > visibleSize.width - MINLENTH) {
-        _tileMap->runAction(MoveBy::create(0.1, Point(-SPEED, 0)));
+        if (_tileMap->getPositionX() - SPEED > -MAPX + visibleSize.width) {
+            _tileMap->runAction(MoveBy::create(0.1, Point(-SPEED, 0)));
+        }
+        else {
+            _tileMap->setPositionX(-MAPX + visibleSize.width);
+        }
     }
     if (Y >visibleSize.height - MINLENTH) {
-        _tileMap->runAction(MoveBy::create(0.1, Point(0, -SPEED)));
+        if (_tileMap->getPositionY() - SPEED > -MAPY + visibleSize.height) {
+            _tileMap->runAction(MoveBy::create(0.1, Point(0, -SPEED)));
+        }
+        else {
+            _tileMap->setPositionY(-MAPY + visibleSize.height);
+        }
     }
-    log("HelloWorldScene onTouchBegan! pos3 x=%f, y=%f", _cursorPosition.x, _cursorPosition.y);
 }
 
 bool GameScene::isCollision(cocos2d::Vec2 position)

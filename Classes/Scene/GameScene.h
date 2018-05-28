@@ -1,12 +1,15 @@
 #ifndef __Game_SCENE_H__
 #define __Game_SCENE_H__
 
+#include <time.h>
 #include "cocos2d.h"
 #include "Manager\GameManager.h"
 #include "Data\Building.h"
 #include "Data\UnitData.h"
 
-typedef enum
+const clock_t addMoneyDelay = 1000 * 10;
+
+typedef enum _Tag
 {
     BASE_TAG,
     POWER_PLANT_TAG,
@@ -15,7 +18,8 @@ typedef enum
     CAR_FACTORY_TAG,
     INFANTRY_TAG,
     DOG_TAG,
-    TANK_TAG
+    TANK_TAG,
+    NONE
 }Tag;
 
 class GameScene : public cocos2d::Layer
@@ -35,7 +39,17 @@ private:
 public:
     CC_SYNTHESIZE(int, _money, Money);
 
+    // 总电力
+    CC_SYNTHESIZE(int, _totalPower, TotalPower);
+
+    // 剩余电力
     CC_SYNTHESIZE(int, _power, Power);
+
+    // 电力是否足够
+    CC_SYNTHESIZE(bool, _isPowerEnough, IsPowerEnough);
+
+    // 是否有基地
+    CC_SYNTHESIZE(bool, _isBaseExist, IsBaseExist);
 
     CC_SYNTHESIZE(int, _barracksNum, BarracksNum);
 
@@ -52,6 +66,9 @@ public:
 	static cocos2d::Scene* createScene();
 
 	virtual bool init();
+
+    // 初始化数据
+    void dataInit();
 
     void update(float time);
 
@@ -93,17 +110,28 @@ public:
     void decreaseMoney(int money);
 
     /**
-    * @brief addPower 增加100电
+    * @brief addPower 增加电
     * @return void
     */
-    void addPower();
+    void addPower(int power);
 
     /**
     * @brief decreasePower
-    * @param 减少的电
     * @return void
     */
     void decreasePower(int power);
+
+    /**
+    * @brief addTotalPower 增加总电
+    * @return void
+    */
+    void addTotalPower(int power);
+
+    /**
+    * @brief decreaseTotalPower 
+    * @return void
+    */
+    void decreaseTotalPower(int power);
 
     /*
     * @brief 电厂数量加一
@@ -165,6 +193,13 @@ public:
     * @return the size of tile
     */
     float getTileSize();
+
+    /*
+    * @brief getEnemySoldiers 
+    * @return the address of enemy_soldiers
+    */
+    //To Do:和网络也许有关系
+    cocos2d::Vector<Unit*>* getEnemySoldiers() { ; };
 
 };
 
