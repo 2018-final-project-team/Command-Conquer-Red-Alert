@@ -29,6 +29,8 @@ bool Manager::initWithGameScene(GameScene* gameScene)
     _canCreateBuilding = false;
     _selectedEnemy = nullptr;
     _selectedBuilding = nullptr;
+
+    return true;
 }
 
 void Manager::clickCreateBuildingByTag(Tag building_tag, clock_t start_time)

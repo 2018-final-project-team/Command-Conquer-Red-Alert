@@ -10,8 +10,9 @@
 
 #include "cocos2d.h"
 #include "string"
-#include "Scene/GameScene.h"
+#include "TagData.h"
 #include "Building.h"
+
 USING_NS_CC;
 //TODO: 加入动画和图片素材，之后实现。
 //TODO: 添加注释。
@@ -57,15 +58,11 @@ namespace unitData
 //    UNIT_DEAD = 5
 //}UNIT_STATE;
 
+class Building;
 
-
-class Unit : public Sprite {
+class Unit : public Sprite 
+{
 public:
-    //生成宏
- //   CREATE_FUNC(Unit);
-public:
-    //构造函数
-    Unit();
 
     //是否被选中
     CC_SYNTHESIZE(bool, _isSelected, IsSelected)
@@ -117,7 +114,7 @@ public:
     CC_SYNTHESIZE(std::string, _UnitName, _UnitName);
 
     //生成单位的方法
-    static Unit * create(Tag _tag);
+    static Unit * create(Tag _unitTag);
 
 public:
     /*

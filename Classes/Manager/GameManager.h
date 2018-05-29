@@ -6,15 +6,14 @@
 #ifndef __GameManager_H_
 #define __GameManager_H_
 
+#include "cocos2d.h"
 #include "MoveController.h"
-#include "../Scene/GameScene.h"
-#include "../Data/Building.h"
-#include "../Data/UnitData.h"
-#include "cocos2d.h""
 #include <iostream>
 #include <time.h>
 
-class GameScene;
+class GameScene;              //解决头文件互相包含时带来的问题
+
+class MoveController;         //解决头文件互相包含时带来的问题
 
 class Manager : public cocos2d::Node
 {

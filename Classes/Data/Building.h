@@ -10,7 +10,7 @@
 #define _Building_H_
 
 #include "cocos2d.h"
-#include "..\Scene\GameScene.h"
+#include "TagData.h"
 
 namespace buildingData
 {
@@ -43,20 +43,10 @@ namespace buildingData
 
 class Building : public cocos2d::Sprite
 {
-private:
-
-    Tag _tag;
-
 public:
-	//构造函数
-	Building();
 
 	//建筑物的tag（基地、电厂、矿场、兵营、战车工厂）
-//	CC_SYNTHESIZE(Tag, _buildingTag, BuildingTag);
-    Tag getBuildingTag()
-    {
-        return _tag;
-    }
+	CC_SYNTHESIZE(Tag, _buildingTag, BuildingTag);
 
     //耗费的电
     CC_SYNTHESIZE(int, _castPower, CastPower);

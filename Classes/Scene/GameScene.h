@@ -1,26 +1,14 @@
 #ifndef __Game_SCENE_H__
 #define __Game_SCENE_H__
 
-#include <time.h>
-#include "cocos2d.h"
-#include "Manager\GameManager.h"
-#include "Data\Building.h"
-#include "Data\UnitData.h"
-
 const clock_t addMoneyDelay = 1000 * 10;
 
-typedef enum
-{
-    BASE_TAG,
-    POWER_PLANT_TAG,
-    MINE_TAG,
-    BARRACKS_TAG,
-    CAR_FACTORY_TAG,
-    INFANTRY_TAG,
-    DOG_TAG,
-    TANK_TAG,
-    NONE
-}Tag;
+#include <time.h>
+#include "cocos2d.h"
+#include "Data\UnitData.h"
+#include "Manager\GameManager.h"
+
+class Manager;   //解决头文件互相包含时带来的问题
 
 class GameScene : public cocos2d::Layer
 {
@@ -31,6 +19,7 @@ private:
     void scrollMap();
 
     cocos2d::Vector<Unit*> _selectedSoldiers;
+    cocos2d::Vector<Unit*> _enemySoldiers;
     cocos2d::Vector<Unit*> _soldiers;
     cocos2d::Vector<Building*> _buildings;
 
@@ -199,7 +188,7 @@ public:
     * @return the address of enemy_soldiers
     */
     //To Do:和网络也许有关系
-    cocos2d::Vector<Unit*>* getEnemySoldiers() { ; };
+    cocos2d::Vector<Unit*> * getEnemySoldiers() { return &_enemySoldiers; }
 
 };
 

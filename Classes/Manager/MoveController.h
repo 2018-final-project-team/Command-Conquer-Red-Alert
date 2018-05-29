@@ -8,9 +8,7 @@
 
 #include "cocos2d.h""
 #include <iostream>
-#include "../Scene/GameScene.h"
-#include "../Data/Building.h"
-#include "../Data/UnitData.h"
+#include "Scene\GameScene.h"
 
 class GameScene;
 
@@ -26,7 +24,7 @@ class MoveController : public cocos2d::Node
 protected:
 
     GameScene* _gameScene;                                      // game 场景类
-    cocos2d::Vector<Unit*>* _selectedSoldiers;     // selected soldiers
+    cocos2d::Vector< Unit* > *_selectedSoldiers;     // selected soldiers
     bool _isFirstMove;                               //用来减少障碍判断次数
 
 public:

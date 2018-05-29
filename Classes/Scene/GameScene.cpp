@@ -42,14 +42,14 @@ bool GameScene::init()
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
     //===================Load map=========================
-    _tileMap = TMXTiledMap::create("GameItem/map/map1.tmx");
+    _tileMap = TMXTiledMap::create("GameItem/Map/map1.tmx");
     this->addChild(_tileMap);
 
     _ground = _tileMap->getLayer("ground");
 
 
     /*update by czd*/
-    Sprite* small_map = Sprite::create("GameItem/map/small_map.png");
+    Sprite* small_map = Sprite::create("GameItem/Map/small_map.png");
     small_map->setPosition(Point(visibleSize.width - 358 / 2, visibleSize.height - 334 / 2));
     this->addChild(small_map);
 

@@ -28,6 +28,8 @@ bool MoveController::initWithGameScene(GameScene* gameScene)
     _selectedSoldiers = gameScene->getSelectedSoldiers();
     _gameScene = gameScene;
     _isFirstMove = true;
+
+    return true;
 }
 
 void MoveController::selectSoldiersWithMouse(cocos2d::Vec2 mouseDownPoint, cocos2d::Vec2 mouseUpPoint)
@@ -228,7 +230,7 @@ void MoveController::moveSoldiers()
             }
 
             Vec2 move = soldier->getUnitSpeed() * interval * direction;
-            if (move.length > distance)
+            if (move.length() > distance)
             {
                 soldier->moveTo(destination, 0.01);
                 soldier->setGetDestination(true);
