@@ -7,12 +7,14 @@ const clock_t addMoneyDelay = 1000 * 10;
 #include "cocos2d.h"
 #include "Data\UnitData.h"
 #include "Manager\GameManager.h"
+#include "Panel/Panel.h"
 
 class Manager;   //解决头文件互相包含时带来的问题
 
 class GameScene : public cocos2d::Layer
 {
 private:
+	Panel* panel;
 	cocos2d::TMXTiledMap* _tileMap;
 	cocos2d::TMXLayer* _ground;
 	cocos2d::Point _cursorPosition{ 0,0 };  // C++ 11 允许这样初始化

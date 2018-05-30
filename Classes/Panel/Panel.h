@@ -8,13 +8,7 @@
 #define _PANEL_H_
 
 #include "cocos2d.h"
-
-typedef enum
-{
-	BUILDING,
-	SOLDIER,
-	CAR
-}Category;
+#include "Data/Building.h"
 
 class Panel : public cocos2d::Sprite
 {
@@ -27,7 +21,7 @@ private:
 	cocos2d::EventListenerTouchOneByOne* _mainButtonListener;
 
 
-	CC_SYNTHESIZE(Category, _curCategory, CurCategory);
+	CC_SYNTHESIZE(Tag, _curCategoryTag, CurCategoryTag);
 	cocos2d::Vector<cocos2d::Sprite*> _buildingList;
 	cocos2d::Vector<cocos2d::Sprite*> _soldierList;
 	cocos2d::Vector<cocos2d::Sprite*> _carList;
@@ -36,9 +30,11 @@ private:
 	void addIcons();
 	bool onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *event);
 
-	void setCurButton(Category cat);
+	
 
   public:
+	void setCurButton(Tag tag);
+
 	virtual bool init() override;
 	CREATE_FUNC(Panel);
       

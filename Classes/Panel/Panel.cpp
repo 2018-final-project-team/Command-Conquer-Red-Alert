@@ -7,11 +7,12 @@
 #include "cocos2d.h"
 #include "Panel/Panel.h"
 #include "Panel/Icon.h"
-#include "Scene/GameScene.h"
+
 //#include "Manager/GameManager.h"
 
 USING_NS_CC;
 
+class GameScene;
 
 bool Panel::init()
 {
@@ -24,39 +25,51 @@ bool Panel::init()
 	_panelBG->setPosition(Point(0, 0));
 	addChild(_panelBG);
 
-	_curCategory = BUILDING;
+	_curCategoryTag = BUILDING_BUTTON;
 
 	//TO DO:添加工具栏三个分类按钮的图片
 	_buildingButton = Sprite::create("GameItem/Panel/testIcon.png");
 	_buildingButton->setPosition(Point(-60,0));
+	_buildingButton->setTag(BUILDING_BUTTON);
 	addChild(_buildingButton);
+
 	_soldierButton = Sprite::create("GameItem/Panel/testIcon.png");
 	_soldierButton->setPosition(Point(0,0));
+	_soldierButton->setTag(SOLDIER_BUTTON);
 	addChild(_soldierButton);
+
 	_carButton = Sprite::create("GameItem/Panel/testIcon.png");
 	_carButton->setPosition(Point(60,0));
+	_carButton->setTag(CAR_BUTTON);
 	addChild(_carButton);
+
 
 	//===============注册监听器===================
 	_mainButtonListener = EventListenerTouchOneByOne::create();
-    _mainButtonListener->onTouchBegan = [=](Touch* touch, Event* event) {
+    _mainButtonListener->onTouchBegan = [this](Touch* touch, Event* event) {
 		Sprite* _selectedButton = static_cast<Sprite*>(event->getCurrentTarget());
 		switch (_selectedButton->getTag())
 		{
-		case BUILDING:
-			setCurButton(BUILDING);
+		case BUILDING_BUTTON:
+			log("select building button, the tag is:%d", _selectedButton->getTag());
+			setCurButton(BUILDING_BUTTON);
 			break;
-		case SOLDIER:
-			setCurButton(SOLDIER);
+		case SOLDIER_BUTTON:
+			log("select soldier button");
+			setCurButton(SOLDIER_BUTTON);
 			break;
-		case CAR:
-			setCurButton(CAR);
+		case CAR_BUTTON:
+			log("select car button");
+			setCurButton(CAR_BUTTON);
 			break;
 		}
         
         return true;
     };
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(_mainButtonListener, this);
+	_mainButtonListener->setSwallowTouches(true);   //吞没触摸事件，不向下传递
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(_mainButtonListener, _buildingButton);
+	/*_eventDispatcher->addEventListenerWithSceneGraphPriority(_mainButtonListener, _soldierButton);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(_mainButtonListener, _carButton);*/
 
 
 	_buildingList = Vector<Sprite*>();
@@ -66,8 +79,9 @@ bool Panel::init()
 	return true;
 }
 
+
 //TO DO:面板的调整
-void Panel::setCurButton(Category cat)
+void Panel::setCurButton(Tag tag)
 {
 
 
@@ -77,9 +91,3 @@ void Panel::addIcons()
 {
 
 }
-
-
-		// auto test = Sprite::create("mainmenu_saveslot_confirmdelete_0001.png");
-		// auto size = logo->getContentSize();
-		// test->setPosition(size.width / 2, size.height / 2);
-		// logo->addChild(test);

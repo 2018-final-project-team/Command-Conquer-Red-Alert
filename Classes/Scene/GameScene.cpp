@@ -1,6 +1,7 @@
 #include "Scene/WelcomeScene.h"  
 #include "Scene/GameScene.h"  
 #include "ui\CocosGUI.h"
+#include "Panel/Panel.h"
 #define MAPX 5760
 #define MAPY 5376
 #define MINLENTH 15
@@ -50,6 +51,21 @@ bool GameScene::init()
 	Sprite* small_map = Sprite::create("GameItem/Map/small_map.png");
 	small_map->setPosition(Point(visibleSize.width - 358 / 2, visibleSize.height - 334 / 2));
 	this->addChild(small_map);
+
+
+
+
+	//=====================测试Panel========================
+	auto panel = Panel::create();
+	//auto _panelSize = panel->getContentSize();   //为什么是0，0？
+	//log("%f %f %f %f",_panelSize.width,_panelSize.height,panel->getAnchorPoint().x,panel->getAnchorPoint().y);
+	panel->setPosition(visibleSize.width - 112, 70);
+	this->addChild(panel);
+	//log("the tag of panel is:%d", panel->getTag());
+
+
+
+
 
 	_gameListener = EventListenerTouchOneByOne::create();
 	_gameListener->onTouchBegan = [=](Touch* touch, Event* event) {
@@ -116,28 +132,28 @@ bool GameScene::init()
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(_mouseOutBoradListener, 1);
 
 
-	//auto backItem = MenuItemImage::create(
-	//	"backNormal.png",
-	//	"backSelected.png",
-	//	CC_CALLBACK_1(GameScene::menuBackCallback, this));
+	auto backItem = MenuItemImage::create(
+		"backNormal.png",
+		"backSelected.png",
+		CC_CALLBACK_1(GameScene::menuBackCallback, this));
 
-	//if (backItem == nullptr ||
-	//	backItem->getContentSize().width <= 0 ||
-	//	backItem->getContentSize().height <= 0)
-	//{
-	//	problemLoading("'backNormal.png' and 'backSelected.png'");
-	//}
-	//else
-	//{
-	//	float x = origin.x + visibleSize.width - backItem->getContentSize().width / 2;
-	//	float y = origin.y + visibleSize.height - backItem->getContentSize().height / 2;
-	//	backItem->setPosition(Vec2(x, y));
-	//}
+	if (backItem == nullptr ||
+		backItem->getContentSize().width <= 0 ||
+		backItem->getContentSize().height <= 0)
+	{
+		problemLoading("'backNormal.png' and 'backSelected.png'");
+	}
+	else
+	{
+		float x = origin.x + visibleSize.width - backItem->getContentSize().width / 2;
+		float y = origin.y + visibleSize.height - backItem->getContentSize().height / 2;
+		backItem->setPosition(Vec2(x, y));
+	}
 
-	//// create menu, it's an autorelease object
-	//auto menu = Menu::create(backItem, NULL);
-	//menu->setPosition(Vec2::ZERO);
-	//this->addChild(menu, 1);
+	// create menu, it's an autorelease object
+	auto menu = Menu::create(backItem, NULL);
+	menu->setPosition(Vec2::ZERO);
+	this->addChild(menu, 1);
 
 	scheduleUpdate();
 

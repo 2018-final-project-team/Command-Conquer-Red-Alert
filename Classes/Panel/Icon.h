@@ -28,12 +28,11 @@ public:
 	void setSelected();           //设置图标被点击，进入倒计时状态
 	void setNotSelected();        //设置图标为初始可点击的状态
 	void setNotEnoughMoney();     //这是由于金币不足导致无法点击的状态
-	void setEnoughMoney();        
 
 
 
 private:
-	CC_SYNTHESIZE(bool, isAble, IsAble);
+	CC_SYNTHESIZE(bool, isAble, IsAble);   //是否可点击
 	CC_SYNTHESIZE(Tag, tag, tag);         //图标的Tag
 	CC_SYNTHESIZE(bool, isSelected, IsSelected);   //是否被选中
     CC_SYNTHESIZE(int, money, Money);    //执行建造or训练or制造计划需要的金钱数
