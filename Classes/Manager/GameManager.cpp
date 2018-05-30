@@ -25,7 +25,8 @@ bool Manager::initWithGameScene(GameScene* gameScene)
     _gameScene = gameScene;
     _moveController = MoveController::createWithGameScene(gameScene);
 
-    _isWaitToCreateBuilding = _isWaitToCreateSoldier = false;
+    _isWaitToCreateBuilding = false;
+    _isWaitToCreateSoldier = false;
     _canCreateBuilding = false;
     _selectedEnemy = nullptr;
     _selectedBuilding = nullptr;
@@ -175,7 +176,7 @@ void Manager::waitCreateBuilding()
 {
     if (_isWaitToCreateBuilding)
     {
-        if (clock() - _timeToCreateBuilding > _isWaitToCreateBuilding)
+        if (clock() - _timeToCreateBuilding > _waitTimeToCreateBuilding)
         {
             _canCreateBuilding = true;
         }
@@ -186,7 +187,7 @@ void Manager::waitCreateSoldier()
 {
     if (_isWaitToCreateSoldier)
     {
-        if (clock() - _timeToCreateSoldier > _isWaitToCreateSoldier)
+        if (clock() - _timeToCreateSoldier > _waitTimeToCreateSoldier)
         {
             Unit* soldier = Unit::create(_soldierTag);
             if (_soldierTag == TANK_TAG)
@@ -261,6 +262,8 @@ void Manager::attack()
     Tag selectedBuildingTag = NONE;
     Vector<Unit*>* enemySoldiers = _gameScene->getEnemySoldiers();
     clock_t nowT = clock();
+
+    log("time : %ld", nowT);
 
     for (auto& soldier : *(_gameScene->getSoldiers()))
     {

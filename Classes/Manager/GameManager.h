@@ -39,7 +39,6 @@ private:
     Building* _selectedBuilding;
 
 public:
-
     /**
     * @brief Manager的静态构造函数
     * @return  Manager*

@@ -21,7 +21,7 @@ Unit * Unit::create(Tag unitTag)
     Unit * temp = new Unit();
 
     //单位图片
-    std::string picture[3] = {};
+    std::string (picture[3]) = { "1.png","2png","3.png" };
 
     //初始化召唤单位是否被选中
     bool sisselected[3] = { false, false, false };
@@ -54,7 +54,7 @@ Unit * Unit::create(Tag unitTag)
     std::string sunitname[3] = { "infantry","dog","tank" };
 
     //初始化精灵对象
-    temp->initWithFile(picture[unitTag].c_str());
+    temp->initWithFile(picture[unitTag - 5]);
 
     //autorelease
     temp->autorelease();

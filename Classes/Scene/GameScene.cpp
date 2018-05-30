@@ -24,7 +24,6 @@ Scene* GameScene::createScene()
 
 	scene->addChild(layer);
 
-
 	return scene;
 
 }
@@ -46,7 +45,6 @@ bool GameScene::init()
     this->addChild(_tileMap);
 
     _ground = _tileMap->getLayer("ground");
-
 
     /*update by czd*/
     Sprite* small_map = Sprite::create("GameItem/Map/small_map.png");
@@ -104,10 +102,13 @@ bool GameScene::init()
     //menu->setPosition(Vec2::ZERO);
     //this->addChild(menu, 1);
 
+    scheduleUpdate();
+
 
     _manager = Manager::createWithGameScene(this);
 
-    scheduleUpdate();
+    _manager->retain();
+    _manager->getMoveController()->retain();
 
     return true;
 }
@@ -199,7 +200,7 @@ void GameScene::decreaseTotalPower(int power)
 
 void GameScene::update(float time)
 {
-    _manager->waitCreateBuilding();
+    _manager->waitCreateBuilding();  
     _manager->waitCreateSoldier();
 
     _manager->attack();

@@ -59,7 +59,7 @@ public:
     // 初始化数据
     void dataInit();
 
-    void update(float time);
+    virtual void update(float time);
 
 	// implement the "static create()" method manually
 	CREATE_FUNC(GameScene);
