@@ -210,6 +210,7 @@ void Manager::createBuilding(cocos2d::Vec2 position)
     if (_canCreateBuilding)
     {
         Building* building = Building::create(_buildingTag);
+        
         building->setPosition(position);
         _gameScene->addChild(building);
         switch (_buildingTag)
@@ -262,8 +263,6 @@ void Manager::attack()
     Tag selectedBuildingTag = NONE;
     Vector<Unit*>* enemySoldiers = _gameScene->getEnemySoldiers();
     clock_t nowT = clock();
-
-    log("time : %ld", nowT);
 
     for (auto& soldier : *(_gameScene->getSoldiers()))
     {

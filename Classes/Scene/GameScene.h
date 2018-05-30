@@ -23,6 +23,8 @@ private:
     cocos2d::Vector<Unit*> _soldiers;
     cocos2d::Vector<Building*> _buildings;
 
+    Point _touchBegan;
+    Point _touchEnd;
     Manager* _manager;
 
 public:
@@ -55,6 +57,8 @@ public:
 	static cocos2d::Scene* createScene();
 
 	virtual bool init();
+
+    virtual void onExit();
 
     // 初始化数据
     void dataInit();

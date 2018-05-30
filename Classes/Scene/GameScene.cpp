@@ -51,10 +51,10 @@ bool GameScene::init()
     small_map->setPosition(Point(visibleSize.width - 358 / 2, visibleSize.height - 334 / 2));
     this->addChild(small_map);
 
-    auto _smallMapListener = EventListenerTouchOneByOne::create();
-    _smallMapListener->onTouchBegan = [=](Touch* touch, Event* event) {
-        Point pos2 = touch->getLocationInView();
-        Point position = Director::getInstance()->convertToGL(pos2);
+    auto gameListener = EventListenerTouchOneByOne::create();
+    gameListener->onTouchBegan = [=](Touch* touch, Event* event) {
+        //=========== 点击小地图的移动功能 ===============
+        Point position = touch->getLocation();
         if (position.x > visibleSize.width - 358 && position.y > visibleSize.height - 334) {
             auto X = (position.x - (visibleSize.width - 358)) / 358 * MAPX - visibleSize.width / 2;
             auto Y = (position.y - (visibleSize.height - 334)) / 334 * MAPY - visibleSize.width / 2;
@@ -64,11 +64,27 @@ bool GameScene::init()
             if (Y > MAPX - visibleSize.height) Y = MAPX - visibleSize.height;
             _tileMap->runAction(MoveTo::create(0.1, Point(-X, -Y)));
         }
+        else
+        {
+            _touchBegan = position;   // 记录起点
+        }
         return true;
     };
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(_smallMapListener, this);
 
+    gameListener->onTouchEnded = [=](Touch* touch, Event* event) {
+        _touchEnd = touch->getLocation();
+        if (_touchEnd == _touchBegan)      // 点击则判断点击对象
+        {
+            
+        }
+        else                              // 矩形框选择士兵
+        {
+            _manager->getMoveController()->selectSoldiersWithMouse(_touchBegan, _touchEnd);
+        }
+    };
 
+    EventDispatcher* eventDispatcher = Director::getInstance()->getEventDispatcher();
+    eventDispatcher->addEventListenerWithSceneGraphPriority(gameListener, this);
 
     /*update by czd */
     auto _mouseOutBoradListener = EventListenerMouse::create();
@@ -111,6 +127,12 @@ bool GameScene::init()
     _manager->getMoveController()->retain();
 
     return true;
+}
+
+void GameScene::onExit()
+{
+    Layer::onExit();
+    Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
 }
 
 void GameScene::dataInit()
@@ -256,6 +278,7 @@ bool GameScene::isCollision(cocos2d::Vec2 position)
     // turn PixelPosition to TileCoord
     Size mapSize = _tileMap->getMapSize();
     Size tileSize = _tileMap->getTileSize();
+    position = _tileMap->convertToNodeSpace(position);
     int x = position.x / tileSize.width;
     int y = (mapSize.height * tileSize.height - position.y) / tileSize.height;
 
@@ -263,7 +286,7 @@ bool GameScene::isCollision(cocos2d::Vec2 position)
     int tileGID = _ground->getTileGIDAt(Vec2(x, y));
 
     // get the properties
-    auto properties = _tileMap->getPropertiesForGID(tileGID).asValueMap();
+    ValueMap& properties = _tileMap->getPropertiesForGID(tileGID).asValueMap();
 
     return properties["moveable"].asInt();
 }
