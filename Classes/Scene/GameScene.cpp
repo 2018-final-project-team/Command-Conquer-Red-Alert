@@ -7,6 +7,7 @@
 #include"Scene/WelcomeScene.h"  
 #include"Scene/GameScene.h"  
 #include "ui/CocosGUI.h"
+#include "Panel/Panel.h"
 
 #define MAPX 5760
 #define MAPY 5376
@@ -51,6 +52,30 @@ bool GameScene::init()
 	//===================Load map=========================
 	_tileMap = TMXTiledMap::create("GameItem/map/map1.tmx");
 	this->addChild(_tileMap);
+
+
+	//=====================测试Panel========================
+	auto panel = Panel::create();
+	//auto _panelSize = panel->getContentSize();   //为什么是0，0？
+	//log("%f %f %f %f",_panelSize.width,_panelSize.height,panel->getAnchorPoint().x,panel->getAnchorPoint().y);
+	panel->setPosition(visibleSize.width - 112, 70);
+	this->addChild(panel);
+	
+
+
+	// //===================调试Panel按钮=====================
+	// auto Listener = EventListenerTouchOneByOne::create();
+	// Listener->onTouchBegan = [label](Touch* t, Event* e) {
+	// 	if (label->getBoundingBox().containsPoint(t->getLocation())) {
+	// 		label->runAction(MoveBy::create(1, Point(10, 10)));
+
+	// 	}
+	// 	return false;
+
+	// };
+
+	//Director::getInstance()->getEventDispatcher()->
+	//	addEventListenerWithSceneGraphPriority(Listener, label);
 
 
 	/*小地图 by czd*/	
