@@ -51,8 +51,8 @@ bool GameScene::init()
     small_map->setPosition(Point(visibleSize.width - 358 / 2, visibleSize.height - 334 / 2));
     this->addChild(small_map);
 
-    auto gameListener = EventListenerTouchOneByOne::create();
-    gameListener->onTouchBegan = [=](Touch* touch, Event* event) {
+    _gameListener = EventListenerTouchOneByOne::create();
+    _gameListener->onTouchBegan = [=](Touch* touch, Event* event) {
         //=========== 点击小地图的移动功能 ===============
         Point position = touch->getLocation();
         if (position.x > visibleSize.width - 358 && position.y > visibleSize.height - 334) {
@@ -63,6 +63,8 @@ bool GameScene::init()
             if (X > MAPX - visibleSize.width) X = MAPX - visibleSize.width;
             if (Y > MAPX - visibleSize.height) Y = MAPX - visibleSize.height;
             _tileMap->runAction(MoveTo::create(0.1, Point(-X, -Y)));
+
+            return false;
         }
         else
         {
@@ -71,11 +73,30 @@ bool GameScene::init()
         return true;
     };
 
-    gameListener->onTouchEnded = [=](Touch* touch, Event* event) {
+    _gameListener->onTouchEnded = [=](Touch* touch, Event* event) {
         _touchEnd = touch->getLocation();
         if (_touchEnd == _touchBegan)      // 点击则判断点击对象
         {
-            
+            //生成Sprite的Rect
+            auto target = static_cast<Sprite*>(event->getCurrentTarget());
+            Vec2 locationInTarget = target->convertToNodeSpace(touch->getLocation());
+            Size size = target->getContentSize();
+            Rect rect(0, 0, size.width, size.height);
+
+            if (rect.containsPoint(locationInTarget))
+            {
+                switch (target->getTag())
+                {
+                case INFANTRY_TAG:
+                case DOG_TAG:
+                case TANK_TAG:
+                    _manager->setEnemy(static_cast<Unit*>(target));
+                    break;
+                default:
+                    _manager->setBuilding(static_cast<Building*>(target));
+                    break;
+                }
+            }
         }
         else                              // 矩形框选择士兵
         {
@@ -83,8 +104,8 @@ bool GameScene::init()
         }
     };
 
-    EventDispatcher* eventDispatcher = Director::getInstance()->getEventDispatcher();
-    eventDispatcher->addEventListenerWithSceneGraphPriority(gameListener, this);
+    _gameEventDispatcher = Director::getInstance()->getEventDispatcher();
+    _gameEventDispatcher->addEventListenerWithSceneGraphPriority(_gameListener, this);
 
     /*update by czd */
     auto _mouseOutBoradListener = EventListenerMouse::create();
@@ -132,7 +153,7 @@ bool GameScene::init()
 void GameScene::onExit()
 {
     Layer::onExit();
-    Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
+    _gameEventDispatcher->removeEventListener(_gameListener);
 }
 
 void GameScene::dataInit()

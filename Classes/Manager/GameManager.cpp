@@ -190,6 +190,8 @@ void Manager::waitCreateSoldier()
         if (clock() - _timeToCreateSoldier > _waitTimeToCreateSoldier)
         {
             Unit* soldier = Unit::create(_soldierTag);
+            _gameScene->_gameEventDispatcher->addEventListenerWithSceneGraphPriority
+                    (_gameScene->_gameListener->clone(), soldier);
             if (_soldierTag == TANK_TAG)
             {
                 soldier->setPosition(_gameScene->getCarFactoryPosition());
@@ -210,7 +212,8 @@ void Manager::createBuilding(cocos2d::Vec2 position)
     if (_canCreateBuilding)
     {
         Building* building = Building::create(_buildingTag);
-        
+        _gameScene->_gameEventDispatcher->addEventListenerWithSceneGraphPriority
+                (_gameScene->_gameListener->clone(), building);
         building->setPosition(position);
         _gameScene->addChild(building);
         switch (_buildingTag)

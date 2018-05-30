@@ -28,6 +28,10 @@ private:
     Manager* _manager;
 
 public:
+    EventListenerTouchOneByOne* _gameListener;
+    EventDispatcher* _gameEventDispatcher;
+
+public:
     CC_SYNTHESIZE(int, _money, Money);
 
     // 总电力
