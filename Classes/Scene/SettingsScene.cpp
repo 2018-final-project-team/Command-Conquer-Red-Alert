@@ -67,7 +67,7 @@ bool SettingsScene::init()
     addChild(createText());
 
 	//=====================键盘事件：按ESC退出该场景============================
-    auto keyEventListener = EventListenerKeyboard::create();
+    keyEventListener = EventListenerKeyboard::create();
     keyEventListener->onKeyReleased = [](EventKeyboard::KeyCode code, Event* event)
     {
         if (code == EventKeyboard::KeyCode::KEY_ESCAPE)
@@ -101,10 +101,11 @@ cocos2d::Menu* SettingsScene::createText()
     return buttons;
 }
 
-void SettingsScene::onEnter()
+
+void SettingsScene::onExit()
 {
-    Layer::onEnter();
-    GameAudio::getInstance()->playBgm("Sound/WelcomeScene.mp3");
+	Layer::onExit();
+	_eventDispatcher->removeEventListener(keyEventListener);     //注销监听器，防止内存泄漏
 }
 
 void SettingsScene::menuOkCallback(cocos2d::Ref * pSender)
