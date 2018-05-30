@@ -19,8 +19,13 @@ typedef enum
 class Panel : public cocos2d::Sprite
 {
 private:
-	//Sprite* _panelBG;
-	Category _curCategory;
+	Sprite* _panelBG;
+	Sprite* _buildingButton;
+	Sprite* _soldierButton;
+	Sprite* _carButton;
+
+
+	CC_SYNTHESIZE(Category, _curCategory, CurCategory);
 	cocos2d::Vector<cocos2d::Sprite*> _buildingList;
 	cocos2d::Vector<cocos2d::Sprite*> _soldierList;
 	cocos2d::Vector<cocos2d::Sprite*> _carList;
@@ -29,8 +34,9 @@ private:
 	void addIcons();
 	bool onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *event);
 
-    
-public:
+	void setCurButton(Category cat);
+
+  public:
 	virtual bool init() override;
 	CREATE_FUNC(Panel);
       
