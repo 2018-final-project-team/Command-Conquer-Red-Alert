@@ -38,18 +38,18 @@ bool Panel::init()
 	addChild(_carButton);
 
 	//===============注册监听器===================
-	 auto _mainButtonListener = EventListenerTouchAllAtOnce::create();
+	_mainButtonListener = EventListenerTouchOneByOne::create();
     _mainButtonListener->onTouchBegan = [=](Touch* touch, Event* event) {
-        auto _curButton = event->getCurTarget();
-		switch(_curButton)
+		Sprite* _selectedButton = static_cast<Sprite*>(event->getCurrentTarget());
+		switch (_selectedButton->getTag())
 		{
-		case _buildingButton:
+		case BUILDING:
 			setCurButton(BUILDING);
 			break;
-		case _soldierButton:
+		case SOLDIER:
 			setCurButton(SOLDIER);
 			break;
-		case _carButton:
+		case CAR:
 			setCurButton(CAR);
 			break;
 		}

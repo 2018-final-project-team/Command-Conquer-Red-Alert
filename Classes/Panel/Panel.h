@@ -19,10 +19,12 @@ typedef enum
 class Panel : public cocos2d::Sprite
 {
 private:
-	Sprite* _panelBG;
-	Sprite* _buildingButton;
-	Sprite* _soldierButton;
-	Sprite* _carButton;
+	cocos2d::Sprite* _panelBG;
+	cocos2d::Sprite* _buildingButton;
+	cocos2d::Sprite* _soldierButton;
+	cocos2d::Sprite* _carButton;
+
+	cocos2d::EventListenerTouchOneByOne* _mainButtonListener;
 
 
 	CC_SYNTHESIZE(Category, _curCategory, CurCategory);

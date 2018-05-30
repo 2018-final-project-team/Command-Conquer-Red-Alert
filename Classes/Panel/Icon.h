@@ -23,7 +23,7 @@ public:
     CREATE_FUNC(Icon);
 
     //根据iconSta修改精灵状态
-	void showIcon(Icons::IconsStatus iconSta);
+	void showIcon(IconsStatus iconSta);
 
 	void setSelected();           //设置图标被点击，进入倒计时状态
 	void setNotSelected();        //设置图标为初始可点击的状态
