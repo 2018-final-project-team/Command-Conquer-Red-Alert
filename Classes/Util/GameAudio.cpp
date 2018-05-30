@@ -1,7 +1,7 @@
 /*
 *  @file     GameAudio.cpp
-*  @brief    ÉùÒô¿ØÖÆ¹¤¾ßÀà£¬Ìá¹©¿ØÖÆÓÎÏ·µÄÒôÀÖºÍÒôÐ§µÄ·½·¨
-*  @author   ÍõÁÁ
+*  @brief    å£°éŸ³æŽ§åˆ¶å·¥å…·ç±»ï¼Œæä¾›æŽ§åˆ¶æ¸¸æˆçš„éŸ³ä¹å’ŒéŸ³æ•ˆçš„æ–¹æ³•
+*  @author   çŽ‹äº®
 */
 
 
@@ -96,7 +96,7 @@ void GameAudio::setBgmOn(bool val)
     }
     else
     {
-        stopBgm();
+		audioEngine->pauseBackgroundMusic();
     }
 }
 
