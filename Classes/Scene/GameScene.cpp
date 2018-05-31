@@ -51,6 +51,8 @@ bool GameScene::init()
     small_map->setPosition(Point(visibleSize.width - 358 / 2, visibleSize.height - 334 / 2));
     this->addChild(small_map);
 
+    _gameEventDispatcher = Director::getInstance()->getEventDispatcher();
+
     _gameListener = EventListenerTouchOneByOne::create();
     _gameListener->onTouchBegan = [=](Touch* touch, Event* event) {
         //=========== 点击小地图的移动功能 ===============
@@ -66,10 +68,7 @@ bool GameScene::init()
 
             return false;
         }
-        else
-        {
-            _touchBegan = position;   // 记录起点
-        }
+
         return true;
     };
 
@@ -92,9 +91,18 @@ bool GameScene::init()
                 case TANK_TAG:
                     _manager->setEnemy(static_cast<Unit*>(target));
                     break;
-                default:
+                case POWER_PLANT_TAG:
+                case MINE_TAG:
+                case CAR_FACTORY_TAG:
+                case BASE_TAG:
+                case BARRACKS_TAG:
                     _manager->setBuilding(static_cast<Building*>(target));
                     break;
+                default:
+                    // 为层注册监听器后层也会响应
+                    log("default");
+                    // isCollision有bug 故此处会崩
+                    //_manager->getMoveController()->setDestination(_touchEnd);
                 }
             }
         }
@@ -104,7 +112,6 @@ bool GameScene::init()
         }
     };
 
-    _gameEventDispatcher = Director::getInstance()->getEventDispatcher();
     _gameEventDispatcher->addEventListenerWithSceneGraphPriority(_gameListener, this);
 
     /*update by czd */
@@ -153,7 +160,7 @@ bool GameScene::init()
 void GameScene::onExit()
 {
     Layer::onExit();
-    _gameEventDispatcher->removeEventListener(_gameListener);
+    _gameEventDispatcher->removeAllEventListeners();
 }
 
 void GameScene::dataInit()
