@@ -17,6 +17,10 @@ class MoveController;         //解决头文件互相包含时带来的问题
 
 class Manager : public cocos2d::Node
 {
+public:
+	bool _isWaitToCreateBuilding;
+	bool _canCreateBuilding;
+	bool _isWaitToCreateSoldier;
 private:
 
     GameScene* _gameScene;
@@ -29,9 +33,7 @@ private:
     clock_t _waitTimeToCreateSoldier;
     Tag _buildingTag;
     Tag _soldierTag;
-    bool _isWaitToCreateBuilding;
-    bool _canCreateBuilding;
-    bool _isWaitToCreateSoldier;
+    
 //===================================
 
 //==========Attack================

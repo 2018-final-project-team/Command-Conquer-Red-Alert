@@ -11,8 +11,12 @@ const clock_t addMoneyDelay = 1000 * 10;
 
 class Manager;   //解决头文件互相包含时带来的问题
 
+class Panel;
+
 class GameScene : public cocos2d::Layer
 {
+public:
+	Manager* _manager;
 private:
 	Panel* panel;
 	cocos2d::TMXTiledMap* _tileMap;
@@ -27,7 +31,7 @@ private:
 
 	Point _touchBegan;
 	Point _touchEnd;
-	Manager* _manager;
+	
 
 public:
 	EventListenerTouchOneByOne* _gameListener;

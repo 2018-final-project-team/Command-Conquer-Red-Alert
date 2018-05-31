@@ -9,21 +9,23 @@
 
 #include "cocos2d.h"
 #include "Data/TagData.h"
+#include "Scene/GameScene.h"
 
 //设置三种状态：可点击并进入倒计时，倒计时中，计时结束
 enum IconsStatus{eIconPre,eIconOn,eIconOK};
 
 USING_NS_CC;
 
+class GameScene;
+
 class Icon : public Sprite
 {
 public:
-	virtual bool initIcon(Tag tag,int money);
-	static Icon* createIcon(Tag tag,int money);
-    CREATE_FUNC(Icon);
+	bool initIcon(Tag tag,int money, GameScene* gameScene);
+	static Icon* createIcon(Tag tag,int money, GameScene* gameScene);
 
     //根据iconSta修改精灵状态
-	void showIcon(IconsStatus iconSta);
+	void setStatus(IconsStatus iconSta);
 
 	void setSelected();           //设置图标被点击，进入倒计时状态
 	void setNotSelected();        //设置图标为初始可点击的状态
@@ -32,6 +34,8 @@ public:
 
 
 private:
+	GameScene* _gameScene;
+
 	CC_SYNTHESIZE(bool, isAble, IsAble);   //是否可点击
 	CC_SYNTHESIZE(Tag, tag, tag);         //图标的Tag
 	CC_SYNTHESIZE(bool, isSelected, IsSelected);   //是否被选中
@@ -39,11 +43,11 @@ private:
 	void update(float dt);
 
     
-	Sprite* icon;           //内层显示的图标
-	Sprite* iconFrame;       //最外层框图
-	Sprite* okIcon;         //计时完毕的图标
-	Sprite* priceIcon;      //价格图标
-	Label* priceLabel;      //价格label
+	Sprite* _icon;           //内层显示的图标
+	Sprite* _iconFrame;       //最外层框图
+	Sprite* _okIcon;         //计时完毕的图标
+	Sprite* _priceIcon;      //价格图标
+	Label* _priceLabel;      //价格label
 };
 
 #endif

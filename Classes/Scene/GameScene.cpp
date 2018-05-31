@@ -56,10 +56,10 @@ bool GameScene::init()
 
 
 	//=====================测试Panel========================
-	auto panel = Panel::create();
+	auto panel = Panel::createWithGameScene(this);
 	//auto _panelSize = panel->getContentSize();   //为什么是0，0？
 	//log("%f %f %f %f",_panelSize.width,_panelSize.height,panel->getAnchorPoint().x,panel->getAnchorPoint().y);
-	panel->setPosition(visibleSize.width - 112, 70);
+	panel->setPosition(visibleSize.width - 112, visibleSize.height - 400);
 	this->addChild(panel);
 	//log("the tag of panel is:%d", panel->getTag());
 
@@ -162,6 +162,15 @@ bool GameScene::init()
 
 	_manager->retain();
 	_manager->getMoveController()->retain();
+
+	panel->retain();
+	panel->_powerPlantIcon->retain();
+	panel->_mineIcon->retain();
+	panel->_barracksIcon->retain();
+	panel->_carFactoryIcon->retain();
+	panel->_infantryIcon->retain();
+	panel->_dogIcon->retain();
+	panel->_tankIcon->retain();
 
 	return true;
 }
