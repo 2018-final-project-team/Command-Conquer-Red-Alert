@@ -48,29 +48,39 @@ bool Panel::init()
 	_mainButtonListener = EventListenerTouchOneByOne::create();
     _mainButtonListener->onTouchBegan = [this](Touch* touch, Event* event) {
 		Sprite* _selectedButton = static_cast<Sprite*>(event->getCurrentTarget());
-		switch (_selectedButton->getTag())
+		Vec2 locationInNode = _selectedButton->convertToNodeSpace(touch->getLocation());
+		Size s = _selectedButton->getContentSize();
+		Rect rect = Rect(0, 0, s.width, s.height);
+		
+		//点击范围判断检测
+		if (rect.containsPoint(locationInNode))
 		{
-		case BUILDING_BUTTON:
-			log("select building button, the tag is:%d", _selectedButton->getTag());
-			setCurButton(BUILDING_BUTTON);
-			break;
-		case SOLDIER_BUTTON:
-			log("select soldier button");
-			setCurButton(SOLDIER_BUTTON);
-			break;
-		case CAR_BUTTON:
-			log("select car button");
-			setCurButton(CAR_BUTTON);
-			break;
+			switch (_selectedButton->getTag())
+			{
+			case BUILDING_BUTTON:
+				log("select building button, the tag is:%d", _selectedButton->getTag());
+				setCurButton(BUILDING_BUTTON);
+				break;
+			case SOLDIER_BUTTON:
+				log("select soldier button");
+				setCurButton(SOLDIER_BUTTON);
+				break;
+			case CAR_BUTTON:
+				log("select car button");
+				setCurButton(CAR_BUTTON);
+				break;
+			}
+
+			return true;
 		}
-        
-        return true;
+		return false;
     };
 	_mainButtonListener->setSwallowTouches(true);   //吞没触摸事件，不向下传递
     _eventDispatcher->addEventListenerWithSceneGraphPriority(_mainButtonListener, _buildingButton);
-	/*_eventDispatcher->addEventListenerWithSceneGraphPriority(_mainButtonListener, _soldierButton);
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(_mainButtonListener, _carButton);*/
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(_mainButtonListener->clone(), _soldierButton);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(_mainButtonListener->clone(), _carButton);
 
+	//=================TO DO:监听器的注销===============================
 
 	_buildingList = Vector<Sprite*>();
 	_soldierList = Vector<Sprite*>();
