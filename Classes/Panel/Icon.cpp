@@ -32,20 +32,22 @@ bool Icon::initIcon(Tag tag, int money, GameScene* gameScene)
 	_gameScene = gameScene;
 	isSelected = false;
 
-
+	_iconFrame = Sprite::create("GameItem/Panel/frame.png");
+	addChild(_iconFrame);
 
 
 	auto test = String::createWithFormat("GameItem/Panel/icons_00%02d.png", tag)->getCString();
 	_icon = Sprite::create(String::createWithFormat("GameItem/Panel/icons_00%02d.png", tag)->getCString());
 	log("succesfully create icon:%s", test);
+	_icon->setScale(0.8);
 	addChild(_icon);
-	//_priceIcon = Sprite::createWithSpriteFrameName("price_tag.png");
-	//_priceIcon->setPosition(Point(0, -_icon->getContentSize().height / 2));
-	//addChild(_priceIcon);
-	//_priceLabel = Label::createWithTTF(String::createWithFormat("%d", money)->getCString(), "fonts/arial.ttf", 20);
-	//_priceLabel->setColor(Color3B(255, 153, 0));
-	//_priceLabel->setPosition(Point(_priceIcon->getContentSize().width / 2, _priceIcon->getContentSize().height / 2 - 2));
-	//_priceIcon->addChild(_priceLabel);
+	_priceIcon = Sprite::create("GameItem/Panel/priceIcon.png");
+	_priceIcon->setPosition(Point(_icon->getContentSize().width / 5, -_icon->getContentSize().height / 4));
+	addChild(_priceIcon);
+	_priceLabel = Label::createWithTTF(String::createWithFormat("%d", money)->getCString(), "fonts/arial.ttf", 20);
+	_priceLabel->setColor(Color3B(255, 153, 0));
+	_priceLabel->setPosition(Point(_priceIcon->getContentSize().width / 2, _priceIcon->getContentSize().height / 2 - 2));
+	_priceIcon->addChild(_priceLabel);
 
 
 	////=============TO DO:添加OK.PNG============================
