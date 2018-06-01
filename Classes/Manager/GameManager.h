@@ -28,11 +28,13 @@ private:
 
 //========CreateController===========
     clock_t _timeToCreateBuilding;               // 单位毫秒
-    clock_t _waitTimeToCreateBuilding;
+	CC_SYNTHESIZE(clock_t, _waitTimeToCreateBuilding, WaitTimeToCreateBuilding);
     clock_t _timeToCreateSoldier;
-    clock_t _waitTimeToCreateSoldier;
-    Tag _buildingTag;
-    Tag _soldierTag;
+	CC_SYNTHESIZE(clock_t, _waitTimeToCreateSoldier, WaitTimeToCreateSoldier);
+
+	//modified by wl
+	CC_SYNTHESIZE(Tag, _buildingTag, BuildingTag);
+	CC_SYNTHESIZE(Tag, _soldierTag, SoldierTag);
     
 //===================================
 

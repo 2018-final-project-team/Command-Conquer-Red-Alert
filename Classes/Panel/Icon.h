@@ -11,8 +11,8 @@
 #include "Data/TagData.h"
 #include "Scene/GameScene.h"
 
-//设置三种状态：可点击并进入倒计时，倒计时中，计时结束
-enum IconsStatus{eIconPre,eIconOn,eIconOK};
+//设置5种状态：由于金钱不足而无法点击，由于其他任务正在进行而无法点击，可点击并进入倒计时，倒计时中，计时结束
+enum IconsStatus{invalidForMoney, invalidForOtherTask, eIconPre,eIconOn,eIconOK};
 
 USING_NS_CC;
 
@@ -24,30 +24,29 @@ public:
 	bool initIcon(Tag tag,int money, GameScene* gameScene);
 	static Icon* createIcon(Tag tag,int money, GameScene* gameScene);
 
-    //根据iconSta修改精灵状态
+    //修改图标的status和显示效果
 	void setStatus(IconsStatus iconSta);
-
-	void setSelected();           //设置图标被点击，进入倒计时状态
-	void setNotSelected();        //设置图标为初始可点击的状态
-	void setNotEnoughMoney();     //这是由于金币不足导致无法点击的状态
 
 
 
 private:
 	GameScene* _gameScene;
 
-	CC_SYNTHESIZE(bool, isAble, IsAble);   //是否可点击
+	CC_SYNTHESIZE(bool, _isSelected, IsSelected);
 	CC_SYNTHESIZE(Tag, tag, tag);         //图标的Tag
-	CC_SYNTHESIZE(bool, isSelected, IsSelected);   //是否被选中
     CC_SYNTHESIZE(int, money, Money);    //执行建造or训练or制造计划需要的金钱数
-	void update(float dt);
 
     
 	Sprite* _icon;           //内层显示的图标
 	Sprite* _iconFrame;       //最外层框图
-	Sprite* _okIcon;         //计时完毕的图标
 	Sprite* _priceIcon;      //价格图标
 	Label* _priceLabel;      //价格label
+	Sprite* _statusIcon;      //状态图标
+	Label* _statusLabel;      //状态label
+	Sprite* _invalidIcon;     //不可点击效果的图标
+
+	IconsStatus _status;
+
 };
 
 #endif

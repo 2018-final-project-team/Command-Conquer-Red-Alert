@@ -18,6 +18,7 @@ class Icon;
 class Panel : public cocos2d::Sprite
 {
 public:
+	void update(float dt);
 	CC_SYNTHESIZE(int, _numIcon, NumIcon);
 
 
@@ -32,7 +33,7 @@ public:
 
 private:
 	//初始化金钱的消耗
-	int sValue[8] = { 500,500,500,500,500,50,50,200 };
+	int sValue[8] = { 500,500,500,500,50,50,200 };
 
 
 

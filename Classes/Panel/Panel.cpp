@@ -76,6 +76,7 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 		{
 			switch (_selectedButton->getTag())
 			{
+			//================三个标签按钮的点击处理==================
 			case BUILDING_BUTTON:
 				log("select building button, the tag is:%d", _selectedButton->getTag());
 				setCurButton(BUILDING_BUTTON);
@@ -88,6 +89,20 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 				log("select car button");
 				setCurButton(CAR_BUTTON);
 				break;
+			//=======================================================
+
+
+			//==================建筑类图标的点击处理===================
+			case POWER_PLANT_TAG:
+
+				break;
+			case MINE_TAG:
+				break;
+			case BARRACKS_TAG:
+				break;
+			case CAR_FACTORY_TAG:
+				break;
+			//=======================================================
 			}
 
 			return true;
@@ -105,7 +120,16 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 	_soldierList = Vector<Icon*>();
 	_carList = Vector<Icon*>();
 
-	
+	scheduleUpdate();
+
+	this->retain();
+	this->_powerPlantIcon->retain();
+	this->_mineIcon->retain();
+	this->_barracksIcon->retain();
+	this->_carFactoryIcon->retain();
+	this->_infantryIcon->retain();
+	this->_dogIcon->retain();
+	this->_tankIcon->retain();
 
 	return true;
 }
@@ -146,6 +170,11 @@ void Panel::checkIcon(Tag tag)
 	_gameScene->setPowerPlantNum(1);
 	_gameScene->setBarracksNum(1);
 	_gameScene->setCarFactoryNum(1);
+	_gameScene->setMoney(300);
+	_gameScene->_manager->_isWaitToCreateBuilding = true;
+	_gameScene->_manager->_canCreateBuilding = false;
+	_gameScene->_manager->setBuildingTag(POWER_PLANT_TAG);
+	_gameScene->_manager->setWaitTimeToCreateBuilding(10 * 1000);
 	
 	switch (tag)
 	{
@@ -216,4 +245,66 @@ void Panel::addIcons()
 	_infantryIcon = Icon::createIcon(INFANTRY_TAG, sValue[INFANTRY_TAG - 1], _gameScene);
 	_dogIcon = Icon::createIcon(DOG_TAG, sValue[DOG_TAG - 1], _gameScene);
 	_tankIcon = Icon::createIcon(TANK_TAG, sValue[TANK_TAG - 1], _gameScene);
+
+	if (_powerPlantIcon != nullptr) { log("succesfully create icon:1"); }
+	if (_mineIcon != nullptr) { log("succesfully create icon:2"); }
+	if (_barracksIcon != nullptr) { log("succesfully create icon:3"); }
+	if (_carFactoryIcon != nullptr) { log("succesfully create icon:4"); }
+	if (_infantryIcon != nullptr) { log("succesfully create icon:5"); }
+	if (_dogIcon != nullptr) { log("succesfully create icon:6"); }
+	if (_tankIcon != nullptr) { log("succesfully create icon:7"); }
+}
+
+
+void Panel::update(float dt)
+{
+	if (_curList != nullptr)
+	{
+		for (Icon* i : *_curList)
+		{
+
+			auto tag = i->getTag();
+			//图标状态的处理，建筑与Unit方式不同
+			switch (tag)
+			{
+			case POWER_PLANT_TAG:
+			case MINE_TAG:
+			case BARRACKS_TAG:
+			case CAR_FACTORY_TAG:
+				if (_gameScene->_manager->_canCreateBuilding && tag == _gameScene->_manager->getBuildingTag())
+				{
+					i->setStatus(eIconOK);
+				}
+				else if ((_gameScene->_manager->_isWaitToCreateBuilding || _gameScene->_manager->_canCreateBuilding)
+							&& tag != _gameScene->_manager->getBuildingTag())
+				{
+					i->setStatus(invalidForOtherTask);
+				}
+				else if (_gameScene->_manager->_isWaitToCreateBuilding && tag == _gameScene->_manager->getBuildingTag())
+				{
+					i->setStatus(eIconOn);
+				}
+				else if (i->getMoney() > _gameScene->getMoney() && !(i->getIsSelected()))
+				{
+					i->setStatus(invalidForMoney);
+
+				}
+				else
+				{
+					i->setStatus(eIconPre);
+				}
+
+				break;
+
+
+			case INFANTRY_TAG:
+			case DOG_TAG:
+			case TANK_TAG:
+
+
+				break;
+			}
+		}
+	}
+	
 }

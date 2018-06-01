@@ -30,56 +30,82 @@ bool Icon::initIcon(Tag tag, int money, GameScene* gameScene)
 		return false;
 	}
 	_gameScene = gameScene;
-	isSelected = false;
+
+	_status = eIconPre;
+	_isSelected = false;
 
 	_iconFrame = Sprite::create("GameItem/Panel/frame.png");
 	addChild(_iconFrame);
 
 
-	auto test = String::createWithFormat("GameItem/Panel/icons_00%02d.png", tag)->getCString();
 	_icon = Sprite::create(String::createWithFormat("GameItem/Panel/icons_00%02d.png", tag)->getCString());
-	log("succesfully create icon:%s", test);
 	_icon->setScale(0.8);
 	addChild(_icon);
-	_priceIcon = Sprite::create("GameItem/Panel/priceIcon.png");
-	_priceIcon->setPosition(Point(_icon->getContentSize().width / 5, -_icon->getContentSize().height / 4));
-	addChild(_priceIcon);
-	_priceLabel = Label::createWithTTF(String::createWithFormat("%d", money)->getCString(), "fonts/arial.ttf", 20);
+	_priceIcon = Sprite::create("GameItem/Panel/priceTag.png");
+	_priceIcon->setVisible(true);
+	addChild(_priceIcon, 1);
+	_priceLabel = Label::createWithTTF(String::createWithFormat("%d", money)->getCString(), "fonts/Marker Felt.ttf", 16);
 	_priceLabel->setColor(Color3B(255, 153, 0));
-	_priceLabel->setPosition(Point(_priceIcon->getContentSize().width / 2, _priceIcon->getContentSize().height / 2 - 2));
+	_priceLabel->setPosition(Point(_priceIcon->getContentSize().width * 0.75, _priceIcon->getContentSize().height *0.78));
 	_priceIcon->addChild(_priceLabel);
 
+	//_statusIcon = Sprite::create("GameItem/Panel/statusIcon.png");
+	//_statusIcon->setPosition(Point(-_icon->getContentSize().width / 5, -_icon->getContentSize().height / 4));
+	//_statusIcon->setVisible(false);
+	//addChild(_statusIcon);
+	_statusLabel = Label::createWithTTF(String::createWithFormat("Clickable")->getCString(), "fonts/Marker Felt.ttf", 22);
+	_statusLabel->setColor(Color3B(255, 153, 0));
+	_statusLabel->setPosition(Point(-_icon->getContentSize().width / 5, -_icon->getContentSize().height / 4));
+	_statusLabel->setVisible(false);
+	addChild(_statusLabel);
 
-	////=============TO DO:添加OK.PNG============================
-	//_okIcon = Sprite::createWithSpriteFrameName(".png");
-	//_okIcon->setPosition(Point(_icon->getContentSize().width / 2, _icon->getContentSize().height / 2));
-	//_icon->addChild(_okIcon);
-	//_okIcon->setVisible(false);
+	_invalidIcon = Sprite::create("GameItem/Panel/invalid.png");
+	_invalidIcon->setVisible(false);
+	addChild(_invalidIcon);
+
 
 	setMoney(money);
 	setTag(tag);
-	/*this->scheduleUpdate();*/
+
+	this->retain();
+
+
 }
 
 
-void Icon::update(float dt)
+void Icon::setStatus(IconsStatus iconSta)
 {
-	if (/*!(_gameScene->_manager->_isWaitToCreateBuilding) &&*/ getMoney() <= _gameScene->getMoney())
+	_status = iconSta;
+	switch (iconSta)
 	{
-		setNotSelected();
+	case invalidForMoney:
+		log("set not enough money");
+		//_statusIcon->setVisible(false);
+		_statusLabel->setString("$");
+		_statusLabel->setColor(Color3B(255, 0, 0));
+		_statusLabel->setVisible(true);
+		_invalidIcon->setVisible(true);
+		break;
+	case invalidForOtherTask:
+		_statusLabel->setVisible(false);
+		_invalidIcon->setVisible(true);
+		break;
+	case eIconPre:
+		//_statusIcon->setVisible(false);
+		_statusLabel->setVisible(false);
+		_invalidIcon->setVisible(false);
+		break;
+	case eIconOn:
+		_statusLabel->setString("waiting");
+		_statusLabel->setColor(Color3B(255, 0, 0));
+		_statusLabel->setVisible(true);
+		_invalidIcon->setVisible(false);
+		break;
+	case eIconOK:
+		_statusLabel->setString("OK");
+		_statusLabel->setColor(Color3B(0, 255, 0));
+		_statusLabel->setVisible(true);
+		_invalidIcon->setVisible(false);
+		break;
 	}
-	else 
-	{
-		setNotEnoughMoney();
-	}
-}
-
-void Icon::setNotSelected()
-{
-
-}
-
-void Icon::setNotEnoughMoney()
-{
-
 }

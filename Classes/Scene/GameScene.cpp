@@ -57,6 +57,7 @@ bool GameScene::init()
 
 	//=====================测试Panel========================
 	auto panel = Panel::createWithGameScene(this);
+	if (panel == nullptr) { log("create panel error"); }
 	//auto _panelSize = panel->getContentSize();   //为什么是0，0？
 	//log("%f %f %f %f",_panelSize.width,_panelSize.height,panel->getAnchorPoint().x,panel->getAnchorPoint().y);
 	panel->setPosition(visibleSize.width - 112, visibleSize.height - 400);
@@ -154,6 +155,9 @@ bool GameScene::init()
 	auto menu = Menu::create(backItem, NULL);
 	menu->setPosition(Vec2::ZERO);
 	this->addChild(menu, 1);
+
+
+
 
 	scheduleUpdate();
 
