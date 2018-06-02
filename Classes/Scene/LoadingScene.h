@@ -1,7 +1,7 @@
 /*
 *  @file     LoadingScene.h
-*  @brief    ¼ÓÔØ³¡¾°Àà£¬ÏÔÊ¾µÄµÚÒ»¸ö³¡¾°£¬Íê³É×ÊÔ´Ô¤¼ÓÔØ²¢ÏÔÊ¾¼ÓÔØ½ø¶È
-*  @author   ÍõÁÁ
+*  @brief    é”çŠºæµ‡é¦çƒ˜æ«™ç»«ä¼™ç´é„å‰§ãšé¨å‹­îƒ‡æ¶“â‚¬æ¶“î„æº€é…îˆ¤ç´ç€¹å±¾åšç’§å‹¬ç°®æ£°å‹«å§æè—‰è‹Ÿé„å‰§ãšé”çŠºæµ‡æ©æ¶˜å®³
+*  @author   éœå¬©å¯’
 */
 
 #ifndef __SCENE_LOADINGSCENE_H__
@@ -18,26 +18,26 @@ private:
 private:
 
 	/**
-	@brief ×ÊÔ´È«²¿¼ÓÔØ½áÊøºó¹©scheduleOnceµ÷ÓÃµÄº¯Êı£¬ÑÓÊ±dtÌø×ªÖÁµÇÂ¼³¡¾°
-	@param float dt Ê±¼ä¼ä¸ô£¬µ¥Î»ÎªÃë
+	@brief ç’§å‹¬ç°®éã„©å„´é”çŠºæµ‡ç¼æ’´æ½«éšåºç·µscheduleOnceç’‹å†ªæ•¤é¨å‹«åš±éå¸®ç´å¯¤èˆµæ¤‚dtç’ºå® æµ†é‘·å´‡æ«¥è¤°æ›æº€é…?
+	@param float dt éƒå •æ£¿é—‚æ’®æ®§é”›å±½å´Ÿæµ£å¶„è´Ÿç»‰?
 	*/
-    void endLoading(float dt);
+	void endLoading(float dt);
 
 	/**
-	@brief ¼ÓÔØ¹ı³Ì£¬½øĞĞ×ÊÔ´µÄ¼ÓÔØºÍ½ø¶ÈÌõµÄ¸üĞÂ
+	@brief é”çŠºæµ‡æ©å›©â–¼é”›å²ƒç¹˜ç›å²ƒç¥«å©§æ„®æ®‘é”çŠºæµ‡éœå²ƒç¹˜æ´ï¸½æ½¯é¨å‹¬æ´¿é‚?
 	*/
 	void loading();
 
 	/**
-	@brief ¼ÓÔØ¸÷Àà×ÊÔ´
+	@brief é”çŠºæµ‡éšå‹­è¢«ç’§å‹¬ç°®
 	*/
-    void loadSound();
-    void loadImage();
-    void loadSpriteFrame();
+	void loadSound();
+	void loadImage();
+	void loadSpriteFrame();
 
 
 	void initBackground(cocos2d::Vec2 origin, cocos2d::Size visibleSize);
-    cocos2d::ui::LoadingBar* createLoadingBar();
+	cocos2d::ui::LoadingBar* createLoadingBar();
 public:
     static cocos2d::Scene* createScene();
     virtual bool init();

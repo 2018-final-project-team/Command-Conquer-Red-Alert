@@ -1,7 +1,7 @@
 /*
 *  @file     HelpScene.cpp
-*  @brief    °ïÖú³¡¾°Àà£¬ÏÔÊ¾ÓÎÏ·Íæ·¨ºÍ²Ù×÷·½·¨
-*  @author   ÍõÁÁ
+*  @brief    ç”¯î†¼å§ªé¦çƒ˜æ«™ç»«ä¼™ç´é„å‰§ãšå¨“å‘Šå™éœâ•‚ç¡¶éœå±¾æ·æµ£æ»„æŸŸå¨‰?
+*  @author   éœå¬©å¯’
 */
 
 #include "HelpScene.h"
@@ -41,14 +41,14 @@ bool HelpScene::init()
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 
-	//=====================ÎÄ±¾label============================
+	//=====================é‚å›¨æ¹°label============================
 	auto label = Label::createWithTTF("HelpScene!", "fonts/Marker Felt.ttf", 45);
 	label->setPosition(visibleSize.width / 2, visibleSize.height / 2);
 	this->addChild(label, 0);
 
 
 
-	//=====================±³¾°Í¼Æ¬============================
+	//=====================é‘³å±¾æ«™é¥å‰§å¢–============================
 	Sprite * bg = Sprite::create("emptyBg.png");
 	bg->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
 	this->addChild(bg, -1);
@@ -56,13 +56,13 @@ bool HelpScene::init()
 
 
 
-	//============to do:Ìí¼ÓÓÎÏ·Íæ·¨ºÍ²Ù×÷·½·¨µÄĞÅÏ¢===========
+	//============to do:å¨£è¯²å§å¨“å‘Šå™éœâ•‚ç¡¶éœå±¾æ·æµ£æ»„æŸŸå¨‰æ› æ®‘æ·‡â„ƒä¼…===========
 
 
 
 
 
-	//=====================·µ»Ø°´Å¥============================
+	//=====================æ©æ–¿æ´–é¸å¤æŒ³============================
 	auto backItem = MenuItemImage::create(
 		"backNormal.png",
 		"backSelected.png",

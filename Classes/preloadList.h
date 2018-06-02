@@ -1,7 +1,7 @@
 /*
 *  @file     preloadList.h
-*  @brief    需要预加载的资源的文件名（带路径）
-*  @author   王亮
+*  @brief    闇�瑕侀鍔犺浇鐨勮祫婧愮殑鏂囦欢鍚嶏紙甯﹁矾寰勶級
+*  @author   鐜嬩寒
 */
 
 #ifndef __PRELOAD_LIST_H__
@@ -11,23 +11,23 @@
 
 namespace Preload
 {
-	//图集对应的plist文件名字符串数组
+	//鍥鹃泦瀵瑰簲鐨刾list鏂囦欢鍚嶅瓧绗︿覆鏁扮粍
     const std::array<std::string, 2> plists = {
         "Animation/explosion.plist",
         "Animation/wind.plist"
     };
 
-	//图片文件名字符串数组
+	//鍥剧墖鏂囦欢鍚嶅瓧绗︿覆鏁扮粍
 	const std::array<std::string, 0> image = {
 
 	};
 
-	//背景音乐文件名字符串数组
+	//鑳屾櫙闊充箰鏂囦欢鍚嶅瓧绗︿覆鏁扮粍
 	const std::array<std::string, 1> bgm = {
 		"Sound/bgm/WelcomeScene.mp3",
 	};
 
-	//音效文件名字符串数组
+	//闊虫晥鏂囦欢鍚嶅瓧绗︿覆鏁扮粍
 	const std::array<std::string, 0> effect = {
 		
 	};

@@ -17,21 +17,28 @@ class MoveController;         //解决头文件互相包含时带来的问题
 
 class Manager : public cocos2d::Node
 {
+public:
+	bool _isWaitToCreateBuilding;
+	bool _canCreateBuilding;
+	bool _isWaitToCreateSoldier;
+	bool _isWaitToCreateCar;
 private:
 
     GameScene* _gameScene;
     MoveController* _moveController;
 
 //========CreateController===========
-    clock_t _timeToCreateBuilding;               // 单位毫秒
-    clock_t _waitTimeToCreateBuilding;
-    clock_t _timeToCreateSoldier;
-    clock_t _waitTimeToCreateSoldier;
-    Tag _buildingTag;
-    Tag _soldierTag;
-    bool _isWaitToCreateBuilding;
-    bool _canCreateBuilding;
-    bool _isWaitToCreateSoldier;
+	CC_SYNTHESIZE(clock_t, _timeToCreateBuilding, TimeToCreateBuilding);               // 单位毫秒
+	CC_SYNTHESIZE(clock_t, _waitTimeToCreateBuilding, WaitTimeToCreateBuilding);
+	CC_SYNTHESIZE(clock_t, _timeToCreateSoldier, TimeToCreateSoldier);
+	CC_SYNTHESIZE(clock_t, _waitTimeToCreateSoldier, WaitTimeToCreateSoldier);
+	CC_SYNTHESIZE(clock_t, _timeToCreateCar, TimeToCreateCar);
+	CC_SYNTHESIZE(clock_t, _waitTimeToCreateCar, WaitTimeToCreateCar);
+
+	CC_SYNTHESIZE(Tag, _buildingTag, BuildingTag);
+	CC_SYNTHESIZE(Tag, _soldierTag, SoldierTag);
+	CC_SYNTHESIZE(Tag, _carTag, CarTag);
+    
 //===================================
 
 //==========Attack================

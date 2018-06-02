@@ -1,7 +1,7 @@
 /*
 *  @file     WelcomeScene.h
-*  @brief    »¶Ó­£¨Ö÷£©³¡¾°Àà£¬¿ÉÍ¨¹ı´Ë³¡¾°½øÈëÓÎÏ·¡¢ÉèÖÃ¡¢°ïÖú³¡¾°£¬¿ÉÍË³öÓÎÏ·
-*  @author   ÍõÁÁ
+*  @brief    æ¬¢è¿ï¼ˆä¸»ï¼‰åœºæ™¯ç±»ï¼Œå¯é€šè¿‡æ­¤åœºæ™¯è¿›å…¥æ¸¸æˆã€è®¾ç½®ã€å¸®åŠ©åœºæ™¯ï¼Œå¯é€€å‡ºæ¸¸æˆ
+*  @author   ç‹äº®
 */
 
 #ifndef __Welcome_SCENE_H__
@@ -18,7 +18,7 @@ public:
 
 	void menuCloseCallback(cocos2d::Ref* pSender);
 
-	// ÓÃÓÚÌø×ªµ½ÆäËû³¡¾°µÄmenu»Øµ÷º¯Êı
+	// ç”¨äºè·³è½¬åˆ°å…¶ä»–åœºæ™¯çš„menuå›è°ƒå‡½æ•°
 	void menuPlayCallback(Ref *pSender);
 	void menuSettingsCallback(cocos2d::Ref * pSender);
 	void menuHelpCallback(cocos2d::Ref * pSender);
@@ -26,9 +26,9 @@ public:
 	CREATE_FUNC(WelcomeScene);
 
 	/**
-	@brief  ´Ó¾«ÁéÍ¼¼¯»º´æÖĞ»ñÈ¡¶¯»­Ïà¹ØµÄ¾«ÁéÖ¡µÄVector
-	@param  format         ±äÁ¿1 ¾«ÁéÍ¼¼¯ÖĞÓë¶¯»­Ïà¹ØÍ¼Æ¬Ãû³ÆµÄ¸ñÊ½£¬×¢ÒâÒª°üº¬Â·¾¶
-	@param  count          ±äÁ¿2 Ïà¹ØÍ¼Æ¬µÄÊıÁ¿
+	@brief  ä»ç²¾çµå›¾é›†ç¼“å­˜ä¸­è·å–åŠ¨ç”»ç›¸å…³çš„ç²¾çµå¸§çš„Vector
+	@param  format         å˜é‡1 ç²¾çµå›¾é›†ä¸­ä¸åŠ¨ç”»ç›¸å…³å›¾ç‰‡åç§°çš„æ ¼å¼ï¼Œæ³¨æ„è¦åŒ…å«è·¯å¾„
+	@param  count          å˜é‡2 ç›¸å…³å›¾ç‰‡çš„æ•°é‡
 	@return Vector<SpriteFrame*>
 	*/
 	cocos2d::Vector<cocos2d::SpriteFrame*> getAnimation(const char* format, int count);

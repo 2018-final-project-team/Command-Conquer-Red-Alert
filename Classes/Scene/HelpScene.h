@@ -1,7 +1,7 @@
 /*
 *  @file     HelpScene.h
-*  @brief    °ïÖú³¡¾°Àà£¬ÏÔÊ¾ÓÎÏ·Íæ·¨ºÍ²Ù×÷·½·¨
-*  @author   ÍõÁÁ
+*  @brief    å¸®åŠ©åœºæ™¯ç±»ï¼Œæ˜¾ç¤ºæ¸¸æˆçŽ©æ³•å’Œæ“ä½œæ–¹æ³•
+*  @author   çŽ‹äº®
 */
 
 #ifndef __SCENE_HELPSCENE_H__

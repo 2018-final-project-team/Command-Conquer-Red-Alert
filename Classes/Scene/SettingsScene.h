@@ -1,7 +1,7 @@
 /*
 *  @file     SettingsScene.h
-*  @brief    ÉèÖÃ³¡¾°Àà£¬¿ÉÉèÖÃÒôÀÖ¡¢ÒôĞ§µÄ´ò¿ª/¹Ø±Õ
-*  @author   ÍõÁÁ
+*  @brief    è®¾ç½®åœºæ™¯ç±»ï¼Œå¯è®¾ç½®éŸ³ä¹ã€éŸ³æ•ˆçš„æ‰“å¼€/å…³é—­
+*  @author   ç‹äº®
 */
 
 #ifndef __SETTINGS_SCENE_H__
@@ -19,7 +19,7 @@ private:
 	cocos2d::Label * createLabel(const char * text);
 
 	/**
-	@brief ÓÃÄÚÈİÎª¡°OK¡±µÄlabel´´½¨Ò»¸ömenu£¬ÓÃÓÚ´ÓÉèÖÃ³¡¾°·µ»ØÖ÷³¡¾°
+	@brief ç”¨å†…å®¹ä¸ºâ€œOKâ€çš„labelåˆ›å»ºä¸€ä¸ªmenuï¼Œç”¨äºä»è®¾ç½®åœºæ™¯è¿”å›ä¸»åœºæ™¯
 	@return cocos2d::Menu*
 	*/
     cocos2d::Menu* createText();
