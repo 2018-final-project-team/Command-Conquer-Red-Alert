@@ -11,8 +11,23 @@
 #include "Data/TagData.h"
 #include "Scene/GameScene.h"
 
-//设置5种状态：由于金钱不足而无法点击，由于其他任务正在进行而无法点击，可点击并进入倒计时，倒计时中，计时结束
-enum IconsStatus{invalidForMoney, invalidForOtherTask, eIconPre,eIconOn,eIconOK};
+//设置8种状态：由于金钱不足而无法点击，由于其他任务正在进行而无法点击，可点击并进入倒计时，
+//倒计时中，计时结束，用于Unit的可点击，用于Unit的计时中，任务累积排队中
+//建筑类使用5种：1~5
+//Unit类使用4种：6~8
+enum IconsStatus
+{
+	invalidForMoney, 
+	invalidForOtherTask, 
+	eIconPre,
+	eIconOn,
+	eIconOK,
+
+	eIconPreForUnit,
+	eIconOnForUnit,
+	eIconQueuingForUnit
+
+};
 
 USING_NS_CC;
 
@@ -48,8 +63,8 @@ private:
 	Sprite* _iconFrame;       //最外层框图
 	Sprite* _priceIcon;      //价格图标
 	Label* _priceLabel;      //价格label
-	Sprite* _statusIcon;      //状态图标
 	Label* _statusLabel;      //状态label
+	Label* _statusLabel2;      //状态label2，当一个状态label不够用时使用
 	Sprite* _invalidIcon;     //不可点击效果的图标
 
 	IconsStatus _status;

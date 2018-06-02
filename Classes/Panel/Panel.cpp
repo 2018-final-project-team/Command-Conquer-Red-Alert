@@ -197,6 +197,7 @@ void Panel::checkIcon(Tag tag)
 	switch (tag)
 	{
 	case BUILDING_BUTTON:
+		_buildingList.clear();
 		if (_gameScene->getIsBaseExist())
 		{
 			_buildingList.pushBack(_powerPlantIcon);
@@ -210,7 +211,7 @@ void Panel::checkIcon(Tag tag)
 		}
 		break;
 	case SOLDIER_BUTTON:
-		_soldierList.empty();
+		_soldierList.clear();
 		if (_gameScene->getBarracksNum())
 		{
 			_soldierList.pushBack(_infantryIcon);
@@ -218,7 +219,7 @@ void Panel::checkIcon(Tag tag)
 		}
 		break;
 	case CAR_BUTTON:
-		_carList.empty();
+		_carList.clear();
 		if (_gameScene->getCarFactoryNum())
 		{
 			_carList.pushBack(_tankIcon);
@@ -315,10 +316,52 @@ void Panel::update(float dt)
 
 			case INFANTRY_TAG:
 			case DOG_TAG:
-
+				//===========TO DO:与gamescene中的变量名保持一致===========
+				if (_gameScene->_manager->_isWaitToCreateSoldier && tag == _gameScene->_manager->getSoldierTag())
+				{
+					i->setStatus(eIconOnForUnit);
+				}
+				else if (_gameScene->_manager->_isWaitToCreateSoldier && tag != _gameScene->_manager->getSoldierTag())
+				{
+					if ((tag == INFANTRY_TAG && _gameScene->getCreatingInfantryNum())
+						|| (tag == DOG_TAG && _gameScene->getCreatingDogNum()))
+					{
+						i->setStatus(eIconQueuingForUnit);
+					}
+					else
+					{
+						i->setStatus(eIconPreForUnit);
+					}
+					
+				}
+				else
+				{
+					i->setStatus(eIconPreForUnit);
+				}
 
 
 			case TANK_TAG:
+				//===========TO DO:与gamescene中的变量名保持一致===========
+				if (_gameScene->_manager->_isWaitToCreateCar && tag == _gameScene->_manager->getCarTag())
+				{
+					i->setStatus(eIconOnForUnit);
+				}
+				else if (_gameScene->_manager->_isWaitToCreateCar && tag != _gameScene->_manager->getCarTag())
+				{
+					if (tag == TANK_TAG && _gameScene->getCreatingTankNum())
+					{
+						i->setStatus(eIconQueuingForUnit);
+					}
+					else
+					{
+						i->setStatus(eIconPreForUnit);
+					}
+
+				}
+				else
+				{
+					i->setStatus(eIconPreForUnit);
+				}
 
 
 				break;

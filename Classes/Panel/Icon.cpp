@@ -51,15 +51,18 @@ bool Icon::initIcon(Tag tag, int money, GameScene* gameScene)
 	_priceLabel->setPosition(Point(_priceIcon->getContentSize().width * 0.75, _priceIcon->getContentSize().height *0.78));
 	_priceIcon->addChild(_priceLabel);
 
-	//_statusIcon = Sprite::create("GameItem/Panel/statusIcon.png");
-	//_statusIcon->setPosition(Point(-_icon->getContentSize().width / 5, -_icon->getContentSize().height / 4));
-	//_statusIcon->setVisible(false);
-	//addChild(_statusIcon);
 	_statusLabel = Label::createWithTTF(String::createWithFormat("Clickable")->getCString(), "fonts/Marker Felt.ttf", 22);
 	_statusLabel->setColor(Color3B(255, 153, 0));
 	_statusLabel->setPosition(Point(-_icon->getContentSize().width / 5, -_icon->getContentSize().height / 4));
 	_statusLabel->setVisible(false);
 	addChild(_statusLabel,3);
+
+	//用于Unit的label，只有一个功能，当金钱不足是显示红色的$
+	_statusLabel2 = Label::createWithTTF(String::createWithFormat("$")->getCString(), "fonts/Marker Felt.ttf", 22);
+	_statusLabel2->setColor(Color3B(255, 0, 0));
+	_statusLabel2->setPosition(Point(-_icon->getContentSize().width / 5, _icon->getContentSize().height / 4));
+	_statusLabel2->setVisible(false);
+	addChild(_statusLabel2, 3);
 
 	_invalidIcon = Sprite::create("GameItem/Panel/invalid.png");
 	_invalidIcon->setVisible(false);
@@ -87,26 +90,72 @@ void Icon::setStatus(IconsStatus iconSta)
 		_statusLabel->setColor(Color3B(255, 0, 0));
 		_statusLabel->setVisible(true);
 		_invalidIcon->setVisible(true);
+		_statusLabel2->setVisible(false);
 		break;
 	case invalidForOtherTask:
 		_statusLabel->setVisible(false);
 		_invalidIcon->setVisible(true);
+		_statusLabel2->setVisible(false);
 		break;
 	case eIconPre:
-		//_statusIcon->setVisible(false);
 		_statusLabel->setVisible(false);
 		_invalidIcon->setVisible(false);
+		_statusLabel2->setVisible(false);
 		break;
 	case eIconOn:
 		_statusLabel->setString("waiting");
 		_statusLabel->setColor(Color3B(255, 0, 0));
 		_statusLabel->setVisible(true);
+		_invalidIcon->setVisible(false);
+		_statusLabel2->setVisible(false);
 		break;
 	case eIconOK:
 		_statusLabel->setString("OK");
 		_statusLabel->setColor(Color3B(0, 255, 0));
 		_statusLabel->setVisible(true);
 		_invalidIcon->setVisible(false);
+		_statusLabel2->setVisible(false);
+		break;
+
+	case eIconPreForUnit:
+		_statusLabel->setVisible(false);
+		_invalidIcon->setVisible(false);
+		if(getMoney() > _gameScene->getMoney())
+		{
+			_statusLabel2->setVisible(true);
+		}
+		else
+		{
+			_statusLabel2->setVisible(false);
+		}
+		break;
+	case eIconOnForUnit:
+		_statusLabel->setString(_gameScene->getCurSoldierNum());
+		_statusLabel->setColor(Color3B(0, 0, 255));
+		_statusLabel->setVisible(true);
+		_invalidIcon->setVisible(false);
+		if (getMoney() > _gameScene->getMoney())
+		{
+			_statusLabel2->setVisible(true);
+		}
+		else
+		{
+			_statusLabel2->setVisible(false);
+		}
+		break;
+	case eIconQueuingForUnit:
+		_statusLabel->setString(_gameScene->getCurSoldierNum());
+		_statusLabel->setColor(Color3B(0, 0, 255));
+		_statusLabel->setVisible(true);
+		_invalidIcon->setVisible(false);
+		if (getMoney() > _gameScene->getMoney())
+		{
+			_statusLabel2->setVisible(true);
+		}
+		else
+		{
+			_statusLabel2->setVisible(false);
+		}
 		break;
 	}
 }
