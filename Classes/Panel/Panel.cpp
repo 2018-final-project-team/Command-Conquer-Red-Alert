@@ -8,6 +8,7 @@
 #include "Panel/Panel.h"
 #include "Panel/Icon.h"
 #include "Scene/GameScene.h"
+#include <time.h>
 
 //#include "Manager/GameManager.h"
 
@@ -189,7 +190,9 @@ void Panel::checkIcon(Tag tag)
 	_gameScene->_manager->_isWaitToCreateBuilding = true;
 	_gameScene->_manager->_canCreateBuilding = false;
 	_gameScene->_manager->setBuildingTag(POWER_PLANT_TAG);
+	_gameScene->_manager->setTimeToCreateBuilding(clock());
 	_gameScene->_manager->setWaitTimeToCreateBuilding(10 * 1000);
+	_powerPlantIcon->showProgressOfWait(10);
 	
 	switch (tag)
 	{

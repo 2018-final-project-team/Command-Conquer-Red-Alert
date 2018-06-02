@@ -27,6 +27,13 @@ public:
     //修改图标的status和显示效果
 	void setStatus(IconsStatus iconSta);
 
+	/**
+	* @brief 半径模式显示图标任务的百分比进度，在manager中调用
+	* @param 任务耗时，单位为秒
+	* @return void
+	*/
+	void showProgressOfWait(float duration);
+
 
 
 private:

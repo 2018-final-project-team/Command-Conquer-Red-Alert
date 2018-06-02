@@ -40,10 +40,12 @@ bool Icon::initIcon(Tag tag, int money, GameScene* gameScene)
 
 	_icon = Sprite::create(String::createWithFormat("GameItem/Panel/icons_00%02d.png", tag)->getCString());
 	_icon->setScale(0.8);
-	addChild(_icon);
+	addChild(_icon, 0);
+
+
 	_priceIcon = Sprite::create("GameItem/Panel/priceTag.png");
 	_priceIcon->setVisible(true);
-	addChild(_priceIcon, 1);
+	addChild(_priceIcon, 3);
 	_priceLabel = Label::createWithTTF(String::createWithFormat("%d", money)->getCString(), "fonts/Marker Felt.ttf", 16);
 	_priceLabel->setColor(Color3B(255, 153, 0));
 	_priceLabel->setPosition(Point(_priceIcon->getContentSize().width * 0.75, _priceIcon->getContentSize().height *0.78));
@@ -57,11 +59,11 @@ bool Icon::initIcon(Tag tag, int money, GameScene* gameScene)
 	_statusLabel->setColor(Color3B(255, 153, 0));
 	_statusLabel->setPosition(Point(-_icon->getContentSize().width / 5, -_icon->getContentSize().height / 4));
 	_statusLabel->setVisible(false);
-	addChild(_statusLabel);
+	addChild(_statusLabel,3);
 
 	_invalidIcon = Sprite::create("GameItem/Panel/invalid.png");
 	_invalidIcon->setVisible(false);
-	addChild(_invalidIcon);
+	addChild(_invalidIcon, 1);
 
 
 	setMoney(money);
@@ -99,7 +101,6 @@ void Icon::setStatus(IconsStatus iconSta)
 		_statusLabel->setString("waiting");
 		_statusLabel->setColor(Color3B(255, 0, 0));
 		_statusLabel->setVisible(true);
-		_invalidIcon->setVisible(false);
 		break;
 	case eIconOK:
 		_statusLabel->setString("OK");
@@ -108,4 +109,28 @@ void Icon::setStatus(IconsStatus iconSta)
 		_invalidIcon->setVisible(false);
 		break;
 	}
+}
+
+void Icon::showProgressOfWait(float duration)   //单位为秒
+{
+	_invalidIcon->setVisible(true);
+
+	auto progressTimer1 = ProgressTimer::create(_iconFrame);
+	progressTimer1->setType(ProgressTimerType::RADIAL);//设置模式 RADIAL:半径 BAR:进度条 默认RADIAL  
+	progressTimer1->setMidpoint(Vec2(0.5, 0.5));//设置百分比效果参考点 默认(0,0)  
+	progressTimer1->setReverseProgress(false);//动作是否反向执行 默认false  
+	progressTimer1->setReverseDirection(false);//动作是否逆序执行 默认false  
+	this->addChild(progressTimer1, 2);
+
+	auto progressTimer2 = ProgressTimer::create(_icon);
+	progressTimer2->setScale(0.8);
+	progressTimer2->setType(ProgressTimerType::RADIAL);//设置模式 RADIAL:半径 BAR:进度条 默认RADIAL  
+	progressTimer2->setMidpoint(Vec2(0.5, 0.5));//设置百分比效果参考点 默认(0,0)  
+	progressTimer2->setReverseProgress(false);//动作是否反向执行 默认false  
+	progressTimer2->setReverseDirection(false);//动作是否逆序执行 默认false  
+	this->addChild(progressTimer2, 2);
+
+	auto progressTo = ProgressTo::create(duration, 100);
+	progressTimer1->runAction(RepeatForever::create(progressTo->clone()));//为了方便展示 这里让动作重复执行
+	progressTimer2->runAction(RepeatForever::create(progressTo->clone()));//为了方便展示 这里让动作重复执行
 }
