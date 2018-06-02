@@ -25,9 +25,11 @@ private:
 	void scrollMap();
 
 	cocos2d::Vector<Unit*> _selectedSoldiers;
+
+    cocos2d::Vector<Unit*> _soldiers;
 	cocos2d::Vector<Unit*> _enemySoldiers;
-	cocos2d::Vector<Unit*> _soldiers;
 	cocos2d::Vector<Building*> _buildings;
+    cocos2d::Vector<Building*> _enemyBuildings;
 
 	Point _touchBegan;
 	Point _touchEnd;
@@ -92,11 +94,23 @@ public:
 	*/
 	cocos2d::Vector<Unit*>* getSoldiers();
 
+    /*
+    * @brief getEnemySoldiers
+    * @return the address of enemy_soldiers
+    */
+    cocos2d::Vector<Unit*> * getEnemySoldiers() { return &_enemySoldiers; }
+
 	/**
 	* @brief getBuildings
 	* @return the address of _buildings
 	*/
 	cocos2d::Vector<Building*>* getBuildings();
+
+    /*
+    * @brief getEnemyBuildings
+    * @return the address of enemy_soldiers
+    */
+    cocos2d::Vector<Building*> * getEnemyBuildings() { return &_enemyBuildings; }
 
 	/**
 	* @brief addMoney
@@ -197,12 +211,11 @@ public:
 	*/
 	float getTileSize();
 
-	/*
-	* @brief getEnemySoldiers
-	* @return the address of enemy_soldiers
-	*/
-	//To Do:和网络也许有关系
-	cocos2d::Vector<Unit*> * getEnemySoldiers() { return &_enemySoldiers; }
+    /*
+    *@brief 移动所有士兵建筑 包括目的地
+    */
+    void moveSpritesWithMap(cocos2d::Vec2 direction);
+
 
 };
 

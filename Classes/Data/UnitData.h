@@ -97,9 +97,6 @@ public:
     //目的地
     CC_SYNTHESIZE(Vec2, _destination, Destination);
 
-    //用于转向的第二方向
-    CC_SYNTHESIZE(Vec2, _secondDirection, SecondDirection);
-
     //是否抵达目的地
     CC_SYNTHESIZE(bool, _getDestination, GetDestination);
 

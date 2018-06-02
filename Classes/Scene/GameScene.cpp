@@ -79,8 +79,12 @@ bool GameScene::init()
 			if (Y < 0) Y = 0;
 			if (X > MAPX - visibleSize.width) X = MAPX - visibleSize.width;
 			if (Y > MAPX - visibleSize.height) Y = MAPX - visibleSize.height;
-			_tileMap->runAction(MoveTo::create(0.1, Point(-X, -Y)));
+            //direction to move sprites
+            Vec2 direction = Point(-X, -Y) - _tileMap->getPosition();
 
+			_tileMap->runAction(MoveTo::create(0.1, Point(-X, -Y)));
+            moveSpritesWithMap(direction);
+            
 			return false;
 		}
 		else
@@ -91,35 +95,44 @@ bool GameScene::init()
 	};
 
 	_gameListener->onTouchEnded = [=](Touch* touch, Event* event) {
-		_touchEnd = touch->getLocation();
-		if (_touchEnd == _touchBegan)      // 点击则判断点击对象
-		{
-			//生成Sprite的Rect
-			auto target = static_cast<Sprite*>(event->getCurrentTarget());
-			Vec2 locationInTarget = target->convertToNodeSpace(touch->getLocation());
-			Size size = target->getContentSize();
-			Rect rect(0, 0, size.width, size.height);
+	    _touchEnd = touch->getLocation();
+        if (_touchEnd == _touchBegan)      // 点击则判断点击对象
+        {
+            //生成Sprite的Rect
+            auto target = static_cast<Sprite*>(event->getCurrentTarget());
+            Vec2 locationInTarget = target->convertToNodeSpace(touch->getLocation());
+            Size size = target->getContentSize();
+            Rect rect(0, 0, size.width, size.height);
 
-			if (rect.containsPoint(locationInTarget))
-			{
-				switch (target->getTag())
-				{
-				case INFANTRY_TAG:
-				case DOG_TAG:
-				case TANK_TAG:
-					_manager->setEnemy(static_cast<Unit*>(target));
-					break;
-				default:
-					_manager->setBuilding(static_cast<Building*>(target));
-					break;
-				}
-			}
-		}
+            if (rect.containsPoint(locationInTarget))
+            {
+                switch (target->getTag())
+                {
+                case INFANTRY_TAG:
+                case DOG_TAG:
+                case TANK_TAG:
+                    _manager->setEnemy(static_cast<Unit*>(target));
+                    break;
+                case POWER_PLANT_TAG:
+                case MINE_TAG:
+                case CAR_FACTORY_TAG:
+                case BASE_TAG:
+                case BARRACKS_TAG:
+                    _manager->setBuilding(static_cast<Building*>(target));
+                    break;
+                default:
+                    // 为层注册监听器后层也会响应 所以此处需要判断士兵建筑和空地
+                    log("default");
+                    // isCollision有bug 故此处会崩
+                    //_manager->getMoveController()->setDestination(_touchEnd);
+                }
+            }
+        }
 		else                              // 矩形框选择士兵
 		{
 			_manager->getMoveController()->selectSoldiersWithMouse(_touchBegan, _touchEnd);
 		}
-	};
+    };
 
 	_gameEventDispatcher = Director::getInstance()->getEventDispatcher();
 	_gameEventDispatcher->addEventListenerWithSceneGraphPriority(_gameListener, this);
@@ -285,42 +298,89 @@ void GameScene::update(float time)
 }
 
 /*update by czd */
-void GameScene::scrollMap() {
+void GameScene::scrollMap() 
+{
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	auto X = _cursorPosition.x;
 	auto Y = _cursorPosition.y;
-	if (X < MINLENTH) {
-		if (_tileMap->getPositionX() + SPEED < 0) {
+    Point mapPosition = _tileMap->getPosition();
+	if (X < MINLENTH) 
+    {
+		if (_tileMap->getPositionX() + SPEED < 0) 
+        {
 			_tileMap->runAction(MoveBy::create(0.1, Point(SPEED, 0)));
+            moveSpritesWithMap(Vec2(SPEED, 0));
 		}
-		else {
+		else 
+        {
 			_tileMap->setPositionX(0);
+            moveSpritesWithMap(Vec2(mapPosition.x, 0));
 		}
 	}
+    else if (X > visibleSize.width - MINLENTH)
+    {
+        if (_tileMap->getPositionX() - SPEED > -MAPX + visibleSize.width) 
+        {
+            _tileMap->runAction(MoveBy::create(0.1, Point(-SPEED, 0)));
+            moveSpritesWithMap(Vec2(-SPEED, 0));
+        }
+        else 
+        {
+            _tileMap->setPositionX(-MAPX + visibleSize.width);
+            moveSpritesWithMap(Vec2(-MAPX + visibleSize.width - mapPosition.x, 0));
+        }
+    }
+
 	if (Y < MINLENTH) {
-		if (_tileMap->getPositionY() + SPEED < 0) {
+		if (_tileMap->getPositionY() + SPEED < 0) 
+        {
 			_tileMap->runAction(MoveBy::create(0.1, Point(0, SPEED)));
+            moveSpritesWithMap(Vec2(0, SPEED));
 		}
-		else {
+		else 
+        {
 			_tileMap->setPositionY(0);
+            moveSpritesWithMap(Vec2(0, mapPosition.y));
 		}
 	}
-	if (X > visibleSize.width - MINLENTH) {
-		if (_tileMap->getPositionX() - SPEED > -MAPX + visibleSize.width) {
-			_tileMap->runAction(MoveBy::create(0.1, Point(-SPEED, 0)));
-		}
-		else {
-			_tileMap->setPositionX(-MAPX + visibleSize.width);
-		}
-	}
-	if (Y >visibleSize.height - MINLENTH) {
-		if (_tileMap->getPositionY() - SPEED > -MAPY + visibleSize.height) {
+	else if (Y >visibleSize.height - MINLENTH) 
+    {
+		if (_tileMap->getPositionY() - SPEED > -MAPY + visibleSize.height) 
+        {
 			_tileMap->runAction(MoveBy::create(0.1, Point(0, -SPEED)));
+            moveSpritesWithMap(Vec2(0, -SPEED));
 		}
-		else {
+		else 
+        {
 			_tileMap->setPositionY(-MAPY + visibleSize.height);
+            moveSpritesWithMap(Vec2(0, -MAPY + visibleSize.height - mapPosition.y));
 		}
 	}
+}
+
+void GameScene::moveSpritesWithMap(cocos2d::Vec2 direction)
+{
+    // my soldiers
+    for (auto& soldier : _soldiers)
+    {
+        soldier->setPosition(soldier->getPosition() + direction);
+        soldier->setDestination(soldier->getDestination() + direction);
+    }
+    // my buildings
+    for (auto& building : _buildings)
+    {
+        building->setPosition(building->getPosition() + direction);
+    }
+    // enemy soldiers
+    for (auto& soldier : _enemySoldiers)
+    {
+        soldier->setPosition(soldier->getPosition() + direction);
+    }
+    //enemy buildings
+    for (auto& building : _enemyBuildings)
+    {
+        building->setPosition(building->getPosition() + direction);
+    }
 }
 
 bool GameScene::isCollision(cocos2d::Vec2 position)
