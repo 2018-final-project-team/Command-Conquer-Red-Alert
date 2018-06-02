@@ -1,4 +1,4 @@
-﻿#include "Scene/LoadingScene.h"
+#include "Scene/LoadingScene.h"
 #include "Scene/LoginScene.h"
 //#include "Settings.h"
 #include "SimpleAudioEngine.h"

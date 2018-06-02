@@ -13,13 +13,14 @@ static void problemLoading(const char* filename)
 
 Scene* GameScene::createScene()
 {
-	auto scene = Scene::create();
-
-	auto layer = GameScene::create();
-
+	auto scene = Scene::createWithPhysics();
+    
+    scene -> getPhysicsWorld() -> setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+    
+    auto layer = GameScene::create();
+    
 	scene->addChild(layer);
-
-
+    
 	return scene;
 
 }
@@ -97,3 +98,24 @@ void GameScene::menuBackCallback(Ref *pSender)
 	const auto transition = TransitionFade::create(1, WelcomeScene::createScene());
 	Director::getInstance()->replaceScene(transition);
 }
+
+void GameScene::onEnter()
+{
+    Layer::onEnter();
+    auto listener = EventListenerPhysicsContact::create();
+    listener -> onContactBegin = [](PhysicsContact & contact)
+    {
+        //        auto spriteA = (Sprite *)contact.getShapeA() -> getBody() -> getNode();
+        //        auto spriteB = (Sprite *)contact.getShapeB() -> getBody() -> getNode();
+        log("onContact");
+        return true;
+    };
+    Director::getInstance() -> getEventDispatcher() -> addEventListenerWithFixedPriority(listener, 1);
+}
+
+void GameScene::onExit()
+{
+    CCLOG("Exit");
+    Director::getInstance() -> getEventDispatcher() -> removeAllEventListeners();
+}
+

@@ -10,8 +10,9 @@
 
 #include "cocos2d.h"
 #include "string"
-#include "Scene/GameScene.h"
+#include "TagData.h"
 #include "Building.h"
+
 
 //TODO: 加入动画和图片素材，之后实现。
 //TODO: 添加注释。
@@ -19,11 +20,22 @@
 namespace unitData
 {
     const int infantryCastMoney = 50;
-    const int infantryWait = 10;
     const int dogCastMoney = 50;
-    const int dogWait = 10;
     const int tankCastMoney = 200;
-    const int tankWait = 30;
+    
+    namespace EnoughPower
+    {
+        const int infantryWait = 10;
+        const int dogWait = 10;
+        const int tankWait = 30;
+    }
+    
+    namespace NotEnoughPower
+    {
+        const int infantryWait = 10;
+        const int dogWait = 10;
+        const int tankWait = 30;
+    }
 }
 
 
@@ -44,21 +56,17 @@ namespace unitData
 //    UNIT_DEAD = 5
 //}UNIT_STATE;
 
-
+class Building;
 
 class Unit : public cocos2d::Sprite{
+
 public:
-    //生成宏
-    CREATE_FUNC(Unit);
-public:
-    //构造函数
-    Unit();
-    
+   
     //是否被选中
     CC_SYNTHESIZE(bool, _isSelected, IsSelected)
     
     //单位tag（步兵，狗，矿车，坦克）
-    CC_SYNTHESIZE(Tag, _tag, UnitTag);
+    CC_SYNTHESIZE(Tag, _unitTag, UnitTag);
     
     //单位血量
     CC_SYNTHESIZE(int, _HP, UnitHP);
@@ -85,11 +93,10 @@ public:
     CC_SYNTHESIZE(unsigned int, _ATKLimit, UnitATKLimit);
     
     //目的地
-    CC_SYNTHESIZE(Vec2, _destination, Destination);
+    CC_SYNTHESIZE(cocos2d::Vec2, _destination, Destination);
     
     //是否抵达目的地
     CC_SYNTHESIZE(bool, _getDestination, GetDestination);
-    
     
 //    //动画名字
 //    CC_SYNTHESIZE(std::string, _AnimationName, UnitAnimationName);
@@ -106,7 +113,7 @@ public:
 public:
     /*
      */
-    void moveTo(Vec2(destination),float time);
+    void moveTo(cocos2d::Vec2(destination),float time);
     /*
      */
     void getInjuredBy(Unit *);
@@ -115,22 +122,19 @@ public:
     void attack(Unit *);
     /*
      */
-    void Unit::attack(Building *);
+    void attack(Building *);
     /*
      */
-    bool canAttack(Vec2);
-};
+    bool canAttack(cocos2d::Vec2);
+    /*
+     */
+    void setDeath()
+    {
+        // 也许以后有用
+    }
+    
+    //状态管理
 
-
-
-//状态管理类
-class BaseFSM : public Ref
-{
-public:
-    //创建状态
-    static BaseFSM * createFSM(Unit * unit);
-    //初始化
-    bool init(Unit *unit);
 public:
     //预留接口
     void switchState(int dir);
@@ -143,13 +147,13 @@ public:
     
     //改变朝向
     void changeToUp();
-  
+    
     void changeToLeft();
-
+    
     void changeToDown();
-
+    
     void changeToRight();
-
+    
     
     //改变状态到守备
     void changeToDefence();
@@ -163,6 +167,11 @@ public:
     //发现敌人后向敌人移动
     void changeToEnemy();
     
+    
 };
+
+
+
+
 
 #endif /* UnitData_hpp */
