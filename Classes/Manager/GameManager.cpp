@@ -143,23 +143,6 @@ void Manager::clickCreateSoldierByTag(Tag soldier_tag, clock_t start_time)
             }
 
             break;
-        case TANK_TAG:
-            if (_gameScene->getCarFactoryNum() == 0)
-            {
-                return;
-            }
-
-            castMoney = unitData::tankCastMoney;
-            if (_gameScene->getIsPowerEnough())
-            {
-                _waitTimeToCreateSoldier = unitData::EnoughPower::tankWait;
-            }
-            else
-            {
-                _waitTimeToCreateSoldier = unitData::NotEnoughPower::tankWait;
-            }
-
-            break;
         }
 
         if (_gameScene->getMoney() >= castMoney)
@@ -170,6 +153,40 @@ void Manager::clickCreateSoldierByTag(Tag soldier_tag, clock_t start_time)
             _gameScene->decreaseMoney(castMoney);
         }
     }
+
+
+	if (!_isWaitToCreateCar)
+	{
+		int castMoney;
+		switch (soldier_tag)
+		{
+		case TANK_TAG:
+			if (_gameScene->getCarFactoryNum() == 0)
+			{
+				return;
+			}
+
+			castMoney = unitData::tankCastMoney;
+			if (_gameScene->getIsPowerEnough())
+			{
+				_waitTimeToCreateCar = unitData::EnoughPower::tankWait;
+			}
+			else
+			{
+				_waitTimeToCreateCar = unitData::NotEnoughPower::tankWait;
+			}
+
+			break;
+		}
+
+		if (_gameScene->getMoney() >= castMoney)
+		{
+			_isWaitToCreateCar = true;
+			_timeToCreateCar = start_time;
+			_carTag = soldier_tag;
+			_gameScene->decreaseMoney(castMoney);
+		}
+	}
 }
 
 void Manager::waitCreateBuilding()
@@ -192,19 +209,30 @@ void Manager::waitCreateSoldier()
             Unit* soldier = Unit::create(_soldierTag);
             _gameScene->_gameEventDispatcher->addEventListenerWithSceneGraphPriority
                     (_gameScene->_gameListener->clone(), soldier);
-            if (_soldierTag == TANK_TAG)
-            {
-                soldier->setPosition(_gameScene->getCarFactoryPosition());
-            }
-            else
-            {
-                soldier->setPosition(_gameScene->getBarracksPosition());
-            }
+            
+			soldier->setPosition(_gameScene->getBarracksPosition());
+
             _gameScene->addChild(soldier);
             _gameScene->getSoldiers()->pushBack(soldier);
             _isWaitToCreateSoldier = false;
         }
     }
+
+	if (_isWaitToCreateCar)
+	{
+		if (clock() - _timeToCreateCar > _waitTimeToCreateCar)
+		{
+			Unit* car = Unit::create(_carTag);
+			_gameScene->_gameEventDispatcher->addEventListenerWithSceneGraphPriority
+			(_gameScene->_gameListener->clone(), car);
+			
+			car->setPosition(_gameScene->getCarFactoryPosition());
+
+			_gameScene->addChild(car);
+			_gameScene->getSoldiers()->pushBack(car);
+			_isWaitToCreateCar = false;
+		}
+	}
 }
 
 void Manager::createBuilding(cocos2d::Vec2 position)

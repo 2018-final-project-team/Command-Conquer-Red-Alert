@@ -21,20 +21,23 @@ public:
 	bool _isWaitToCreateBuilding;
 	bool _canCreateBuilding;
 	bool _isWaitToCreateSoldier;
+	bool _isWaitToCreateCar;
 private:
 
     GameScene* _gameScene;
     MoveController* _moveController;
 
 //========CreateController===========
-    clock_t _timeToCreateBuilding;               // 单位毫秒
+	CC_SYNTHESIZE(clock_t, _timeToCreateBuilding, TimeToCreateBuilding);               // 单位毫秒
 	CC_SYNTHESIZE(clock_t, _waitTimeToCreateBuilding, WaitTimeToCreateBuilding);
-    clock_t _timeToCreateSoldier;
+	CC_SYNTHESIZE(clock_t, _timeToCreateSoldier, TimeToCreateSoldier);
 	CC_SYNTHESIZE(clock_t, _waitTimeToCreateSoldier, WaitTimeToCreateSoldier);
+	CC_SYNTHESIZE(clock_t, _timeToCreateCar, TimeToCreateCar);
+	CC_SYNTHESIZE(clock_t, _waitTimeToCreateCar, WaitTimeToCreateCar);
 
-	//modified by wl
 	CC_SYNTHESIZE(Tag, _buildingTag, BuildingTag);
 	CC_SYNTHESIZE(Tag, _soldierTag, SoldierTag);
+	CC_SYNTHESIZE(Tag, _carTag, CarTag);
     
 //===================================
 

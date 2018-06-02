@@ -44,7 +44,7 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 
 	_curCategoryTag = BUILDING_BUTTON;
 
-	//TO DO:添加工具栏三个分类按钮的图片
+	//添加工具栏三个分类按钮的图片
 	_buildingButton = Sprite::create("GameItem/Panel/B.png");
 	_buildingButton->setPosition(Point(-60,0));
 	_buildingButton->setTag(BUILDING_BUTTON);
@@ -103,7 +103,22 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 			case CAR_FACTORY_TAG:
 				break;
 			//=======================================================
+
+
+			//=================士兵类图标的点击处理====================
+			case INFANTRY_TAG:
+				break;
+			case DOG_TAG:
+				break;
+			//=======================================================
+
+			//=================战车类图标的点击处理====================
+			case TANK_TAG:
+				break;
+			//=======================================================
 			}
+
+			
 
 			return true;
 		}
@@ -165,7 +180,7 @@ void Panel::checkIcon(Tag tag)
 	}
 	_curList->clear();
 
-	//=========测试代码：虚拟各种图标出现的条件========
+	//=========测试代码：模拟各种图标出现的条件========
 	_gameScene->setIsBaseExist(true);
 	_gameScene->setPowerPlantNum(1);
 	_gameScene->setBarracksNum(1);
@@ -213,8 +228,7 @@ void Panel::showIcon(Tag tag)
 {
 	ssize_t _needToShow = _curList->size();
 	
-
-	//================TO DO:坐标数据合理==================
+	//================设置图标的坐标==================
 	for (int i=0;i<_needToShow;i++)
 	{
 		float x = 0;
@@ -262,7 +276,6 @@ void Panel::update(float dt)
 	{
 		for (Icon* i : *_curList)
 		{
-
 			auto tag = i->getTag();
 			//图标状态的处理，建筑与Unit方式不同
 			switch (tag)
@@ -299,6 +312,9 @@ void Panel::update(float dt)
 
 			case INFANTRY_TAG:
 			case DOG_TAG:
+
+
+
 			case TANK_TAG:
 
 
