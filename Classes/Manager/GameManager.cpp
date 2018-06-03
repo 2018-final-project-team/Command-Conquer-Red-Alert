@@ -618,5 +618,3 @@ void Manager::resetPower()
     _gameScene->setTotalPower(totalPower);
     _gameScene->setPower(totalPower - castPower);
 }
-
-//.................................

@@ -23,7 +23,7 @@ class MoveController : public cocos2d::Node
 
 protected:
 
-    GameScene* _gameScene;                                      // game 场景类
+    GameScene* _gameScene;                             // game 场景类
     cocos2d::Vector< Unit* > *_selectedSoldiers;     // selected soldiers
     bool _isFirstMove;                               //用来减少障碍判断次数
 
@@ -80,5 +80,3 @@ public:
 };
 
 #endif // __MoveController_H_
-
-// ...............
