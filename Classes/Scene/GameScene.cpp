@@ -138,7 +138,7 @@ bool GameScene::init()
                     // 为层注册监听器后层也会响应 所以此处需要判断士兵建筑和空地
                     log("default");
                     // 测试 isCollision
-                    log("%d", isCollision(_touchEnd));
+                    //log("%d", isCollision(_touchEnd));
                     _manager->getMoveController()->setDestination(_touchEnd);
                 }
             }
@@ -410,6 +410,11 @@ bool GameScene::isCollision(cocos2d::Vec2 position1)
     Size mapSize = _tileMap->getMapSize();
     Size tileSize = _tileMap->getTileSize();
     auto position = _tileMap->convertToNodeSpace(position1);
+    if (position.x < 0 || position.y<0 || position.x>tileSize.width 
+        || position.y < tileSize.height) 
+    {
+        return false;
+    }
     position.x = static_cast<int>(position.x / tileSize.width);
     position.y = mapSize.height - static_cast<int>(position.y / tileSize.width) - 1;
     // get the GID of tile

@@ -64,26 +64,18 @@ public:
     void setDestination(cocos2d::Vec2 position);
 
     /**
-    * @brief 判断向前5个瓦片内是否会碰撞
-    * @param 当前位置
-    * @param 方向
-    * @return  int
-    */
-    bool willHitInFiveTiles(cocos2d::Vec2 nowPosition, cocos2d::Vec2 direction);
-
-    /**
-    * @brief 遇到障碍物转向
-    * @param 当前位置
-    * @param 方向
-    * @return  转向后方向
-    */
-    cocos2d::Vec2 changeDirection(cocos2d::Vec2 nowPosition, cocos2d::Vec2 direction);
-
-    /**
     * @brief 移动士兵坦克 在Update函数里调用
     * @return  void
     */
     void moveSoldiers();
+
+    void findRroute(Unit *soldier, std::vector<Point> &route);
+    /**
+    * @brief 传入起点和目的地(屏幕）和一个Vector<Point> route,来装找到的路
+    如，第一帧，把坦克原坐标加上route[1],在刷新
+    * @return  void
+    */
+    bool is_find(Vec2 position, Vec2 destination);
 
 };
 

@@ -10,36 +10,36 @@ const clock_t addMoneyDelay = 1000 * 10;
 #include "Panel/Panel.h"
 
 class Manager;   //解决头文件互相包含时带来的问题
-
-class Panel;
+class Panel;     //解决头文件互相包含时带来的问题
 
 class GameScene : public cocos2d::Layer
 {
 public:
-	Manager* _manager;
+    Manager * _manager;
+    cocos2d::TMXTiledMap* _tileMap;
+
 private:
-	Panel* panel;
-	cocos2d::TMXTiledMap* _tileMap;
+    Panel * panel;
 	cocos2d::TMXLayer* _barrier;
 	cocos2d::Point _cursorPosition{ 0,0 };  // C++ 11 允许这样初始化
 	void scrollMap();
 
 	cocos2d::Vector<Unit*> _selectedSoldiers;
 
-    cocos2d::Vector<Unit*> _soldiers;
 	cocos2d::Vector<Unit*> _enemySoldiers;
+	cocos2d::Vector<Unit*> _soldiers;
 	cocos2d::Vector<Building*> _buildings;
     cocos2d::Vector<Building*> _enemyBuildings;
 
 	Point _touchBegan;
 	Point _touchEnd;
-	
 
 public:
 	EventListenerTouchOneByOne* _gameListener;
 	EventDispatcher* _gameEventDispatcher;
 
 public:
+
 	CC_SYNTHESIZE(int, _money, Money);
 
 	// 总电力
@@ -240,7 +240,7 @@ public:
 	* @param the position
 	* @return bool
 	*/
-	bool isCollision(cocos2d::Vec2 position1);
+	bool isCollision(cocos2d::Vec2 position);
 
 	/*
 	* @brief getTileSize
@@ -252,7 +252,6 @@ public:
     *@brief 移动所有士兵建筑 包括目的地
     */
     void moveSpritesWithMap(cocos2d::Vec2 direction);
-
 
 };
 
