@@ -210,6 +210,10 @@ void GameScene::dataInit()
 	_powerPlantNum = 0;
 	_carFactoryNum = 0;
 
+    _tankNum = 0;
+    _infantryNum = 0;
+    _dogNum = 0;
+
 	_carFactoryPosition = _barracksPosition = Vec2::ZERO;
 
 	_isBaseExist = false;
@@ -285,11 +289,13 @@ void GameScene::decreaseTotalPower(int power)
 
 void GameScene::update(float time)
 {
-	_manager->waitCreateBuilding();
-	_manager->waitCreateSoldier();
 
 	_manager->attack();
 	_manager->addMoneyUpdate();
+
+    _manager->waitCreateBuilding();
+    _manager->waitCreateSoldier();
+    _manager->waitCreateCar();
 
 	_manager->getMoveController()->moveSoldiers();
 

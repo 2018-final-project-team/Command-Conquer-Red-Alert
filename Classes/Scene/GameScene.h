@@ -62,6 +62,13 @@ public:
 
 	CC_SYNTHESIZE(int, _carFactoryNum, CarFactoryNum);
 
+    // 待造坦克数
+    CC_SYNTHESIZE(int, _tankNum, TankNum);
+    // 待造狗数
+    CC_SYNTHESIZE(int, _dogNum, DogNum);
+    // 待造步兵数
+    CC_SYNTHESIZE(int, _infantryNum, InfantryNum);
+
 	CC_SYNTHESIZE(cocos2d::Vec2, _carFactoryPosition, CarFactoryPosition);
 
 	CC_SYNTHESIZE(cocos2d::Vec2, _barracksPosition, BarracksPosition);
@@ -197,6 +204,36 @@ public:
 	* @return void
 	*/
 	void decreaseMine() { _mineNum--; }
+
+    /*
+    * @brief 待造狗加一
+    */
+    void addDog() { _dogNum++; }
+
+    /*
+    * @brief 待造兵加一
+    */
+    void addInfantry() { _infantryNum++; }
+
+    /*
+    * @brief 待造坦克加一
+    */
+    void addTank() { _tankNum++; }
+
+    /*
+    * @brief 待造狗减一
+    */
+    void decreaseDog() { _dogNum--; }
+
+    /*
+    * @brief 待造兵减一
+    */
+    void decreaseInfantry() { _infantryNum--; }
+
+    /*
+    * @brief 待造坦克减一
+    */
+    void decreaseTank() { _tankNum--; }
 
 	/*
 	* @brief isCollision

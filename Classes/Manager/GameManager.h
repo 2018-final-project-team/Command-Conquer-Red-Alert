@@ -8,6 +8,7 @@
 
 #include "cocos2d.h"
 #include "MoveController.h"
+#include <queue>
 #include <iostream>
 #include <time.h>
 
@@ -26,6 +27,9 @@ private:
 
     GameScene* _gameScene;
     MoveController* _moveController;
+
+    std::queue<Tag> _carQueue;               // 待建车队列
+    std::queue<Tag> _soldierQueue;           // 待建士兵队列 
 
 //========CreateController===========
 	CC_SYNTHESIZE(clock_t, _timeToCreateBuilding, TimeToCreateBuilding);               // 单位毫秒
@@ -72,10 +76,9 @@ public:
     /**
     * @brief 点击建造士兵的开始
     * @param1 士兵的Tag
-    * @param2 开始等待的时间
     * @return  void
     */
-    void clickCreateSoldierByTag(Tag soldier_tag, clock_t start_time);
+    void clickCreateSoldierByTag(Tag soldier_tag);
 
     /**
     * @brief 建造建筑的等待 需要在update函数里调用
@@ -88,6 +91,12 @@ public:
     * @return  void
     */
     void waitCreateSoldier();
+
+    /**
+    * @brief 建造车的等待 需要在update函数里调用
+    * @return  void
+    */
+    void waitCreateCar();
 
     /**
     * @brief 建造建筑 在GameScene中调用

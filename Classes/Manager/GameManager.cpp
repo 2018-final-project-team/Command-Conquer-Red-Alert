@@ -27,6 +27,7 @@ bool Manager::initWithGameScene(GameScene* gameScene)
 
     _isWaitToCreateBuilding = false;
     _isWaitToCreateSoldier = false;
+    _isWaitToCreateCar = false;
     _canCreateBuilding = false;
     _selectedEnemy = nullptr;
     _selectedBuilding = nullptr;
@@ -91,102 +92,42 @@ void Manager::clickCreateBuildingByTag(Tag building_tag, clock_t start_time)
             break;
         }
 
-        if (_gameScene->getMoney() >= castMoney )
-        {
-            _isWaitToCreateBuilding = true;
-            _timeToCreateBuilding = start_time;
-            _buildingTag = building_tag;
-            _gameScene->decreaseMoney(castMoney);
-            _gameScene->decreasePower(castPower);
-        }
+        // 图标处会判断钱是否足够
+        _isWaitToCreateBuilding = true;
+        _timeToCreateBuilding = start_time;
+        _buildingTag = building_tag;
+        _gameScene->decreaseMoney(castMoney);
+        _gameScene->decreasePower(castPower);
+        
     }
 }
 
-void Manager::clickCreateSoldierByTag(Tag soldier_tag, clock_t start_time)
+void Manager::clickCreateSoldierByTag(Tag soldier_tag)
 {
-    if (!_isWaitToCreateSoldier )
+    int castMoney;
+    switch (soldier_tag)
     {
-        int castMoney;
-        switch (soldier_tag)
-        {
-        case INFANTRY_TAG:
-            if (_gameScene->getBarracksNum() == 0)
-            {
-                return;
-            }
+    case INFANTRY_TAG:
+        castMoney = unitData::infantryCastMoney;
+        _gameScene->addInfantry();
+        _soldierQueue.push(soldier_tag);
+        break;
 
-            castMoney = unitData::infantryCastMoney;
-            if (_gameScene->getIsPowerEnough())
-            {
-                _waitTimeToCreateSoldier = unitData::EnoughPower::infantryWait;
-            }
-            else
-            {
-                _waitTimeToCreateSoldier = unitData::NotEnoughPower::infantryWait;
-            }
-            
-            break;
-        case DOG_TAG:
-            if (_gameScene->getBarracksNum() == 0)
-            {
-                return;
-            }
+    case DOG_TAG:
+        castMoney = unitData::dogCastMoney;
+        _gameScene->addDog();
+        _soldierQueue.push(soldier_tag);
+        break;
 
-            castMoney = unitData::dogCastMoney;
-            if (_gameScene->getIsPowerEnough())
-            {
-                _waitTimeToCreateSoldier = unitData::EnoughPower::dogWait;
-            }
-            else
-            {
-                _waitTimeToCreateSoldier = unitData::NotEnoughPower::dogWait;
-            }
-
-            break;
-        }
-
-        if (_gameScene->getMoney() >= castMoney)
-        {
-            _isWaitToCreateSoldier = true;
-            _timeToCreateSoldier = start_time;
-            _soldierTag = soldier_tag;
-            _gameScene->decreaseMoney(castMoney);
-        }
+    case TANK_TAG:
+        castMoney = unitData::tankCastMoney;
+        _gameScene->addTank();
+        _carQueue.push(soldier_tag);
+        break;
     }
 
+    _gameScene->decreaseMoney(castMoney);
 
-	if (!_isWaitToCreateCar)
-	{
-		int castMoney;
-		switch (soldier_tag)
-		{
-		case TANK_TAG:
-			if (_gameScene->getCarFactoryNum() == 0)
-			{
-				return;
-			}
-
-			castMoney = unitData::tankCastMoney;
-			if (_gameScene->getIsPowerEnough())
-			{
-				_waitTimeToCreateCar = unitData::EnoughPower::tankWait;
-			}
-			else
-			{
-				_waitTimeToCreateCar = unitData::NotEnoughPower::tankWait;
-			}
-
-			break;
-		}
-
-		if (_gameScene->getMoney() >= castMoney)
-		{
-			_isWaitToCreateCar = true;
-			_timeToCreateCar = start_time;
-			_carTag = soldier_tag;
-			_gameScene->decreaseMoney(castMoney);
-		}
-	}
 }
 
 void Manager::waitCreateBuilding()
@@ -211,28 +152,135 @@ void Manager::waitCreateSoldier()
                     (_gameScene->_gameListener->clone(), soldier);
             
 			soldier->setPosition(_gameScene->getBarracksPosition());
+            // To Do: 走出兵营
 
             _gameScene->addChild(soldier);
             _gameScene->getSoldiers()->pushBack(soldier);
+            _soldierQueue.pop();
             _isWaitToCreateSoldier = false;
+
+            switch (_soldierTag)
+            {
+            case INFANTRY_TAG:
+                _gameScene->decreaseInfantry();
+                break;
+
+            case DOG_TAG:
+                _gameScene->decreaseDog();
+                break;
+            }
         }
     }
+    else if (_soldierQueue.size() > 0)
+    {
+        switch (_soldierQueue.front())
+        {
+        case INFANTRY_TAG:
+            if (_gameScene->getBarracksNum() == 0)
+            {
+                return;
+            }
+            _soldierTag = INFANTRY_TAG;
+            if (_gameScene->getIsPowerEnough())
+            {
+                _waitTimeToCreateSoldier = unitData::EnoughPower::infantryWait;
+            }
+            else
+            {
+                _waitTimeToCreateSoldier = unitData::NotEnoughPower::infantryWait;
+            }
+            break;
 
-	if (_isWaitToCreateCar)
-	{
-		if (clock() - _timeToCreateCar > _waitTimeToCreateCar)
-		{
-			Unit* car = Unit::create(_carTag);
-			_gameScene->_gameEventDispatcher->addEventListenerWithSceneGraphPriority
-			(_gameScene->_gameListener->clone(), car);
-			
-			car->setPosition(_gameScene->getCarFactoryPosition());
+        case DOG_TAG:
+            if (_gameScene->getBarracksNum() == 0)
+            {
+                return;
+            }
+            _soldierTag = DOG_TAG;
+            if (_gameScene->getIsPowerEnough())
+            {
+                _waitTimeToCreateSoldier = unitData::EnoughPower::dogWait;
+            }
+            else
+            {
+                _waitTimeToCreateSoldier = unitData::NotEnoughPower::dogWait;
+            }
+            break;
 
-			_gameScene->addChild(car);
-			_gameScene->getSoldiers()->pushBack(car);
-			_isWaitToCreateCar = false;
-		}
-	}
+        case TANK_TAG:
+            if (_gameScene->getCarFactoryNum() == 0)
+            {
+                return;
+            }
+            _carTag = TANK_TAG;
+            if (_gameScene->getIsPowerEnough())
+            {
+                _waitTimeToCreateCar = unitData::EnoughPower::tankWait;
+            }
+            else
+            {
+                _waitTimeToCreateCar = unitData::NotEnoughPower::tankWait;
+            }
+            break;
+        }
+
+        _isWaitToCreateSoldier = true;
+        _timeToCreateSoldier = clock();
+
+    }
+}
+
+void Manager::waitCreateCar()
+{
+    if (_isWaitToCreateCar)
+    {
+        if (clock() - _timeToCreateCar > _waitTimeToCreateCar)
+        {
+            Unit* car = Unit::create(_carTag);
+            _gameScene->_gameEventDispatcher->addEventListenerWithSceneGraphPriority
+            (_gameScene->_gameListener->clone(), car);
+
+            car->setPosition(_gameScene->getCarFactoryPosition());
+            // To Do: 开出车厂
+
+            _gameScene->addChild(car);
+            _gameScene->getSoldiers()->pushBack(car);
+            _carQueue.pop();
+            _isWaitToCreateCar = false;
+
+            switch (_carTag)
+            {
+            case TANK_TAG:
+                _gameScene->decreaseTank();
+                break;
+            }
+        }
+    }
+    else if (_carQueue.size() > 0)
+    {
+        switch (_carQueue.front())
+        {
+        case TANK_TAG:
+            if (_gameScene->getCarFactoryNum() == 0)
+            {
+                return;
+            }
+            _carTag = TANK_TAG;
+            if (_gameScene->getIsPowerEnough())
+            {
+                _waitTimeToCreateCar = unitData::EnoughPower::tankWait;
+            }
+            else
+            {
+                _waitTimeToCreateCar = unitData::NotEnoughPower::tankWait;
+            }
+            break;
+        }
+
+        _isWaitToCreateCar = true;
+        _timeToCreateCar = clock();
+
+    }
 }
 
 void Manager::createBuilding(cocos2d::Vec2 position)
@@ -478,29 +526,46 @@ void Manager::attack()
             _gameScene->decreasePowerPlant();            // 电厂数量减一 如果电厂数量为0
             this->resetPower();
             break;
+
         case MINE_TAG:
             _gameScene->decreaseMine();                  // 矿场数量-1
             _gameScene->addPower(buildingData::mineCastPower);
             break;
+
         case BARRACKS_TAG:
-            _gameScene->decreaseBarracks();         
-            for (auto& building : *(_gameScene->getBuildings()))
+            _gameScene->decreaseBarracks();
+            if (_gameScene->getBarracksNum())
             {
-                if (building->getBuildingTag() == BARRACKS_TAG)
+                for (auto& building : *(_gameScene->getBuildings()))
                 {
-                    _gameScene->setBarracksPosition(building->getPosition());
+                    if (building->getBuildingTag() == BARRACKS_TAG)
+                    {
+                        _gameScene->setBarracksPosition(building->getPosition());
+                    }
                 }
+            }
+            else
+            {
+                _isWaitToCreateSoldier = false;
             }
             _gameScene->addPower(buildingData::barracksCastPower);
             break;
+
         case CAR_FACTORY_TAG:
             _gameScene->decreaseCarFactory();
-            for (auto& building : *(_gameScene->getBuildings()))
+            if (_gameScene->getCarFactoryNum())
             {
-                if (building->getBuildingTag() == CAR_FACTORY_TAG)
+                for (auto& building : *(_gameScene->getBuildings()))
                 {
-                    _gameScene->setCarFactoryPosition(building->getPosition());
+                    if (building->getBuildingTag() == CAR_FACTORY_TAG)
+                    {
+                        _gameScene->setCarFactoryPosition(building->getPosition());
+                    }
                 }
+            }
+            else
+            {
+                _isWaitToCreateCar = false;
             }
             _gameScene->addPower(buildingData::carFactoryCastPower);
             break;
