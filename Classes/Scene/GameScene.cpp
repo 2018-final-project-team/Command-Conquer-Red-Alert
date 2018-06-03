@@ -103,14 +103,14 @@ bool GameScene::init()
         Point movePosition = touch->getLocation();
         drawNode->clear();
         drawNode->drawRect(_touchBegan, Vec2(_touchBegan.x, movePosition.y), 
-            movePosition, Vec2(movePosition.x, _touchBegan.y), Color4F::WHITE);
+            movePosition, Vec2(movePosition.x, _touchBegan.y), Color4F(255, 255, 255, 100));
     };
 
 	_gameListener->onTouchEnded = [=](Touch* touch, Event* event) {
 	    _touchEnd = touch->getLocation();
         drawNode->clear();
-        if (fabs(_touchEnd.x - _touchBegan.x) < 20.0 && 
-            fabs(_touchEnd.y - _touchBegan.y) < 20.0)      // 点击则判断点击对象
+        if (fabs(_touchEnd.x - _touchBegan.x) < 15.0 && 
+            fabs(_touchEnd.y - _touchBegan.y) < 15.0)      // 点击则判断点击对象
         {
             //生成Sprite的Rect
             auto target = static_cast<Sprite*>(event->getCurrentTarget());
@@ -138,7 +138,7 @@ bool GameScene::init()
                     // 为层注册监听器后层也会响应 所以此处需要判断士兵建筑和空地
                     log("default");
                     // 测试 isCollision
-                    //log("%d", isCollision(_touchEnd));
+                    log("%d", isCollision(_touchEnd));
                     _manager->getMoveController()->setDestination(_touchEnd);
                 }
             }

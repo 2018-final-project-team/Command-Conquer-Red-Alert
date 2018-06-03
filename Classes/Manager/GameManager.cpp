@@ -152,7 +152,8 @@ void Manager::waitCreateSoldier()
                     (_gameScene->_gameListener->clone(), soldier);
             
 			soldier->setPosition(_gameScene->getBarracksPosition());
-            // To Do: 走出兵营
+            // 走出兵营
+
 
             _gameScene->addChild(soldier);
             _gameScene->getSoldiers()->pushBack(soldier);

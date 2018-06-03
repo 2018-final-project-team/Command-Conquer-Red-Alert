@@ -9,6 +9,7 @@
 #include "cocos2d.h"
 #include "MoveController.h"
 #include <queue>
+#include <map>
 #include <iostream>
 #include <time.h>
 
@@ -27,6 +28,9 @@ private:
 
     GameScene* _gameScene;
     MoveController* _moveController;
+
+    std::map<cocos2d::Point, bool> _putSoldierPoints;
+    std::map<cocos2d::Point, bool> _putCarPoints;
 
     std::queue<Tag> _carQueue;               // 待建车队列
     std::queue<Tag> _soldierQueue;           // 待建士兵队列 
@@ -136,6 +140,10 @@ public:
     {
         return _moveController;
     }
+
+    /*
+    * @brief set _putSoldierPoints
+    */
 
 };
 
