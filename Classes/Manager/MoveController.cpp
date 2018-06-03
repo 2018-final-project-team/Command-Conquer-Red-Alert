@@ -1,8 +1,8 @@
 /*
 *  @file     MoveController.cpp
-*  @brief    å„ç§å…µçš„ç§»åŠ¨æ§åˆ¶
+*  @brief    ¸÷ÖÖ±øµÄÒÆ¶¯¿ØÖÆ
 */
-
+#pragma once
 #include "MoveController.h"
 #include "../Data/Building.h"
 #include "../Data/UnitData.h"
@@ -63,7 +63,7 @@ void MoveController::selectSoldiersWithTag(Tag tag)
 
 void MoveController::setDestination(cocos2d::Vec2 position)
 {
-    // æ£€æµ‹æ˜¯å¦éšœç¢
+    // ¼ì²âÊÇ·ñÕÏ°­
     if (_gameScene->isCollision(position))
     {
         return;
@@ -100,8 +100,273 @@ bool MoveController::willHitInFiveTiles(Vec2 nowPosition, Vec2 direction)
     return false;
 }
 
+Vec2 MoveController::changeDirection(cocos2d::Vec2 nowPosition, cocos2d::Vec2 direction)
+{
+    float tile_size = _gameScene->getTileSize();
+    bool store_is_first_move = _isFirstMove;
+    _isFirstMove = true;
+
+//================ To Do : ´Ë´¦µÄ×ªÏòbugÊ®·ÖÑÏÖØ,ÄÎºÎ±¾ÈËÄÜÁ¦ÓĞÏŞ,ÔİÊ±Ïë²»³öºÃµÄ·½·¨ ==================
+    Vec2 up(0, 1);
+    Vec2 down(0, -1);
+    Vec2 right(1, 0);
+    Vec2 left(-1, 0);
+    if (direction.x > 0)
+    {
+        if (direction.y > 0)                                         //right up
+        {
+            if (!willHitInFiveTiles(nowPosition, up))       // up
+                return up;
+            else if (!willHitInFiveTiles(nowPosition, right))   // right
+                return right;
+            else if (!willHitInFiveTiles(nowPosition, left))  //left
+                return left;
+            else if (!willHitInFiveTiles(nowPosition, down))   // down
+                return down;
+            else
+                return -direction;
+        }
+        else if (direction.y < 0)                                   // right down
+        {
+            if (!willHitInFiveTiles(nowPosition, down))     // down
+                return down;
+            else if (!willHitInFiveTiles(nowPosition, right)) // right
+                return right;
+            else if (!willHitInFiveTiles(nowPosition, left)) // left
+                return left;
+            else if (!willHitInFiveTiles(nowPosition, up)) // up
+                return up;
+            else
+                return -direction;
+        }
+        else                                                         // right
+        {
+            if (!willHitInFiveTiles(nowPosition, up))        // up
+                return up;
+            else if (!willHitInFiveTiles(nowPosition, down))  // down
+                return down;
+            else
+                return -direction;
+        }
+    }
+    else if (direction.x < 0)                                            
+    {
+        if (direction.y > 0)                                               // left up
+        {
+            if (!willHitInFiveTiles(nowPosition, up))     // up
+                return up;
+            else if (!willHitInFiveTiles(nowPosition, left)) // left
+                return left;
+            else if (!willHitInFiveTiles(nowPosition, right)) // right
+                return right;
+            else if (!willHitInFiveTiles(nowPosition, down)) // down
+                return down;
+            else
+                return -direction;
+        }
+        else if (direction.y < 0)                                         //left down
+        {
+            if (!willHitInFiveTiles(nowPosition, down))     // down
+                return down;
+            else if (!willHitInFiveTiles(nowPosition, left)) // left
+                return left;
+            else if (!willHitInFiveTiles(nowPosition, right)) // right
+                return right;
+            else if (!willHitInFiveTiles(nowPosition, up)) // up
+                return up;
+            else
+                return -direction;
+        }
+        else                                                            //left
+        {
+            if (!willHitInFiveTiles(nowPosition, down))     // down
+                return down;
+            else if (!willHitInFiveTiles(nowPosition, up)) // up
+                return up;
+            else
+                return -direction;
+        }
+    }
+    else                                               // up or down                          
+    {
+        if (!willHitInFiveTiles(nowPosition, right)) // right
+            return right;
+        else if (!willHitInFiveTiles(nowPosition, left)) // left
+            return left;
+        else
+            return -direction;
+    }
+
+    _isFirstMove = store_is_first_move;
+}
+
 void MoveController::moveSoldiers()
 {
-    // To Do: by czd
-    // æœ¬èœé¸¡å®åœ¨å¤ªèœ QaQ
+    static clock_t preT = clock();
+    clock_t nowT = clock();
+    float interval = nowT - preT;
+    preT = nowT;
+    for (auto& soldier : *(_gameScene->getSoldiers()))
+    {
+        if (!soldier->getGetDestination())
+        {
+            Vec2 nowPosition = soldier->getPosition();
+            Vec2 destination = soldier->getDestination();
+            Vec2 direction = destination - nowPosition;
+            direction.normalize();
+            float distance = destination.distance(nowPosition);
+//================ To Do : ´Ë´¦µÄ×ªÏòbugÊ®·ÖÑÏÖØ,ÄÎºÎ±¾ÈËÄÜÁ¦ÓĞÏŞ,ÔİÊ±Ïë²»³öºÃµÄ·½·¨ ==================
+            if (willHitInFiveTiles(nowPosition, direction))
+            {
+                if (soldier->getSecondDirection() != Vec2::ZERO)
+                {
+                    soldier->setSecondDirection(changeDirection(nowPosition, direction));
+                }
+                direction = soldier->getSecondDirection();
+            }
+            else
+            {
+                soldier->setSecondDirection(Vec2::ZERO);
+            }
+
+            Vec2 move = soldier->getUnitSpeed() * interval * direction;
+            if (move.length() > distance)
+            {
+                soldier->moveTo(destination, 0.01);
+                soldier->setGetDestination(true);
+                _isFirstMove = true;
+                return;
+            }
+			else {
+				soldier->moveTo(move + nowPosition, 0.01);
+			}
+            //// ¼ì²âÅö×²
+            if (_gameScene->isCollision(move + nowPosition))
+            {
+                return;
+            }
+            
+
+            _isFirstMove = false;
+        }
+    }
+}
+
+//ÓÃÓÚÑ°Â·µÄ½Úµã
+//whereX,whereY,µ±Ç°Ê¿±øÎ»ÖÃ£¬ÒÔµØÍ¼×óÏÂÎªÔ­µã
+//cost »¨·Ñ
+//father ¸¸½Úµã£¬ÓÃÓÚÕÒµ½Â·ºó·µ»Ø
+
+struct node {
+	int whereX;
+	int whereY;
+	int cost;
+	node* father;
+	node(int wx, int wy, int c, node* f) {
+		whereX = wx;
+		whereY = wy;
+		cost = c;
+		father = f;
+	}
+};
+//Ñ°Â·Ëã·¨µÄ×é³É²¿·Ö
+//ÅĞ¶Ïµ±Ç°ÕÒµ½µÄµØºÍÄ¿µÄµØ¼äÊÇ·ñÓĞÕÏ°­
+//Èç¹ûÃ»ÓĞÕÏ°­£¬½áÊøÑ°Â·
+//Ç°ÃæµÄÂ·°´ÕÒµ½µÄÂ·×ß£¬ºóÃæµÄÂ·Ö±½Ó×ßÖ±Ïß
+//´«Èëµ±Ç°Î»ÖÃ£¬Ä¿µÄµØ£¨µØÍ¼×ø±ê£©
+bool MoveController::is_find(Vec2 position,Vec2 destination) {
+	Point direction = destination - position;
+	//Á½µãÖ®¼äÈÎÈ¡15¸öµã£¬Èç¹û¶¼Ã»ÕÏ°­£¬¼´Ã»ÕÏ°­
+	for (int i = 1; i < 15; i++) {
+		if (!_gameScene->isCollision(_gameScene->_tileMap->convertToWorldSpace(position+i*direction/20))) {
+			return false;
+		}
+	}
+	return true;
+}
+/**
+Ñ°Â·Ëã·¨Ö÷Ìå
+ÀàËÆA*Ëã·¨
+* @brief ´«ÈëÒªÒÆ¶¯µÄÊ¿±øºÍÒ»¸öVector<Point*> route,À´×°ÕÒµ½µÄÂ·
+ÎªÁËĞ§ÂÊ¿¼ÂÇ£¬ÏàÁÚÁ½¸ö½ÚµãµÄdistance=240,£¬¿ÉÒÔÍ¨¹ı³ıÒÔËÙ¶ÈµÃµ½Ã¿ÃëÒÔ¼°Ã¿Ö¡µÄÎ»ÖÃ
+by czd
+* @return  void
+*/
+void MoveController::findRroute(Unit *&soldier, Vector<Point> &route) {
+	std::vector<node*> vn;
+	Vec2 screenNowPosition = soldier->getPosition();
+	Vec2 screenDestination = soldier->getDestination();
+	//×ª»¯ÎªÒÔµØÍ¼×óÏÂ½ÇÎªÔ­µãµÄ×ø±ê
+	Vec2 nowPosition = _gameScene->_tileMap->convertToNodeSpace(screenNowPosition);
+	Vec2 nowDestination= _gameScene->_tileMap->convertToNodeSpace(screenDestination);
+	//Õâ¸öÒÔºó¿ÉÄÜÓĞÓÃ
+	//struct cmp {
+	//	bool operator()(node *a, node *b) {
+	//		return a->cost >= b->cost;
+	//	}
+	//};
+	std::queue<node*> open;
+	//std::priority_queue<node*, std::vector<node*>, cmp> close;
+	node *head = new node(nowPosition.x, nowPosition.y, 0,NULL);
+	node *myend=head;
+	open.push(head);
+	int distance = 240;
+	//8¸ö·½Ïò
+	//ÉÏÏÂ×óÓÒ£¬×óÉÏ×óÏÂµÈ
+	float directX[8] = { 0,0,-1 * distance ,distance,0.7*distance ,0.7* distance ,-0.7* distance ,-0.7* distance };
+	float directY[8] = { distance,-1*distance,0 ,0,0.7* distance ,-0.7* distance ,0.7* distance ,-0.7* distance };
+	int is_not_find = 1;
+	//ÕâÁ½¸öµã¼äÎŞÕÏ°­
+	if (is_find(nowPosition,nowDestination)) {
+		is_not_find = 0;
+	}
+	while (is_not_find) {
+		node *cur = open.front();
+		//close.push(cur);
+		open.pop();
+		//ÁĞ¾Ù8¸ö·½Ïò
+		for (int i = 0; i < 8; i++) {
+			//°ó¶¨Î»ÖÃÊÇ·ñÓĞÕÏ°­
+			if (_gameScene->isCollision(_gameScene->_tileMap->convertToWorldSpace(Point(cur->whereX+directX[i], cur->whereY+directY[i])))) {
+				//½øÒ»²½É¸Ñ¡
+				if (Vec2(nowDestination.x - (cur->whereX), nowDestination.y - (cur->whereY)).length() > Vec2(nowDestination.x - (cur->whereX) - directX[i], nowDestination.y - (cur->whereY) - directY[i]).length() - 0.7*distance) {
+					node *n = new node(cur->whereX + directX[i], cur->whereY + directY[i], distance, cur);
+					vn.push_back(n);
+					if (is_find(Point(n->whereX,n->whereY),nowDestination)) {
+						is_not_find = 0;
+						myend = n;
+						break;
+					}
+					open.push(n);
+				}				
+			}
+		
+		}		
+	}
+	//¸ÃµØºÍÄ¿µÄµØ¿ÉÖ±´ï
+	Point nowPlace{ 0,0 };
+	nowPlace.x = static_cast<float>(myend->whereX);
+	nowPlace.y = static_cast<float>(myend->whereY);
+	Point direction = nowDestination - nowPlace;
+	direction.normalize();
+	//´ÓÕÒµ½µÄµØµ½³ö·¢µØ
+	while (myend!= NULL) {
+		//route.pushBack(Point(myend->whereX, myend->whereY));
+		myend = myend->father;
+	}
+	//reverseºó£¬¾ÍÊÇ³ö·¢µØµ½ÕÒµ½µØ
+	route.reverse();
+	//ÔÙ°ÑºóÃæµÄÂ·¼ÓÈëroute
+	while ((nowDestination - nowPlace).length() > distance) {
+		//route.pushBack(nowPlace + distance*direction);
+		nowPlace += distance*direction;
+	}
+	//route.pushBack(nowDestination);
+	std::vector<node*>:: iterator it;
+	it = vn.begin();
+	while (it != vn.end()) {
+		delete *it;
+		it++;
+	}
+
 }
