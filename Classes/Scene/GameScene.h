@@ -1,3 +1,4 @@
+#pragma once
 #ifndef __Game_SCENE_H__
 #define __Game_SCENE_H__
 
@@ -7,39 +8,32 @@ const clock_t addMoneyDelay = 1000 * 10;
 #include "cocos2d.h"
 #include "Data\UnitData.h"
 #include "Manager\GameManager.h"
-#include "Panel/Panel.h"
 
 class Manager;   //解决头文件互相包含时带来的问题
 
-class Panel;
-
 class GameScene : public cocos2d::Layer
 {
-public:
-	Manager* _manager;
 private:
-	Panel* panel;
-	cocos2d::TMXTiledMap* _tileMap;
 	cocos2d::TMXLayer* _barrier;
 	cocos2d::Point _cursorPosition{ 0,0 };  // C++ 11 允许这样初始化
 	void scrollMap();
 
 	cocos2d::Vector<Unit*> _selectedSoldiers;
-
-    cocos2d::Vector<Unit*> _soldiers;
 	cocos2d::Vector<Unit*> _enemySoldiers;
+	cocos2d::Vector<Unit*> _soldiers;
 	cocos2d::Vector<Building*> _buildings;
-    cocos2d::Vector<Building*> _enemyBuildings;
 
 	Point _touchBegan;
 	Point _touchEnd;
-	
+	Manager* _manager;
 
 public:
 	EventListenerTouchOneByOne* _gameListener;
 	EventDispatcher* _gameEventDispatcher;
 
 public:
+	cocos2d::TMXTiledMap* _tileMap;
+
 	CC_SYNTHESIZE(int, _money, Money);
 
 	// 总电力
@@ -61,13 +55,6 @@ public:
 	CC_SYNTHESIZE(int, _powerPlantNum, PowerPlantNum);
 
 	CC_SYNTHESIZE(int, _carFactoryNum, CarFactoryNum);
-
-    // 待造坦克数
-    CC_SYNTHESIZE(int, _tankNum, TankNum);
-    // 待造狗数
-    CC_SYNTHESIZE(int, _dogNum, DogNum);
-    // 待造步兵数
-    CC_SYNTHESIZE(int, _infantryNum, InfantryNum);
 
 	CC_SYNTHESIZE(cocos2d::Vec2, _carFactoryPosition, CarFactoryPosition);
 
@@ -101,23 +88,11 @@ public:
 	*/
 	cocos2d::Vector<Unit*>* getSoldiers();
 
-    /*
-    * @brief getEnemySoldiers
-    * @return the address of enemy_soldiers
-    */
-    cocos2d::Vector<Unit*> * getEnemySoldiers() { return &_enemySoldiers; }
-
 	/**
 	* @brief getBuildings
 	* @return the address of _buildings
 	*/
 	cocos2d::Vector<Building*>* getBuildings();
-
-    /*
-    * @brief getEnemyBuildings
-    * @return the address of enemy_soldiers
-    */
-    cocos2d::Vector<Building*> * getEnemyBuildings() { return &_enemyBuildings; }
 
 	/**
 	* @brief addMoney
@@ -205,42 +180,12 @@ public:
 	*/
 	void decreaseMine() { _mineNum--; }
 
-    /*
-    * @brief 待造狗加一
-    */
-    void addDog() { _dogNum++; }
-
-    /*
-    * @brief 待造兵加一
-    */
-    void addInfantry() { _infantryNum++; }
-
-    /*
-    * @brief 待造坦克加一
-    */
-    void addTank() { _tankNum++; }
-
-    /*
-    * @brief 待造狗减一
-    */
-    void decreaseDog() { _dogNum--; }
-
-    /*
-    * @brief 待造兵减一
-    */
-    void decreaseInfantry() { _infantryNum--; }
-
-    /*
-    * @brief 待造坦克减一
-    */
-    void decreaseTank() { _tankNum--; }
-
 	/*
 	* @brief isCollision
 	* @param the position
 	* @return bool
 	*/
-	bool isCollision(cocos2d::Vec2 position1);
+	bool isCollision(cocos2d::Vec2 position);
 
 	/*
 	* @brief getTileSize
@@ -248,11 +193,12 @@ public:
 	*/
 	float getTileSize();
 
-    /*
-    *@brief 移动所有士兵建筑 包括目的地
-    */
-    void moveSpritesWithMap(cocos2d::Vec2 direction);
-
+	/*
+	* @brief getEnemySoldiers
+	* @return the address of enemy_soldiers
+	*/
+	//To Do:和网络也许有关系
+	cocos2d::Vector<Unit*> * getEnemySoldiers() { return &_enemySoldiers; }
 
 };
 
