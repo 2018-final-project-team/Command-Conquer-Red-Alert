@@ -113,6 +113,9 @@ public:
     //生成单位的方法
     static Unit * create(Tag _unitTag);
 
+    // 用于寻路
+    std::vector<Point> _route;
+
 public:
     /*
     */

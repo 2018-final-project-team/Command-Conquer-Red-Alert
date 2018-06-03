@@ -431,3 +431,5 @@ float GameScene::getTileSize()
 {
 	return _tileMap->getTileSize().width;
 }
+
+//...............................

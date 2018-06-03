@@ -73,6 +73,7 @@ void MoveController::setDestination(cocos2d::Vec2 position)
     for (auto& soldier : *_selectedSoldiers)
     {
         soldier->setDestination(position);
+        findRroute(soldier, soldier->_route);
         soldier->setGetDestination(false);
     }
 
@@ -87,7 +88,10 @@ void MoveController::moveSoldiers()
     preT = nowT;
     for (auto& soldier : *(_gameScene->getSoldiers()))
     {
-        ;
+        if (soldier->_route.size())
+        {
+
+        }
     }
 }
 
