@@ -20,7 +20,7 @@ public:
 private:
 	Panel* panel;
 	cocos2d::TMXTiledMap* _tileMap;
-	cocos2d::TMXLayer* _ground;
+	cocos2d::TMXLayer* _barrier;
 	cocos2d::Point _cursorPosition{ 0,0 };  // C++ 11 允许这样初始化
 	void scrollMap();
 
@@ -240,7 +240,7 @@ public:
 	* @param the position
 	* @return bool
 	*/
-	bool isCollision(cocos2d::Vec2 position);
+	bool isCollision(cocos2d::Vec2 position1);
 
 	/*
 	* @brief getTileSize

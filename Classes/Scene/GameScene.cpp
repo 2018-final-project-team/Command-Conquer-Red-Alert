@@ -45,7 +45,8 @@ bool GameScene::init()
 	_tileMap = TMXTiledMap::create("GameItem/Map/map1.tmx");
 	this->addChild(_tileMap);
 
-	_ground = _tileMap->getLayer("ground");
+	_barrier = _tileMap->getLayer("barrier");
+    _barrier->setVisible(false);
 
 	/*update by czd*/
 	Sprite* small_map = Sprite::create("GameItem/Map/small_map.png");
@@ -53,6 +54,9 @@ bool GameScene::init()
 	this->addChild(small_map);
 
 
+    //DrawNode
+    DrawNode* drawNode = DrawNode::create();
+    this->addChild(drawNode);
 
 
 	//=====================测试Panel========================
@@ -94,9 +98,19 @@ bool GameScene::init()
 		return true;
 	};
 
+    // 选择时画出矩形
+    _gameListener->onTouchMoved = [=](Touch* touch, Event* event) {
+        Point movePosition = touch->getLocation();
+        drawNode->clear();
+        drawNode->drawRect(_touchBegan, Vec2(_touchBegan.x, movePosition.y), 
+            movePosition, Vec2(movePosition.x, _touchBegan.y), Color4F::WHITE);
+    };
+
 	_gameListener->onTouchEnded = [=](Touch* touch, Event* event) {
 	    _touchEnd = touch->getLocation();
-        if (_touchEnd == _touchBegan)      // 点击则判断点击对象
+        drawNode->clear();
+        if (fabs(_touchEnd.x - _touchBegan.x) < 20.0 && 
+            fabs(_touchEnd.y - _touchBegan.y) < 20.0)      // 点击则判断点击对象
         {
             //生成Sprite的Rect
             auto target = static_cast<Sprite*>(event->getCurrentTarget());
@@ -123,8 +137,9 @@ bool GameScene::init()
                 default:
                     // 为层注册监听器后层也会响应 所以此处需要判断士兵建筑和空地
                     log("default");
-                    // isCollision有bug 故此处会崩
-                    //_manager->getMoveController()->setDestination(_touchEnd);
+                    // 测试 isCollision
+                    //log("%d", isCollision(_touchEnd));
+                    _manager->getMoveController()->setDestination(_touchEnd);
                 }
             }
         }
@@ -389,22 +404,22 @@ void GameScene::moveSpritesWithMap(cocos2d::Vec2 direction)
     }
 }
 
-bool GameScene::isCollision(cocos2d::Vec2 position)
+bool GameScene::isCollision(cocos2d::Vec2 position1)
 {
-	// turn PixelPosition to TileCoord
-	Size mapSize = _tileMap->getMapSize();
-	Size tileSize = _tileMap->getTileSize();
-	position = _tileMap->convertToNodeSpace(position);
-	int x = position.x / tileSize.width;
-	int y = (mapSize.height * tileSize.height - position.y) / tileSize.height;
+    // turn PixelPosition to TileCoord
+    Size mapSize = _tileMap->getMapSize();
+    Size tileSize = _tileMap->getTileSize();
+    auto position = _tileMap->convertToNodeSpace(position1);
+    position.x = static_cast<int>(position.x / tileSize.width);
+    position.y = mapSize.height - static_cast<int>(position.y / tileSize.width) - 1;
+    // get the GID of tile
+    int tileGID = _barrier->getTileGIDAt(position);
 
-	// get the GID of tile
-	int tileGID = _ground->getTileGIDAt(Vec2(x, y));
-
-	// get the properties
-	ValueMap& properties = _tileMap->getPropertiesForGID(tileGID).asValueMap();
-
-	return properties["moveable"].asInt();
+    if (!tileGID) 
+    {
+        return true;
+    }
+    return false;
 }
 
 float GameScene::getTileSize()
