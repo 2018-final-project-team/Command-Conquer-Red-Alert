@@ -8,6 +8,7 @@
 
 #include "cocos2d.h""
 #include <iostream>
+#include <vector>
 #include "Scene\GameScene.h"
 
 class GameScene;
@@ -25,7 +26,6 @@ protected:
 
     GameScene* _gameScene;                             // game 场景类
     cocos2d::Vector< Unit* > *_selectedSoldiers;     // selected soldiers
-    bool _isFirstMove;                               //用来减少障碍判断次数
 
 public:
 

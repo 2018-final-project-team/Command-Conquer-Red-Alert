@@ -12,6 +12,7 @@
 #include "string"
 #include "TagData.h"
 #include "Building.h"
+#include <vector>
 
 USING_NS_CC;
 //TODO: 加入动画和图片素材，之后实现。
