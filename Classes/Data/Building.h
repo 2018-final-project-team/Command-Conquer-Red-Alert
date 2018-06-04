@@ -14,29 +14,29 @@
 
 namespace buildingData
 {
-    const int powerPlantCastMoney = 0; 
-    const int powerPlantCastPower = 0;
-    const int mineCastMoney = 0;
-    const int mineCastPower = 0;
-    const int barracksCastMoney = 0;
-    const int barracksCastPower = 0;
-    const int carFactoryCastMoney = 0;
-    const int carFactoryCastPower = 0;
+    const int powerPlantCastMoney = 200; 
+    const int powerPlantCastPower = -1000;
+    const int mineCastMoney = 1000;
+    const int mineCastPower = 600;
+    const int barracksCastMoney = 500;
+    const int barracksCastPower = 300;
+    const int carFactoryCastMoney = 800;
+    const int carFactoryCastPower = 500;
 
     namespace EnoughPower
     {
-        const int powerPlantWait = 0;
-        const int mineWait = 0;
-        const int barracksWait = 0;
-        const int carFactoryWait = 0;
+        const int powerPlantWait = 5*1000;
+        const int mineWait = 5 * 1000;
+        const int barracksWait = 5 * 1000;
+        const int carFactoryWait = 5 * 1000;
     }
 
     namespace NotEnoughPower
     {
-        const int powerPlantWait = 0;
-        const int mineWait = 0;
-        const int barracksWait = 0;
-        const int carFactoryWait = 0;
+        const int powerPlantWait = 10*1000;
+        const int mineWait = 10 * 1000;
+        const int barracksWait = 10 * 1000;
+        const int carFactoryWait = 10 * 1000;
     }
 
 }

@@ -100,6 +100,14 @@ void Icon::setStatus(IconsStatus iconSta)
 		setIsAble(false);
 		break;
 	case eIconPre:
+		if (progressTimer1 != nullptr)
+		{
+			this->removeChild(progressTimer1, true);
+		}
+		if (progressTimer2)
+		{
+			this->removeChild(progressTimer2, true);
+		}
 		_statusLabel->setVisible(false);
 		_invalidIcon->setVisible(false);
 		_statusLabel2->setVisible(false);
@@ -114,6 +122,14 @@ void Icon::setStatus(IconsStatus iconSta)
 		setIsAble(false);
 		break;
 	case eIconOK:
+		if (progressTimer1 != nullptr)
+		{
+			this->removeChild(progressTimer1, true);
+		}
+		if (progressTimer2)
+		{
+			this->removeChild(progressTimer2, true);
+		}
 		_statusLabel->setString("OK");
 		_statusLabel->setColor(Color3B(0, 255, 0));
 		_statusLabel->setVisible(true);

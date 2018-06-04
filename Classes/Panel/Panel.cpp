@@ -75,7 +75,7 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 		Vec2 locationInNode = _selectedButton->convertToNodeSpace(touch->getLocation());
 		Size s = _selectedButton->getContentSize();
 		Rect rect = Rect(0, 0, s.width, s.height);
-
+		log("listner1 %d %d", s.width, s.height);
 		//点击范围判断检测
 		if (rect.containsPoint(locationInNode))
 		{
@@ -113,11 +113,11 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 	_iconButtonListener->onTouchBegan = [this](Touch* touch, Event* event) {
 		Icon* _selectedButton = static_cast<Icon*>(event->getCurrentTarget());
 		Vec2 locationInNode = _selectedButton->convertToNodeSpace(touch->getLocation());
-		Size s = _selectedButton->getContentSize();
-		Rect rect = Rect(0, 0, s.width, s.height);
-
+		Size s2 = _selectedButton->_iconFrame->getContentSize();
+		Rect rect2 = Rect(-s2.width/2, -s2.height/2, s2.width, s2.height);
+		log("listner2 %d %d",s2.width,s2.height);
 		//点击范围判断检测
-		if (rect.containsPoint(locationInNode))
+		if (rect2.containsPoint(locationInNode))
 		{
 			log("touch icon");
 			switch (_selectedButton->getTag())
@@ -238,12 +238,12 @@ void Panel::checkIcon(Tag tag)
 	_gameScene->setBarracksNum(1);
 	_gameScene->setCarFactoryNum(1);
 	_gameScene->setMoney(3000);
-	_gameScene->_manager->_isWaitToCreateBuilding = true;
-	_gameScene->_manager->_canCreateBuilding = false;
-	_gameScene->_manager->setBuildingTag(POWER_PLANT_TAG);
-	_gameScene->_manager->setTimeToCreateBuilding(clock());
-	_gameScene->_manager->setWaitTimeToCreateBuilding(10 * 1000);
-	_powerPlantIcon->showProgressOfWait(10);
+	//_gameScene->_manager->_isWaitToCreateBuilding = true;
+	//_gameScene->_manager->_canCreateBuilding = false;
+	//_gameScene->_manager->setBuildingTag(POWER_PLANT_TAG);
+	//_gameScene->_manager->setTimeToCreateBuilding(clock());
+	//_gameScene->_manager->setWaitTimeToCreateBuilding(10 * 1000);
+	//_powerPlantIcon->showProgressOfWait(10);
 	
 	switch (tag)
 	{
