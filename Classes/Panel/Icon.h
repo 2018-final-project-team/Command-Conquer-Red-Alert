@@ -42,6 +42,8 @@ public:
     //修改图标的status和显示效果
 	void setStatus(IconsStatus iconSta);
 
+	IconsStatus getStatus();
+
 	/**
 	* @brief 半径模式显示图标任务的百分比进度，在manager中调用
 	* @param 任务耗时，单位为秒
@@ -51,12 +53,16 @@ public:
 
 
 
+
 private:
 	GameScene* _gameScene;
 
-	CC_SYNTHESIZE(bool, _isSelected, IsSelected);
+	CC_SYNTHESIZE(bool, _isAble, IsAble);   //是否可通过点击增加任务
 	CC_SYNTHESIZE(Tag, tag, tag);         //图标的Tag
     CC_SYNTHESIZE(int, money, Money);    //执行建造or训练or制造计划需要的金钱数
+
+	cocos2d::ProgressTimer* progressTimer1;
+	cocos2d::ProgressTimer* progressTimer2;
 
     
 	Sprite* _icon;           //内层显示的图标

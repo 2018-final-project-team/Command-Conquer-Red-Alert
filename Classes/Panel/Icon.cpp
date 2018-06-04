@@ -32,7 +32,7 @@ bool Icon::initIcon(Tag tag, int money, GameScene* gameScene)
 	_gameScene = gameScene;
 
 	_status = eIconPre;
-	_isSelected = false;
+	_isAble = false;
 
 	_iconFrame = Sprite::create("GameItem/Panel/frame.png");
 	addChild(_iconFrame);
@@ -91,23 +91,27 @@ void Icon::setStatus(IconsStatus iconSta)
 		_statusLabel->setVisible(true);
 		_invalidIcon->setVisible(true);
 		_statusLabel2->setVisible(false);
+		setIsAble(false);
 		break;
 	case invalidForOtherTask:
 		_statusLabel->setVisible(false);
 		_invalidIcon->setVisible(true);
 		_statusLabel2->setVisible(false);
+		setIsAble(false);
 		break;
 	case eIconPre:
 		_statusLabel->setVisible(false);
 		_invalidIcon->setVisible(false);
 		_statusLabel2->setVisible(false);
+		setIsAble(true);
 		break;
 	case eIconOn:
 		_statusLabel->setString("waiting");
 		_statusLabel->setColor(Color3B(255, 0, 0));
 		_statusLabel->setVisible(true);
-		_invalidIcon->setVisible(false);
+		_invalidIcon->setVisible(true);
 		_statusLabel2->setVisible(false);
+		setIsAble(false);
 		break;
 	case eIconOK:
 		_statusLabel->setString("OK");
@@ -115,6 +119,7 @@ void Icon::setStatus(IconsStatus iconSta)
 		_statusLabel->setVisible(true);
 		_invalidIcon->setVisible(false);
 		_statusLabel2->setVisible(false);
+		setIsAble(false);
 		break;
 
 	case eIconPreForUnit:
@@ -123,38 +128,68 @@ void Icon::setStatus(IconsStatus iconSta)
 		if(getMoney() > _gameScene->getMoney())
 		{
 			_statusLabel2->setVisible(true);
+			setIsAble(false);
 		}
 		else
 		{
 			_statusLabel2->setVisible(false);
+			setIsAble(true);
 		}
 		break;
 	case eIconOnForUnit:
-		_statusLabel->setString(_gameScene->getCurSoldierNum());
+		if (tag == INFANTRY_TAG)
+		{
+			_statusLabel->setString(std::to_string(_gameScene->getInfantryNum()));
+		}
+		else if (tag == DOG_TAG)
+		{
+			_statusLabel->setString(std::to_string(_gameScene->getDogNum()));
+		}
+		else if (tag == TANK_TAG)
+		{
+			_statusLabel->setString(std::to_string(_gameScene->getTankNum()));
+		}
+		
 		_statusLabel->setColor(Color3B(0, 0, 255));
 		_statusLabel->setVisible(true);
 		_invalidIcon->setVisible(false);
 		if (getMoney() > _gameScene->getMoney())
 		{
 			_statusLabel2->setVisible(true);
+			setIsAble(false);
 		}
 		else
 		{
 			_statusLabel2->setVisible(false);
+			setIsAble(true);
 		}
 		break;
 	case eIconQueuingForUnit:
-		_statusLabel->setString(_gameScene->getCurSoldierNum());
+		if (tag == INFANTRY_TAG)
+		{
+			_statusLabel->setString(std::to_string(_gameScene->getInfantryNum()));
+		}
+		else if (tag == DOG_TAG)
+		{
+			_statusLabel->setString(std::to_string(_gameScene->getDogNum()));
+		}
+		else if (tag == TANK_TAG)
+		{
+			_statusLabel->setString(std::to_string(_gameScene->getTankNum()));
+		}
+
 		_statusLabel->setColor(Color3B(0, 0, 255));
 		_statusLabel->setVisible(true);
 		_invalidIcon->setVisible(false);
 		if (getMoney() > _gameScene->getMoney())
 		{
 			_statusLabel2->setVisible(true);
+			setIsAble(false);
 		}
 		else
 		{
 			_statusLabel2->setVisible(false);
+			setIsAble(true);
 		}
 		break;
 	}
@@ -163,23 +198,45 @@ void Icon::setStatus(IconsStatus iconSta)
 void Icon::showProgressOfWait(float duration)   //单位为秒
 {
 	_invalidIcon->setVisible(true);
+	
+	if (progressTimer1 != nullptr)
+	{
+		this->removeChild(progressTimer1, true);
+	}
+	if (progressTimer2)
+	{
+		this->removeChild(progressTimer2, true);
+	}
 
-	auto progressTimer1 = ProgressTimer::create(_iconFrame);
+	progressTimer1 = ProgressTimer::create(_iconFrame);
 	progressTimer1->setType(ProgressTimerType::RADIAL);//设置模式 RADIAL:半径 BAR:进度条 默认RADIAL  
 	progressTimer1->setMidpoint(Vec2(0.5, 0.5));//设置百分比效果参考点 默认(0,0)  
 	progressTimer1->setReverseProgress(false);//动作是否反向执行 默认false  
 	progressTimer1->setReverseDirection(false);//动作是否逆序执行 默认false  
-	this->addChild(progressTimer1, 2);
 
-	auto progressTimer2 = ProgressTimer::create(_icon);
+	progressTimer2 = ProgressTimer::create(_icon);
 	progressTimer2->setScale(0.8);
 	progressTimer2->setType(ProgressTimerType::RADIAL);//设置模式 RADIAL:半径 BAR:进度条 默认RADIAL  
 	progressTimer2->setMidpoint(Vec2(0.5, 0.5));//设置百分比效果参考点 默认(0,0)  
 	progressTimer2->setReverseProgress(false);//动作是否反向执行 默认false  
 	progressTimer2->setReverseDirection(false);//动作是否逆序执行 默认false  
+
+	this->addChild(progressTimer1, 2);
 	this->addChild(progressTimer2, 2);
 
 	auto progressTo = ProgressTo::create(duration, 100);
 	progressTimer1->runAction(RepeatForever::create(progressTo->clone()));//为了方便展示 这里让动作重复执行
 	progressTimer2->runAction(RepeatForever::create(progressTo->clone()));//为了方便展示 这里让动作重复执行
+	
+
+}
+
+
+
+	
+
+
+IconsStatus Icon::getStatus()
+{
+	return _status;
 }

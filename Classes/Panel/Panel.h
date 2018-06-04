@@ -35,7 +35,7 @@ private:
 	//初始化金钱的消耗
 	int sValue[8] = { 500,500,500,500,50,50,200 };
 
-
+	bool _clickToPlaceBuilding;
 
 	GameScene* _gameScene;
 
@@ -46,6 +46,7 @@ private:
 
 
 	cocos2d::EventListenerTouchOneByOne* _mainButtonListener;
+	cocos2d::EventListenerTouchOneByOne* _iconButtonListener;
 
 
 	CC_SYNTHESIZE(Tag, _curCategoryTag, CurCategoryTag);

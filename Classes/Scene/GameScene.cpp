@@ -45,7 +45,8 @@ bool GameScene::init()
 	_tileMap = TMXTiledMap::create("GameItem/Map/map1.tmx");
 	this->addChild(_tileMap);
 
-	_ground = _tileMap->getLayer("ground");
+	//_barrier = _tileMap->getLayer("barrier");
+	//_barrier->setVisible(false);
 
 	/*update by czd*/
 	Sprite* small_map = Sprite::create("GameItem/Map/small_map.png");
@@ -53,6 +54,9 @@ bool GameScene::init()
 	this->addChild(small_map);
 
 
+	//DrawNode
+	DrawNode* drawNode = DrawNode::create();
+	this->addChild(drawNode);
 
 
 	//=====================测试Panel========================
@@ -79,7 +83,11 @@ bool GameScene::init()
 			if (Y < 0) Y = 0;
 			if (X > MAPX - visibleSize.width) X = MAPX - visibleSize.width;
 			if (Y > MAPX - visibleSize.height) Y = MAPX - visibleSize.height;
+			//direction to move sprites
+			Vec2 direction = Point(-X, -Y) - _tileMap->getPosition();
+
 			_tileMap->runAction(MoveTo::create(0.1, Point(-X, -Y)));
+			moveSpritesWithMap(direction);
 
 			return false;
 		}
@@ -90,9 +98,19 @@ bool GameScene::init()
 		return true;
 	};
 
+	// 选择时画出矩形
+	_gameListener->onTouchMoved = [=](Touch* touch, Event* event) {
+		Point movePosition = touch->getLocation();
+		drawNode->clear();
+		drawNode->drawRect(_touchBegan, Vec2(_touchBegan.x, movePosition.y),
+			movePosition, Vec2(movePosition.x, _touchBegan.y), Color4F(255, 255, 255, 100));
+	};
+
 	_gameListener->onTouchEnded = [=](Touch* touch, Event* event) {
 		_touchEnd = touch->getLocation();
-		if (_touchEnd == _touchBegan)      // 点击则判断点击对象
+		drawNode->clear();
+		if (fabs(_touchEnd.x - _touchBegan.x) < 15.0 &&
+			fabs(_touchEnd.y - _touchBegan.y) < 15.0)      // 点击则判断点击对象
 		{
 			//生成Sprite的Rect
 			auto target = static_cast<Sprite*>(event->getCurrentTarget());
@@ -109,9 +127,19 @@ bool GameScene::init()
 				case TANK_TAG:
 					_manager->setEnemy(static_cast<Unit*>(target));
 					break;
-				default:
+				case POWER_PLANT_TAG:
+				case MINE_TAG:
+				case CAR_FACTORY_TAG:
+				case BASE_TAG:
+				case BARRACKS_TAG:
 					_manager->setBuilding(static_cast<Building*>(target));
 					break;
+				default:
+					// 为层注册监听器后层也会响应 所以此处需要判断士兵建筑和空地
+					log("default");
+					// 测试 isCollision
+					//log("%d", isCollision(_touchEnd));
+					_manager->getMoveController()->setDestination(_touchEnd);
 				}
 			}
 		}
@@ -197,6 +225,10 @@ void GameScene::dataInit()
 	_powerPlantNum = 0;
 	_carFactoryNum = 0;
 
+	_tankNum = 0;
+	_infantryNum = 0;
+	_dogNum = 0;
+
 	_carFactoryPosition = _barracksPosition = Vec2::ZERO;
 
 	_isBaseExist = false;
@@ -272,11 +304,13 @@ void GameScene::decreaseTotalPower(int power)
 
 void GameScene::update(float time)
 {
-	_manager->waitCreateBuilding();
-	_manager->waitCreateSoldier();
 
 	_manager->attack();
 	_manager->addMoneyUpdate();
+
+	_manager->waitCreateBuilding();
+	_manager->waitCreateSoldier();
+	_manager->waitCreateCar();
 
 	_manager->getMoveController()->moveSoldiers();
 
@@ -285,60 +319,112 @@ void GameScene::update(float time)
 }
 
 /*update by czd */
-void GameScene::scrollMap() {
+void GameScene::scrollMap()
+{
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	auto X = _cursorPosition.x;
 	auto Y = _cursorPosition.y;
-	if (X < MINLENTH) {
-		if (_tileMap->getPositionX() + SPEED < 0) {
+	Point mapPosition = _tileMap->getPosition();
+	if (X < MINLENTH)
+	{
+		if (_tileMap->getPositionX() + SPEED < 0)
+		{
 			_tileMap->runAction(MoveBy::create(0.1, Point(SPEED, 0)));
+			moveSpritesWithMap(Vec2(SPEED, 0));
 		}
-		else {
+		else
+		{
 			_tileMap->setPositionX(0);
+			moveSpritesWithMap(Vec2(mapPosition.x, 0));
 		}
 	}
-	if (Y < MINLENTH) {
-		if (_tileMap->getPositionY() + SPEED < 0) {
-			_tileMap->runAction(MoveBy::create(0.1, Point(0, SPEED)));
-		}
-		else {
-			_tileMap->setPositionY(0);
-		}
-	}
-	if (X > visibleSize.width - MINLENTH) {
-		if (_tileMap->getPositionX() - SPEED > -MAPX + visibleSize.width) {
+	else if (X > visibleSize.width - MINLENTH)
+	{
+		if (_tileMap->getPositionX() - SPEED > -MAPX + visibleSize.width)
+		{
 			_tileMap->runAction(MoveBy::create(0.1, Point(-SPEED, 0)));
+			moveSpritesWithMap(Vec2(-SPEED, 0));
 		}
-		else {
+		else
+		{
 			_tileMap->setPositionX(-MAPX + visibleSize.width);
+			moveSpritesWithMap(Vec2(-MAPX + visibleSize.width - mapPosition.x, 0));
 		}
 	}
-	if (Y >visibleSize.height - MINLENTH) {
-		if (_tileMap->getPositionY() - SPEED > -MAPY + visibleSize.height) {
-			_tileMap->runAction(MoveBy::create(0.1, Point(0, -SPEED)));
+
+	if (Y < MINLENTH) {
+		if (_tileMap->getPositionY() + SPEED < 0)
+		{
+			_tileMap->runAction(MoveBy::create(0.1, Point(0, SPEED)));
+			moveSpritesWithMap(Vec2(0, SPEED));
 		}
-		else {
+		else
+		{
+			_tileMap->setPositionY(0);
+			moveSpritesWithMap(Vec2(0, mapPosition.y));
+		}
+	}
+	else if (Y >visibleSize.height - MINLENTH)
+	{
+		if (_tileMap->getPositionY() - SPEED > -MAPY + visibleSize.height)
+		{
+			_tileMap->runAction(MoveBy::create(0.1, Point(0, -SPEED)));
+			moveSpritesWithMap(Vec2(0, -SPEED));
+		}
+		else
+		{
 			_tileMap->setPositionY(-MAPY + visibleSize.height);
+			moveSpritesWithMap(Vec2(0, -MAPY + visibleSize.height - mapPosition.y));
 		}
 	}
 }
 
-bool GameScene::isCollision(cocos2d::Vec2 position)
+void GameScene::moveSpritesWithMap(cocos2d::Vec2 direction)
+{
+	// my soldiers
+	for (auto& soldier : _soldiers)
+	{
+		soldier->setPosition(soldier->getPosition() + direction);
+		soldier->setDestination(soldier->getDestination() + direction);
+	}
+	// my buildings
+	for (auto& building : _buildings)
+	{
+		building->setPosition(building->getPosition() + direction);
+	}
+	// enemy soldiers
+	for (auto& soldier : _enemySoldiers)
+	{
+		soldier->setPosition(soldier->getPosition() + direction);
+	}
+	//enemy buildings
+	for (auto& building : _enemyBuildings)
+	{
+		building->setPosition(building->getPosition() + direction);
+	}
+}
+
+bool GameScene::isCollision(cocos2d::Vec2 position1)
 {
 	// turn PixelPosition to TileCoord
 	Size mapSize = _tileMap->getMapSize();
 	Size tileSize = _tileMap->getTileSize();
-	position = _tileMap->convertToNodeSpace(position);
-	int x = position.x / tileSize.width;
-	int y = (mapSize.height * tileSize.height - position.y) / tileSize.height;
-
+	auto position = _tileMap->convertToNodeSpace(position1);
+	if (position.x < 0 || position.y<0 || position.x>tileSize.width
+		|| position.y < tileSize.height)
+	{
+		return false;
+	}
+	position.x = static_cast<int>(position.x / tileSize.width);
+	position.y = mapSize.height - static_cast<int>(position.y / tileSize.width) - 1;
 	// get the GID of tile
-	int tileGID = _ground->getTileGIDAt(Vec2(x, y));
+	//int tileGID = _barrier->getTileGIDAt(position);
 
-	// get the properties
-	ValueMap& properties = _tileMap->getPropertiesForGID(tileGID).asValueMap();
-
-	return properties["moveable"].asInt();
+	//if (!tileGID)
+	//{
+	//	return true;
+	//}
+	return false;
 }
 
 float GameScene::getTileSize()

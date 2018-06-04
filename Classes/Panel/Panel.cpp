@@ -36,6 +36,9 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 		return false;
 	}
 
+
+	_clickToPlaceBuilding = false;
+
 	_gameScene = gameScene;
 	_curCategoryTag = BUILDING_BUTTON;
 	//TO DO:添加工具栏背景图片
@@ -47,37 +50,38 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 
 	//添加工具栏三个分类按钮的图片
 	_buildingButton = Sprite::create("GameItem/Panel/B.png");
-	_buildingButton->setPosition(Point(-60,0));
+	_buildingButton->setPosition(Point(-60, 0));
 	_buildingButton->setTag(BUILDING_BUTTON);
 	addChild(_buildingButton);
 
 	_soldierButton = Sprite::create("GameItem/Panel/S.png");
-	_soldierButton->setPosition(Point(0,0));
+	_soldierButton->setPosition(Point(0, 0));
 	_soldierButton->setTag(SOLDIER_BUTTON);
 	addChild(_soldierButton);
 
 	_carButton = Sprite::create("GameItem/Panel/C.png");
-	_carButton->setPosition(Point(60,0));
+	_carButton->setPosition(Point(60, 0));
 	_carButton->setTag(CAR_BUTTON);
 	addChild(_carButton);
 
 	addIcons();
 
 
-	//===============注册监听器===================
+
+	//===============三个标签按钮触摸事件监听===================
 	_mainButtonListener = EventListenerTouchOneByOne::create();
-    _mainButtonListener->onTouchBegan = [this](Touch* touch, Event* event) {
+	_mainButtonListener->onTouchBegan = [this](Touch* touch, Event* event) {
 		Sprite* _selectedButton = static_cast<Sprite*>(event->getCurrentTarget());
 		Vec2 locationInNode = _selectedButton->convertToNodeSpace(touch->getLocation());
 		Size s = _selectedButton->getContentSize();
 		Rect rect = Rect(0, 0, s.width, s.height);
-		
+
 		//点击范围判断检测
 		if (rect.containsPoint(locationInNode))
 		{
 			switch (_selectedButton->getTag())
 			{
-			//================三个标签按钮的点击处理==================
+				//================三个标签按钮的点击处理==================
 			case BUILDING_BUTTON:
 				log("select building button, the tag is:%d", _selectedButton->getTag());
 				setCurButton(BUILDING_BUTTON);
@@ -90,45 +94,92 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 				log("select car button");
 				setCurButton(CAR_BUTTON);
 				break;
-			//=======================================================
+				//=======================================================
+
+				return true;
+			}
+			return false;
+		}
+	};
+	_mainButtonListener->setSwallowTouches(true);   //吞没触摸事件，不向下传递
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(_mainButtonListener, _buildingButton);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(_mainButtonListener->clone(), _soldierButton);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(_mainButtonListener->clone(), _carButton);
 
 
+
+	//===============图标按钮触摸事件监听===================
+	_iconButtonListener = EventListenerTouchOneByOne::create();
+	_iconButtonListener->onTouchBegan = [this](Touch* touch, Event* event) {
+		Icon* _selectedButton = static_cast<Icon*>(event->getCurrentTarget());
+		Vec2 locationInNode = _selectedButton->convertToNodeSpace(touch->getLocation());
+		Size s = _selectedButton->getContentSize();
+		Rect rect = Rect(0, 0, s.width, s.height);
+
+		//点击范围判断检测
+		if (rect.containsPoint(locationInNode))
+		{
+			log("touch icon");
+			switch (_selectedButton->getTag())
+			{
 			//==================建筑类图标的点击处理===================
 			case POWER_PLANT_TAG:
-
-				break;
 			case MINE_TAG:
-				break;
 			case BARRACKS_TAG:
-				break;
 			case CAR_FACTORY_TAG:
+				if (_selectedButton->getIsAble())
+				{
+					_gameScene->_manager->clickCreateBuildingByTag(static_cast<Tag>(_selectedButton->getTag()), clock());
+					_selectedButton->showProgressOfWait((_gameScene->_manager->getWaitTimeToCreateBuilding())/1000);  //单位转化为秒
+				}
+				else if (_selectedButton->getStatus() == eIconOK)
+				{
+					//监听下一次点击的位置坐标，调用manager中的createBuilding()
+					_clickToPlaceBuilding = true;
+					return true;
+				}
 				break;
 			//=======================================================
 
 
 			//=================士兵类图标的点击处理====================
 			case INFANTRY_TAG:
-				break;
 			case DOG_TAG:
+				if (_selectedButton->getIsAble())
+				{
+					_gameScene->_manager->clickCreateSoldierByTag(static_cast<Tag>(_selectedButton->getTag()));
+				}
 				break;
 			//=======================================================
 
 			//=================战车类图标的点击处理====================
 			case TANK_TAG:
+				if (_selectedButton->getIsAble())
+				{
+					_gameScene->_manager->clickCreateSoldierByTag(static_cast<Tag>(_selectedButton->getTag()));
+				}
 				break;
 			//=======================================================
 			}
-
-			
-
 			return true;
 		}
 		return false;
-    };
-	_mainButtonListener->setSwallowTouches(true);   //吞没触摸事件，不向下传递
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(_mainButtonListener, _buildingButton);
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(_mainButtonListener->clone(), _soldierButton);
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(_mainButtonListener->clone(), _carButton);
+	};
+
+	_iconButtonListener->onTouchEnded = [this](Touch* touch, Event* event) {
+		if (_clickToPlaceBuilding)
+		{
+			_gameScene->_manager->createBuilding(touch->getLocation());
+		}
+	};
+	_iconButtonListener->setSwallowTouches(true);   //吞没触摸事件，不向下传递
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(_iconButtonListener, _powerPlantIcon);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(_iconButtonListener->clone(), _mineIcon);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(_iconButtonListener->clone(), _barracksIcon);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(_iconButtonListener->clone(), _carFactoryIcon);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(_iconButtonListener->clone(), _infantryIcon);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(_iconButtonListener->clone(), _dogIcon);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(_iconButtonListener->clone(), _tankIcon);
 
 	//=================TO DO:监听器的注销===============================
 
@@ -186,7 +237,7 @@ void Panel::checkIcon(Tag tag)
 	_gameScene->setPowerPlantNum(1);
 	_gameScene->setBarracksNum(1);
 	_gameScene->setCarFactoryNum(1);
-	_gameScene->setMoney(300);
+	_gameScene->setMoney(3000);
 	_gameScene->_manager->_isWaitToCreateBuilding = true;
 	_gameScene->_manager->_canCreateBuilding = false;
 	_gameScene->_manager->setBuildingTag(POWER_PLANT_TAG);
@@ -263,14 +314,6 @@ void Panel::addIcons()
 	_infantryIcon = Icon::createIcon(INFANTRY_TAG, sValue[INFANTRY_TAG - 1], _gameScene);
 	_dogIcon = Icon::createIcon(DOG_TAG, sValue[DOG_TAG - 1], _gameScene);
 	_tankIcon = Icon::createIcon(TANK_TAG, sValue[TANK_TAG - 1], _gameScene);
-
-	if (_powerPlantIcon != nullptr) { log("succesfully create icon:1"); }
-	if (_mineIcon != nullptr) { log("succesfully create icon:2"); }
-	if (_barracksIcon != nullptr) { log("succesfully create icon:3"); }
-	if (_carFactoryIcon != nullptr) { log("succesfully create icon:4"); }
-	if (_infantryIcon != nullptr) { log("succesfully create icon:5"); }
-	if (_dogIcon != nullptr) { log("succesfully create icon:6"); }
-	if (_tankIcon != nullptr) { log("succesfully create icon:7"); }
 }
 
 
@@ -301,7 +344,7 @@ void Panel::update(float dt)
 				{
 					i->setStatus(eIconOn);
 				}
-				else if (i->getMoney() > _gameScene->getMoney() && !(i->getIsSelected()))
+				else if (i->getMoney() > _gameScene->getMoney())
 				{
 					i->setStatus(invalidForMoney);
 
@@ -323,8 +366,8 @@ void Panel::update(float dt)
 				}
 				else if (_gameScene->_manager->_isWaitToCreateSoldier && tag != _gameScene->_manager->getSoldierTag())
 				{
-					if ((tag == INFANTRY_TAG && _gameScene->getCreatingInfantryNum())
-						|| (tag == DOG_TAG && _gameScene->getCreatingDogNum()))
+					if ((tag == INFANTRY_TAG && _gameScene->getInfantryNum())
+						|| (tag == DOG_TAG && _gameScene->getDogNum()))
 					{
 						i->setStatus(eIconQueuingForUnit);
 					}
@@ -348,7 +391,7 @@ void Panel::update(float dt)
 				}
 				else if (_gameScene->_manager->_isWaitToCreateCar && tag != _gameScene->_manager->getCarTag())
 				{
-					if (tag == TANK_TAG && _gameScene->getCreatingTankNum())
+					if (tag == TANK_TAG && _gameScene->getTankNum())
 					{
 						i->setStatus(eIconQueuingForUnit);
 					}
