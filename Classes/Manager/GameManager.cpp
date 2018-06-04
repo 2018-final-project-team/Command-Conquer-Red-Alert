@@ -152,10 +152,10 @@ void Manager::waitCreateSoldier()
                     (_gameScene->_gameListener->clone(), soldier);
             
 			soldier->setPosition(_gameScene->getBarracksPosition());
+            _gameScene->addChild(soldier, 0);
             // 走出兵营
+            soldier->setDestination(getPutSoldierPosition());
 
-
-            _gameScene->addChild(soldier);
             _gameScene->getSoldiers()->pushBack(soldier);
             _soldierQueue.pop();
             _isWaitToCreateSoldier = false;
@@ -242,9 +242,10 @@ void Manager::waitCreateCar()
             (_gameScene->_gameListener->clone(), car);
 
             car->setPosition(_gameScene->getCarFactoryPosition());
-            // To Do: 开出车厂
+            _gameScene->addChild(car, 2);
+            // 开出车厂
+            car->setDestination(getPutCarPosition());
 
-            _gameScene->addChild(car);
             _gameScene->getSoldiers()->pushBack(car);
             _carQueue.pop();
             _isWaitToCreateCar = false;
@@ -292,7 +293,7 @@ void Manager::createBuilding(cocos2d::Vec2 position)
         _gameScene->_gameEventDispatcher->addEventListenerWithSceneGraphPriority
                 (_gameScene->_gameListener->clone(), building);
         building->setPosition(position);
-        _gameScene->addChild(building);
+        _gameScene->addChild(building, 1);
         switch (_buildingTag)
         {
         case POWER_PLANT_TAG:
@@ -617,4 +618,104 @@ void Manager::resetPower()
     }
     _gameScene->setTotalPower(totalPower);
     _gameScene->setPower(totalPower - castPower);
+}
+
+cocos2d::Point Manager::getPutSoldierPosition()
+{
+    Point barracksPosition = _gameScene->getBarracksPosition();
+    Point firstPosition = barracksPosition - Vec2(101, 101);
+    int soldierSize = 40;
+    // 兵营下方区域
+    for (int i = 4; i > 0; --i)
+    {
+        for (int j = 5; j > 0; --j)
+        {
+            if (canPut(firstPosition + Vec2(j*soldierSize, -i*soldierSize)))
+            {
+                return firstPosition + Vec2(j*soldierSize, -i*soldierSize);
+            }
+        }
+    }
+    //兵营左方区域
+    for (int i = 4; i > 0; --i)
+    {
+        for (int j = 4; j > 0; --j)
+        {
+            if (canPut(firstPosition + Vec2(-j * soldierSize, i*soldierSize)))
+            {
+                return firstPosition + Vec2(-j * soldierSize, i*soldierSize);
+            }
+        }
+    }
+    //那就别出来了
+   return barracksPosition;
+}
+
+cocos2d::Point Manager::getPutCarPosition()
+{
+    Point carFactoryPosition = _gameScene->getCarFactoryPosition();
+    Point firstPosition = carFactoryPosition + Vec2(270, 220);
+    int carSize = 80;
+    // 车厂右方区域
+    for (int i = 5; i > 0; --i)
+    {
+        for (int j = 3; j > 0; --j)
+        {
+            if (canPut(firstPosition + Vec2(j*carSize, i*carSize)))
+            {
+                return firstPosition + Vec2(j*carSize, i*carSize);
+            }
+        }
+    }
+    //车厂上方区域
+    for (int i = 5; i > 3; --i)
+    {
+        for (int j = 2; j > 0; --j)
+        {
+            if (canPut(firstPosition + Vec2(-j * carSize, i*carSize)))
+            {
+                return firstPosition + Vec2(-j * carSize, i*carSize);
+            }
+        }
+    }
+    //那就别出来了
+    return carFactoryPosition;
+}
+
+bool Manager::canPut(cocos2d::Point position)
+{
+    Vec2 mapPosition = _gameScene->_tileMap->convertToNodeSpace(position);
+    // 是否在地图外
+    if (mapPosition.x < 0 || mapPosition.y < 0)
+    {
+        return false;
+    }
+    // 是否在海上
+    if (_gameScene->isCollision(mapPosition))
+    {
+        return false;
+    }
+    // 是否有建筑士兵
+    for (auto& soldier : *(_gameScene->getSoldiers()))
+    {
+        Rect rect = Rect(soldier->getPositionX() - soldier->getContentSize().width / 2,
+            soldier->getPositionY() - soldier->getContentSize().height / 2,
+            soldier->getContentSize().width, soldier->getContentSize().height);
+        if (rect.containsPoint(position))
+        {
+            return false;
+        }
+    }
+    for (auto& building : *(_gameScene->getBuildings()))
+    {
+        Rect rect = Rect(building->getPositionX() - building->getContentSize().width / 2,
+            building->getPositionY() - building->getContentSize().height / 2,
+            building->getContentSize().width, building->getContentSize().height);
+        if (rect.containsPoint(position))
+        {
+            return false;
+        }
+    }
+    // 都没有
+    return true;
 }

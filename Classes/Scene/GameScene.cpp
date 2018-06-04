@@ -385,7 +385,11 @@ void GameScene::moveSpritesWithMap(cocos2d::Vec2 direction)
     for (auto& soldier : _soldiers)
     {
         soldier->setPosition(soldier->getPosition() + direction);
-        soldier->setDestination(soldier->getDestination() + direction);
+        std::vector<Point>::iterator iter2;
+        for (iter2 = soldier->_route.begin(); iter2 != soldier->_route.end(); iter2++)
+        {
+            *iter2 += direction;
+        }
     }
     // my buildings
     for (auto& building : _buildings)
@@ -397,10 +401,20 @@ void GameScene::moveSpritesWithMap(cocos2d::Vec2 direction)
     {
         soldier->setPosition(soldier->getPosition() + direction);
     }
-    //enemy buildings
+    // enemy buildings
     for (auto& building : _enemyBuildings)
     {
         building->setPosition(building->getPosition() + direction);
+    }
+    // barracks position
+    if (_barracksNum)
+    {
+        _barracksPosition += direction;
+    }
+    // car factory position
+    if (_carFactoryNum)
+    {
+        _carFactoryPosition += direction;
     }
 }
 
