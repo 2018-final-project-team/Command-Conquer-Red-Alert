@@ -630,7 +630,7 @@ cocos2d::Point Manager::getPutSoldierPosition()
     {
         for (int j = 5; j > 0; --j)
         {
-            if (canPut(firstPosition + Vec2(j*soldierSize, -i*soldierSize)))
+            if (_moveController->canPut(firstPosition + Vec2(j*soldierSize, -i*soldierSize)))
             {
                 return firstPosition + Vec2(j*soldierSize, -i*soldierSize);
             }
@@ -641,7 +641,7 @@ cocos2d::Point Manager::getPutSoldierPosition()
     {
         for (int j = 4; j > 0; --j)
         {
-            if (canPut(firstPosition + Vec2(-j * soldierSize, i*soldierSize)))
+            if (_moveController->canPut(firstPosition + Vec2(-j * soldierSize, i*soldierSize)))
             {
                 return firstPosition + Vec2(-j * soldierSize, i*soldierSize);
             }
@@ -661,7 +661,7 @@ cocos2d::Point Manager::getPutCarPosition()
     {
         for (int j = 3; j > 0; --j)
         {
-            if (canPut(firstPosition + Vec2(j*carSize, i*carSize)))
+            if (_moveController->canPut(firstPosition + Vec2(j*carSize, i*carSize)))
             {
                 return firstPosition + Vec2(j*carSize, i*carSize);
             }
@@ -672,7 +672,7 @@ cocos2d::Point Manager::getPutCarPosition()
     {
         for (int j = 2; j > 0; --j)
         {
-            if (canPut(firstPosition + Vec2(-j * carSize, i*carSize)))
+            if (_moveController->canPut(firstPosition + Vec2(-j * carSize, i*carSize)))
             {
                 return firstPosition + Vec2(-j * carSize, i*carSize);
             }
@@ -680,42 +680,4 @@ cocos2d::Point Manager::getPutCarPosition()
     }
     //那就别出来了
     return carFactoryPosition;
-}
-
-bool Manager::canPut(cocos2d::Point position)
-{
-    Vec2 mapPosition = _gameScene->_tileMap->convertToNodeSpace(position);
-    // 是否在地图外
-    if (mapPosition.x < 0 || mapPosition.y < 0)
-    {
-        return false;
-    }
-    // 是否在海上
-    if (_gameScene->isCollision(mapPosition))
-    {
-        return false;
-    }
-    // 是否有建筑士兵
-    for (auto& soldier : *(_gameScene->getSoldiers()))
-    {
-        Rect rect = Rect(soldier->getPositionX() - soldier->getContentSize().width / 2,
-            soldier->getPositionY() - soldier->getContentSize().height / 2,
-            soldier->getContentSize().width, soldier->getContentSize().height);
-        if (rect.containsPoint(position))
-        {
-            return false;
-        }
-    }
-    for (auto& building : *(_gameScene->getBuildings()))
-    {
-        Rect rect = Rect(building->getPositionX() - building->getContentSize().width / 2,
-            building->getPositionY() - building->getContentSize().height / 2,
-            building->getContentSize().width, building->getContentSize().height);
-        if (rect.containsPoint(position))
-        {
-            return false;
-        }
-    }
-    // 都没有
-    return true;
 }

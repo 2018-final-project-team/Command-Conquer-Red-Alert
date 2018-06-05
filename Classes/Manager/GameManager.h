@@ -142,8 +142,6 @@ public:
 
     cocos2d::Point getPutCarPosition();
 
-    bool canPut(cocos2d::Point position);
-
 };
 
 #endif // __GameManeger_H_

@@ -77,6 +77,11 @@ public:
     */
     bool is_find(Vec2 position, Vec2 destination);
 
+    /*
+    * @brief 是否可以放兵或坦克
+    */
+    bool canPut(cocos2d::Point position);
+
 };
 
 #endif // __MoveController_H_
