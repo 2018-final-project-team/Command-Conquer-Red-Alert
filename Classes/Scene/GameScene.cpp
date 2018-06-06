@@ -2,8 +2,8 @@
 #include "Scene/GameScene.h"  
 #include "ui\CocosGUI.h"
 #include "Panel/Panel.h"
-#define MAPX 5760
-#define MAPY 5376
+#define small_mapX 300
+#define small_mapY 300
 #define MINLENTH 15
 #define SPEED 20
 
@@ -42,15 +42,16 @@ bool GameScene::init()
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	//===================Load map=========================
-	_tileMap = TMXTiledMap::create("GameItem/Map/map1.tmx");
-	this->addChild(_tileMap);
+	_tileMap = TMXTiledMap::create("GameItem/Map/mapbeautiful1.tmx");
+    MAPX = _tileMap->getMapSize().width * _tileMap->getTileSize().width;
+    MAPY = _tileMap->getMapSize().height * _tileMap->getTileSize().height;
+	this->addChild(_tileMap, 0);
 
 	_barrier = _tileMap->getLayer("barrier");
-    _barrier->setVisible(false);
 
 	/*update by czd*/
-	Sprite* small_map = Sprite::create("GameItem/Map/small_map.png");
-	small_map->setPosition(Point(visibleSize.width - 358 / 2, visibleSize.height - 334 / 2));
+	Sprite* small_map = Sprite::create("GameItem/Map/small_map1.png"); 
+    small_map->setPosition(Point(visibleSize.width - small_mapX / 2, visibleSize.height - small_mapX / 2));
 	this->addChild(small_map);
 
 
@@ -76,13 +77,15 @@ bool GameScene::init()
 	_gameListener->onTouchBegan = [=](Touch* touch, Event* event) {
 		//=========== 点击小地图的移动功能 ===============
 		Point position = touch->getLocation();
-		if (position.x > visibleSize.width - 358 && position.y > visibleSize.height - 334) {
-			auto X = (position.x - (visibleSize.width - 358)) / 358 * MAPX - visibleSize.width / 2;
-			auto Y = (position.y - (visibleSize.height - 334)) / 334 * MAPY - visibleSize.width / 2;
+		if (position.x > visibleSize.width - small_mapX && position.y > visibleSize.height - small_mapY) {
+            auto X = (position.x - (visibleSize.width - small_mapX)) / small_mapX * MAPX - visibleSize.width / 2;
+            auto Y = (position.y - (visibleSize.height - small_mapY)) / small_mapY * MAPY - visibleSize.width / 2;
 			if (X < 0) X = 0;
 			if (Y < 0) Y = 0;
-			if (X > MAPX - visibleSize.width) X = MAPX - visibleSize.width;
-			if (Y > MAPX - visibleSize.height) Y = MAPX - visibleSize.height;
+            if (X > MAPX - visibleSize.width) 
+                X = MAPX - visibleSize.width;
+            if (Y > MAPY - visibleSize.height) 
+                Y = MAPY - visibleSize.height;
             //direction to move sprites
             Vec2 direction = Point(-X, -Y) - _tileMap->getPosition();
 
@@ -340,7 +343,7 @@ void GameScene::scrollMap()
 	}
     else if (X > visibleSize.width - MINLENTH)
     {
-        if (_tileMap->getPositionX() - SPEED > -MAPX + visibleSize.width) 
+        if (_tileMap->getPositionX() - SPEED > -MAPX + visibleSize.width)
         {
             _tileMap->runAction(MoveBy::create(0.1, Point(-SPEED, 0)));
             moveSpritesWithMap(Vec2(-SPEED, 0));
@@ -352,7 +355,8 @@ void GameScene::scrollMap()
         }
     }
 
-	if (Y < MINLENTH) {
+	if (Y < MINLENTH) 
+    {
 		if (_tileMap->getPositionY() + SPEED < 0) 
         {
 			_tileMap->runAction(MoveBy::create(0.1, Point(0, SPEED)));
@@ -364,9 +368,9 @@ void GameScene::scrollMap()
             moveSpritesWithMap(Vec2(0, mapPosition.y));
 		}
 	}
-	else if (Y >visibleSize.height - MINLENTH) 
+	else if (Y > visibleSize.height - MINLENTH) 
     {
-		if (_tileMap->getPositionY() - SPEED > -MAPY + visibleSize.height) 
+		if (_tileMap->getPositionY() - SPEED >  -MAPY + visibleSize.height)
         {
 			_tileMap->runAction(MoveBy::create(0.1, Point(0, -SPEED)));
             moveSpritesWithMap(Vec2(0, -SPEED));

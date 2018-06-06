@@ -152,7 +152,7 @@ void Manager::waitCreateSoldier()
                     (_gameScene->_gameListener->clone(), soldier);
             
 			soldier->setPosition(_gameScene->getBarracksPosition());
-            _gameScene->addChild(soldier, 0);
+            _gameScene->addChild(soldier, 1);
             // 走出兵营
             soldier->setDestination(getPutSoldierPosition());
 
@@ -242,7 +242,7 @@ void Manager::waitCreateCar()
             (_gameScene->_gameListener->clone(), car);
 
             car->setPosition(_gameScene->getCarFactoryPosition());
-            _gameScene->addChild(car, 2);
+            _gameScene->addChild(car, 1);
             // 开出车厂
             car->setDestination(getPutCarPosition());
 
@@ -293,7 +293,7 @@ void Manager::createBuilding(cocos2d::Vec2 position)
         _gameScene->_gameEventDispatcher->addEventListenerWithSceneGraphPriority
                 (_gameScene->_gameListener->clone(), building);
         building->setPosition(position);
-        _gameScene->addChild(building, 1);
+        _gameScene->addChild(building, 2);
         switch (_buildingTag)
         {
         case POWER_PLANT_TAG:

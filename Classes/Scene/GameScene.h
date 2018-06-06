@@ -21,6 +21,9 @@ public:
 private:
     Panel * panel;
 	cocos2d::TMXLayer* _barrier;
+    int MAPX;
+    int MAPY;
+
 	cocos2d::Point _cursorPosition{ 0,0 };  // C++ 11 允许这样初始化
 	void scrollMap();
 
