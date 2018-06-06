@@ -1,11 +1,15 @@
+/*
+*  @file     LoginScene.cpp
+*  @brief    登录场景类，显示的第二个场景，输入并持久化保存玩家id
+*  @author   王亮
+*/
+
 #include "LoginScene.h"
 #include "Settings.h"
 #include "WelcomeScene.h"
-#include "Model/User.h"
 #include "Util/GameAudio.h"
 
 USING_NS_CC;
-USING_NS_CC_EXT;
 
 Scene* LoginScene::createScene()
 {
@@ -72,7 +76,6 @@ void LoginScene::createLoginButton()
         {
             username.substr(0, 16);
             UserDefault::getInstance()->setStringForKey("username", username);
-            User::getInstance()->setName(username);
 
             Director::getInstance()->replaceScene(TransitionFade::create(1.2f, WelcomeScene::createScene()));
         }

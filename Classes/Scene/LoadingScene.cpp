@@ -1,23 +1,25 @@
-﻿#include "Scene/LoadingScene.h"
+﻿/*
+*  @file     LoadingScene.cpp
+*  @brief    加载场景类，显示的第一个场景，完成资源预加载并显示加载进度
+*  @author   王亮
+*/
+
+#include "cocos2d.h"
+#include "Scene/LoadingScene.h"
 #include "Scene/LoginScene.h"
-//#include "Settings.h"
-#include "SimpleAudioEngine.h"
 #include "PreloadList.h"
+#include "Util/GameAudio.h"
 
 USING_NS_CC;
 
 Scene* LoadingScene::createScene()
 {
-    // 'scene' is an autorelease object
     auto scene = Scene::create();
 
-    // 'layer' is an autorelease object
     auto layer = LoadingScene::create();
 
-    // add layer as a child to scene
     scene->addChild(layer);
 
-    // return the scene
     return scene;
 }
 
@@ -26,8 +28,31 @@ void LoadingScene::endLoading(float dt) {
     Director::getInstance()->replaceScene(transition);
 }
 
+void LoadingScene::loading()
+{
+	loadingBar->setPercent(10);
+
+	loadSpriteFrame();
+	loadingBar->setPercent(40);
+
+	loadSound();
+	loadingBar->setPercent(70);
+
+	loadImage();
+	loadingBar->setPercent(100);
+}
+
 void LoadingScene::loadSound()
 {
+	auto gameAudioInstance = GameAudio::getInstance();
+
+	//=====================初始化背景音乐============================
+	for (auto bgm : Preload::bgm)
+	{
+		gameAudioInstance->preloadBgm(bgm.c_str());
+	}
+
+	//=========== to do : 初始化音效 ============
 }
 
 void LoadingScene::loadImage() {
@@ -58,7 +83,10 @@ bool LoadingScene::init()
     const auto baseY = visibleSize.height * 0.35f;
 
 	initBackground(origin, visibleSize);
-    addChild(createLoadingBar());
+	loadingBar = createLoadingBar();
+    addChild(loadingBar);
+
+	loading();
     
     scheduleOnce(CC_SCHEDULE_SELECTOR(LoadingScene::endLoading), 0.5);  //0.5s后执行endLoading()
     return true;
@@ -82,6 +110,7 @@ void LoadingScene::initBackground(Vec2 origin, Size visibleSize)
 		this->addChild(background, -1);
 	}
 }
+
 cocos2d::ui::LoadingBar* LoadingScene::createLoadingBar(){
     const auto visibleSize = Director::getInstance()->getVisibleSize();
     const auto baseY = visibleSize.height * 0.3f;
@@ -95,16 +124,7 @@ cocos2d::ui::LoadingBar* LoadingScene::createLoadingBar(){
     loadingBar->setPosition(Vec2(visibleSize.width / 2, baseY));
     loadingBar->setScale(1);
     loadingBar->setDirection(ui::LoadingBar::Direction::LEFT);
-    loadingBar->setPercent(10);
 
-    loadSpriteFrame();
-    loadingBar->setPercent(40);
-    
-    loadImage();
-    loadingBar->setPercent(70);
-
-    loadSound();
-    loadingBar->setPercent(100);
-   
     return loadingBar;
 }
+
