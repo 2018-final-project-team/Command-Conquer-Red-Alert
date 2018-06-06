@@ -56,8 +56,9 @@ bool GameScene::init()
 
 	_barrier = _tileMap->getLayer("barrier");
 	/*update by czd*/
-	Sprite* small_map = Sprite::create("GameItem/map/small_map.png");
-	small_map->setPosition(Point(visibleSize.width - 358 / 2, visibleSize.height - 334 / 2));
+	Sprite* small_map = Sprite::create("GameItem/map/small_map1.png");
+	small_map->setContentSize(Size(small_mapX, small_mapY));
+	small_map->setPosition(Point(visibleSize.width - small_mapX / 2, visibleSize.height - small_mapX / 2));
 	this->addChild(small_map);
 
 	auto _smallMapListener = EventListenerTouchOneByOne::create();
@@ -66,7 +67,7 @@ bool GameScene::init()
 		Point position = touch->getLocation();
 		if (position.x > visibleSize.width - small_mapX && position.y > visibleSize.height - small_mapY) {
 			auto X = (position.x - (visibleSize.width - small_mapX)) / small_mapX * _tileMap->getMapSize().width*_tileMap->getTileSize().width - visibleSize.width / 2;
-			auto Y = (position.y - (visibleSize.height - small_mapY)) / small_mapY * _tileMap->getMapSize().height*_tileMap->getTileSize().height - visibleSize.width / 2;
+			auto Y = (position.y - (visibleSize.height - small_mapY))  / small_mapY * _tileMap->getMapSize().height*_tileMap->getTileSize().height - visibleSize.width / 2;
 			if (X < 0) X = 0;
 			if (Y < 0) Y = 0;
 			if (X > _tileMap->getMapSize().width*_tileMap->getTileSize().width - visibleSize.width) X = _tileMap->getMapSize().width*_tileMap->getTileSize().width - visibleSize.width;
