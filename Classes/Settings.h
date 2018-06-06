@@ -1,3 +1,9 @@
+/*
+*  @file     Settings.h
+*  @brief    设置类，游戏开发过程中的设置信息
+*  @author   王亮
+*/
+#pragma once
 #ifndef __SETTINGS_H__
 #define __SETTINGS_H__
 
