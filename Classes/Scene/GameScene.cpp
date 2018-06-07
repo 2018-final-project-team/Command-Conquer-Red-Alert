@@ -4,14 +4,15 @@
 *  @author   王亮 蔡震栋
 */
 
-#include"Scene/WelcomeScene.h"  
-#include"Scene/GameScene.h"  
-#include "ui/CocosGUI.h"
-
-#define MAPX 5760
-#define MAPY 5376
+#include "Scene/WelcomeScene.h"  
+#include "Scene/GameScene.h"  
+#include "ui\CocosGUI.h"
 #define MINLENTH 15
 #define SPEED 20
+#define small_mapX 300
+#define small_mapY 300
+USING_NS_CC;
+using namespace ui;
 
 USING_NS_CC;
 using namespace ui;
@@ -49,29 +50,32 @@ bool GameScene::init()
 
 
 	//===================Load map=========================
-	_tileMap = TMXTiledMap::create("GameItem/map/map1.tmx");
+	_tileMap = TMXTiledMap::create("GameItem/Map/mapbeautiful1.tmx");
 	this->addChild(_tileMap);
 
-
-	/*小地图 by czd*/	
-	Sprite* small_map = Sprite::create("GameItem/map/small_map.png");
-	small_map->setPosition(Point(visibleSize.width-358/2, visibleSize.height-334/2));
+	_barrier = _tileMap->getLayer("barrier");
+	/*update by czd*/
+	Sprite* small_map = Sprite::create("GameItem/map/small_map1.png");
+	small_map->setContentSize(Size(small_mapX, small_mapY));
+	small_map->setPosition(Point(visibleSize.width - small_mapX / 2, visibleSize.height - small_mapX / 2));
 	this->addChild(small_map);
 
 	auto _smallMapListener = EventListenerTouchOneByOne::create();
 	_smallMapListener->onTouchBegan = [=](Touch* touch, Event* event) {
-		Point pos2 = touch->getLocationInView();
-		Point position = Director::getInstance()->convertToGL(pos2);
-		if (position.x > visibleSize.width - 358 && position.y > visibleSize.height - 334) {
-			auto X = (position.x - (visibleSize.width - 358)) / 358*MAPX-visibleSize.width/2;
-			auto Y = (position.y - (visibleSize.height - 334)) / 334 * MAPY - visibleSize.width / 2;
+		//=========== 点击小地图的移动功能 ===============
+		Point position = touch->getLocation();
+		if (position.x > visibleSize.width - small_mapX && position.y > visibleSize.height - small_mapY) {
+			auto X = (position.x - (visibleSize.width - small_mapX)) / small_mapX * _tileMap->getMapSize().width*_tileMap->getTileSize().width - visibleSize.width / 2;
+			auto Y = (position.y - (visibleSize.height - small_mapY))  / small_mapY * _tileMap->getMapSize().height*_tileMap->getTileSize().height - visibleSize.width / 2;
 			if (X < 0) X = 0;
 			if (Y < 0) Y = 0;
-			log("%f", X);
-			if (X > MAPX - visibleSize.width) X = MAPX-visibleSize.width;
-			if (Y > MAPX - visibleSize.height) Y = MAPX-visibleSize.height;
+			if (X > _tileMap->getMapSize().width*_tileMap->getTileSize().width - visibleSize.width) X = _tileMap->getMapSize().width*_tileMap->getTileSize().width - visibleSize.width;
+			if (Y > _tileMap->getMapSize().width*_tileMap->getTileSize().width - visibleSize.height) Y = _tileMap->getMapSize().width*_tileMap->getTileSize().width - visibleSize.height;
 			_tileMap->runAction(MoveTo::create(0.1, Point(-X, -Y)));
-		}		
+
+			return false;
+		}
+
 		return true;
 	};
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(_smallMapListener, this);
@@ -80,13 +84,13 @@ bool GameScene::init()
 
 	/*鼠标移到边上地图移动 by czd */
 	auto _mouseOutBoradListener = EventListenerMouse::create();
-	_mouseOutBoradListener->onMouseMove = [&]( Event* event) {
+	_mouseOutBoradListener->onMouseMove = [&](Event* event) {
 		EventMouse* pem = static_cast<EventMouse*>(event);
 		_cursorPosition = Vec2(pem->getCursorX(), pem->getCursorY());
 		//log("HelloWorldScene onTouchBegan! pos3 x=%f, y=%f", _cursorPosition.x, _cursorPosition.y);
-	};	
+	};
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(_mouseOutBoradListener, 1);
-	
+
 
 
 
@@ -128,7 +132,7 @@ void GameScene::update(float time)
 
 /*鼠标移到边上地图移动 by czd */
 void GameScene::scrollMap() {
-	auto visibleSize=Director::getInstance()->getVisibleSize();
+	auto visibleSize = Director::getInstance()->getVisibleSize();
 	auto X = _cursorPosition.x;
 	auto Y = _cursorPosition.y;
 	if (X < MINLENTH) {
@@ -148,19 +152,19 @@ void GameScene::scrollMap() {
 		}
 	}
 	if (X > visibleSize.width - MINLENTH) {
-		if (_tileMap->getPositionX() - SPEED > -MAPX+visibleSize.width) {
+		if (_tileMap->getPositionX() - SPEED > -_tileMap->getMapSize().width*_tileMap->getTileSize().width + visibleSize.width) {
 			_tileMap->runAction(MoveBy::create(0.1, Point(-SPEED, 0)));
 		}
 		else {
-			_tileMap->setPositionX(-MAPX+visibleSize.width);
+			_tileMap->setPositionX(-_tileMap->getMapSize().width*_tileMap->getTileSize().width + visibleSize.width);
 		}
 	}
 	if (Y >visibleSize.height - MINLENTH) {
-		if (_tileMap->getPositionY() - SPEED > -MAPY + visibleSize.height) {
+		if (_tileMap->getPositionY() - SPEED > -_tileMap->getMapSize().height*_tileMap->getTileSize().height + visibleSize.height) {
 			_tileMap->runAction(MoveBy::create(0.1, Point(0, -SPEED)));
 		}
 		else {
-			_tileMap->setPositionY(-MAPY + visibleSize.height);
+			_tileMap->setPositionY(-_tileMap->getMapSize().height*_tileMap->getTileSize().height + visibleSize.height);
 		}
 	}
 }

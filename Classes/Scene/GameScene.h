@@ -1,3 +1,4 @@
+
 /*
 *  @file     GameScene.h
 *  @brief    游戏场景类
@@ -15,7 +16,7 @@ class GameScene : public cocos2d::Layer
 {
 
 	cocos2d::TMXTiledMap* _tileMap;
-
+	cocos2d::TMXLayer* _barrier;
 public:
 	static cocos2d::Scene* createScene();
 
@@ -28,7 +29,7 @@ public:
 
 	void menuBackCallback(Ref *pSender);
 
-	
+
 
 private:
 	Point _cursorPosition{ 0,0 };
