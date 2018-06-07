@@ -12,9 +12,7 @@
 #include "math.h"
 #include "SimpleAudioEngine.h"
 
-
 USING_NS_CC;
-
 
 
 //创建单位,创建时按照typedef enum将对应值传入即可

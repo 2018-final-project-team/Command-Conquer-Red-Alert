@@ -1,3 +1,9 @@
+/*
+*  @file     LoginScene.h
+*  @brief    登录场景类，显示的第二个场景，输入并持久化保存玩家id
+*  @author   王亮
+*/
+
 #ifndef  _LOGINSCENE_SCENE_H__
 #define  _LOGINSCENE_SCENE_H__
 

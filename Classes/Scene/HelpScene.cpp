@@ -1,3 +1,9 @@
+/*
+*  @file     HelpScene.cpp
+*  @brief    帮助场景类，显示游戏玩法和操作方法
+*  @author   王亮
+*/
+
 #include "HelpScene.h"
 #include "Settings.h"
 #include "Scene/WelcomeScene.h"
@@ -34,20 +40,29 @@ bool HelpScene::init()
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
+
+	//=====================文本label============================
 	auto label = Label::createWithTTF("HelpScene!", "fonts/Marker Felt.ttf", 45);
 	label->setPosition(visibleSize.width / 2, visibleSize.height / 2);
 	this->addChild(label, 0);
 
 
 
-	//����ͼƬ
+	//=====================背景图片============================
 	Sprite * bg = Sprite::create("emptyBg.png");
 	bg->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
 	this->addChild(bg, -1);
 
 
 
-	//���ذ�ť
+
+	//============to do:添加游戏玩法和操作方法的信息===========
+
+
+
+
+
+	//=====================返回按钮============================
 	auto backItem = MenuItemImage::create(
 		"backNormal.png",
 		"backSelected.png",

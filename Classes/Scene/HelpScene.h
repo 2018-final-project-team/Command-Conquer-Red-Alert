@@ -1,3 +1,9 @@
+/*
+*  @file     HelpScene.h
+*  @brief    帮助场景类，显示游戏玩法和操作方法
+*  @author   王亮
+*/
+
 #ifndef __SCENE_HELPSCENE_H__
 #define __SCENE_HELPSCENE_H__
 

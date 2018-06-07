@@ -1,4 +1,3 @@
-
 #ifndef __TAG_H_
 #define __TAG_H_
 
@@ -12,7 +11,10 @@ typedef enum
     INFANTRY_TAG = 5,
     DOG_TAG = 6,
     TANK_TAG = 7,
-    NONE = 8
+    NONE = 8,
+	BUILDING_BUTTON = 9,
+	SOLDIER_BUTTON = 10,
+	CAR_BUTTON = 11
 }Tag;
 
 #endif // TagData.h
