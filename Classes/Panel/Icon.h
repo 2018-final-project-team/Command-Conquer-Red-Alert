@@ -39,7 +39,11 @@ public:
 	bool initIcon(Tag tag,int money, GameScene* gameScene);
 	static Icon* createIcon(Tag tag,int money, GameScene* gameScene);
 
-    //修改图标的status和显示效果
+	/**
+	* @brief 修改图标的status和显示效果
+	* @param 状态
+	* @return void
+	*/
 	void setStatus(IconsStatus iconSta);
 
 	IconsStatus getStatus();
@@ -50,9 +54,6 @@ public:
 	* @return void
 	*/
 	void showProgressOfWait(float duration);
-
-
-
 
 private:
 	GameScene* _gameScene;

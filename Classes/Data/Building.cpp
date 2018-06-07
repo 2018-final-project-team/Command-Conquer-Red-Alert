@@ -20,7 +20,7 @@ Building* Building::create(Tag _buildingTag)
 	//创建一个建筑物精灵对象
 	Building* temp = new Building();
 	//定义一个存放建筑物的字符串数组
-	std::string picTable[5] = { "GameScene/Base200.png","GameScene/Power200.png","GameScene/Mine200.png","GameScene/Barracks200.png","GameScene/CarFactory200.png" };
+	std::string picTable[5] = { "GameItem/Building/Base200.png","GameItem/Building/Power200.png","GameItem/Building/Mine200.png","GameItem/Building/Barracks150.png","GameItem/Building/CarFactory200.png" };
 	//初始化安装建筑物时金钱的消耗
 	int sValue[5] = { 500,500,500,500,500 };
 	//初始化建筑物的血量

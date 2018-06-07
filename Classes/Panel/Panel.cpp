@@ -41,31 +41,31 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 
 	_gameScene = gameScene;
 	_curCategoryTag = BUILDING_BUTTON;
-	//TO DO:添加工具栏背景图片
+
+	//===================添加工具栏背景图片===========================
 	_panelBG = Sprite::create("GameItem/Panel/panelBG_normal.png");
 	_panelBG->setPosition(Point(0, 0));
 	addChild(_panelBG);
 
-	_curCategoryTag = BUILDING_BUTTON;
-
-	//添加工具栏三个分类按钮的图片
-	_buildingButton = Sprite::create("GameItem/Panel/B.png");
+	//================添加工具栏三个分类按钮的图片=====================
+	_buildingButton = Sprite::create("GameItem/Panel/Building.png");
 	_buildingButton->setPosition(Point(-60, 0));
 	_buildingButton->setTag(BUILDING_BUTTON);
 	addChild(_buildingButton);
 
-	_soldierButton = Sprite::create("GameItem/Panel/S.png");
+	_soldierButton = Sprite::create("GameItem/Panel/Soldier.png");
 	_soldierButton->setPosition(Point(0, 0));
 	_soldierButton->setTag(SOLDIER_BUTTON);
 	addChild(_soldierButton);
 
-	_carButton = Sprite::create("GameItem/Panel/C.png");
+	_carButton = Sprite::create("GameItem/Panel/Car.png");
 	_carButton->setPosition(Point(60, 0));
 	_carButton->setTag(CAR_BUTTON);
 	addChild(_carButton);
 
-	addIcons();
 
+	//==============添加所有建筑、士兵、战车图标=====================
+	addIcons();
 
 
 	//===============三个标签按钮触摸事件监听===================
@@ -201,8 +201,7 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 	return true;
 }
 
-
-//TO DO:面板的调整
+//======================面板的调整===================================
 void Panel::setCurButton(Tag tag)
 {
 	_curCategoryTag = tag;
@@ -232,19 +231,7 @@ void Panel::checkIcon(Tag tag)
 	}
 	_curList->clear();
 
-	//=========测试代码：模拟各种图标出现的条件========
-	_gameScene->setIsBaseExist(true);
-	_gameScene->setPowerPlantNum(1);
-	_gameScene->setBarracksNum(1);
-	_gameScene->setCarFactoryNum(1);
-	_gameScene->setMoney(3000);
-	//_gameScene->_manager->_isWaitToCreateBuilding = true;
-	//_gameScene->_manager->_canCreateBuilding = false;
-	//_gameScene->_manager->setBuildingTag(POWER_PLANT_TAG);
-	//_gameScene->_manager->setTimeToCreateBuilding(clock());
-	//_gameScene->_manager->setWaitTimeToCreateBuilding(10 * 1000);
-	//_powerPlantIcon->showProgressOfWait(10);
-	
+	//===============向列表中添加需要显示的图标======================
 	switch (tag)
 	{
 	case BUILDING_BUTTON:
@@ -293,14 +280,13 @@ void Panel::showIcon(Tag tag)
 	}
 }
 
-
 void Panel::removeAllIcon()
 {
 	if (_curList != NULL)
 	{
 		for (int i = 0; i<_curList->size(); i++)
 		{
-			this->removeChild(_curList->at(i), false);    //TO DO:确定true or false
+			this->removeChild(_curList->at(i), false);
 		}
 	}
 }

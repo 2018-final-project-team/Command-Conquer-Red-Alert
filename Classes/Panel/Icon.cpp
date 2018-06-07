@@ -73,8 +73,6 @@ bool Icon::initIcon(Tag tag, int money, GameScene* gameScene)
 	setTag(tag);
 
 	this->retain();
-
-
 }
 
 
@@ -84,8 +82,6 @@ void Icon::setStatus(IconsStatus iconSta)
 	switch (iconSta)
 	{
 	case invalidForMoney:
-		log("set not enough money");
-		//_statusIcon->setVisible(false);
 		_statusLabel->setString("$");
 		_statusLabel->setColor(Color3B(255, 0, 0));
 		_statusLabel->setVisible(true);
@@ -241,15 +237,11 @@ void Icon::showProgressOfWait(float duration)   //单位为秒
 	this->addChild(progressTimer2, 2);
 
 	auto progressTo = ProgressTo::create(duration, 100);
-	progressTimer1->runAction(RepeatForever::create(progressTo->clone()));//为了方便展示 这里让动作重复执行
-	progressTimer2->runAction(RepeatForever::create(progressTo->clone()));//为了方便展示 这里让动作重复执行
+	progressTimer1->runAction(RepeatForever::create(progressTo->clone()));
+	progressTimer2->runAction(RepeatForever::create(progressTo->clone()));
 	
 
 }
-
-
-
-	
 
 
 IconsStatus Icon::getStatus()

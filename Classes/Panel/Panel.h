@@ -55,9 +55,30 @@ private:
 	cocos2d::Vector<Icon*> _carList;
 	cocos2d::Vector<Icon*>* _curList;
 
+	/**
+	* @brief 设置图标坐标并显示
+	* @param Tag
+	* @return void
+	*/
 	void showIcon(Tag tag);
+
+	/**
+	* @brief 更新列表中应显示的图标
+	* @param Tag
+	* @return void
+	*/
 	void checkIcon(Tag tag);
+
+	/**
+	* @brief 移除当前列表中的全部图标
+	* @return void
+	*/
 	void removeAllIcon();
+
+	/**
+	* @brief 初始化所有图标
+	* @return void
+	*/
 	void addIcons();
 
 	
