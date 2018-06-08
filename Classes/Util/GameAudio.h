@@ -1,7 +1,7 @@
 /*
 *  @file     GameAudio.h
-*  @brief    ÉùÒô¿ØÖÆ¹¤¾ßÀà£¬Ìá¹©¿ØÖÆÓÎÏ·µÄÒôÀÖºÍÒôĞ§µÄ·½·¨
-*  @author   ÍõÁÁ
+*  @brief    å£°éŸ³æ§åˆ¶å·¥å…·ç±»ï¼Œæä¾›æ§åˆ¶æ¸¸æˆçš„éŸ³ä¹å’ŒéŸ³æ•ˆçš„æ–¹æ³•
+*  @author   ç‹äº®
 */
 
 #ifndef __UTIL_GAMEAUDIO_H__
@@ -14,11 +14,11 @@ class GameAudio
 {
 private:
 
-	bool isEffectOn;               //ÒôĞ§ÊÇ·ñ´ò¿ª
-	bool isBgmOn;                  //ÒôÀÖÊÇ·ñ´ò¿ª
+	bool isEffectOn;               //éŸ³æ•ˆæ˜¯å¦æ‰“å¼€
+	bool isBgmOn;                  //éŸ³ä¹æ˜¯å¦æ‰“å¼€
 
 	std::string currentBgm;
-	CocosDenshion::SimpleAudioEngine * audioEngine;       //ÒôÆµÒıÇæ
+	CocosDenshion::SimpleAudioEngine * audioEngine;       //éŸ³é¢‘å¼•æ“
 
 public:
 
@@ -44,7 +44,7 @@ public:
 
     bool getBgmOn();
 private:
-	//¹¹Ôìº¯Êı
+	//æ„é€ å‡½æ•°
 	GameAudio();
 
 };
