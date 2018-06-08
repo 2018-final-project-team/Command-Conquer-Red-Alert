@@ -42,15 +42,23 @@ bool GameScene::init()
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	//===================Load map=========================
-	_tileMap = TMXTiledMap::create("GameItem/Map/mapbeautiful1.tmx");
+	_tileMap = TMXTiledMap::create("GameItem/Map/mapbeautiful2.tmx");
     MAPX = _tileMap->getMapSize().width * _tileMap->getTileSize().width;
     MAPY = _tileMap->getMapSize().height * _tileMap->getTileSize().height;
 	this->addChild(_tileMap, 0);
 
 	_barrier = _tileMap->getLayer("barrier");
+	if (_barrier == nullptr)
+	{
+		log("_barrier is nullptr");
+	}
+	else
+	{
+		log("_barrier is not nullptr");
+	}
 
 	/*update by czd*/
-	Sprite* small_map = Sprite::create("GameItem/Map/small_map1.png"); 
+	Sprite* small_map = Sprite::create("GameItem/Map/small_map2.png"); 
     small_map->setPosition(Point(visibleSize.width - small_mapX / 2, visibleSize.height - small_mapX / 2));
 	this->addChild(small_map, 0);
 
@@ -71,6 +79,52 @@ bool GameScene::init()
 
 
 
+
+	/*键盘监听 by czd */
+	auto _keyboardListener = EventListenerKeyboard::create();
+	_keyboardListener->onKeyPressed = [=](EventKeyboard::KeyCode keyCode, Event* event) {
+		if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW) {
+			_keyUp = true;
+			CCLOG("按下了：上方向键");
+		}
+		else if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW) {
+			_keyLeft = true;
+			//CCLOG("按下了：左方向键");
+		}
+		else if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW) {
+			_keyRight = true;
+			//CCLOG("按下了：右方向键");
+		}
+		else if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW) {
+			_keyDown = true;
+			CCLOG("按下了：下方向键");
+		}
+
+		return true;
+	};
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(_keyboardListener, this);
+	auto _keyboardReleasedListener = EventListenerKeyboard::create();
+	_keyboardReleasedListener->onKeyReleased = [=](EventKeyboard::KeyCode keyCode, Event* event) {
+		if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW) {
+			_keyUp = false;
+			CCLOG("松开了：上方向键");
+		}
+		else if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW) {
+			_keyLeft = false;
+			//CCLOG("按下了：左方向键");
+		}
+		else if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW) {
+			_keyRight = false;
+			//CCLOG("按下了：右方向键");
+		}
+		else if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW) {
+			_keyDown = false;
+			CCLOG("松开了：下方向键");
+		}
+
+		return true;
+	};
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(_keyboardReleasedListener, this);
 
 
 	_gameListener = EventListenerTouchOneByOne::create();
@@ -331,7 +385,7 @@ void GameScene::scrollMap()
 	auto X = _cursorPosition.x;
 	auto Y = _cursorPosition.y;
     Point mapPosition = _tileMap->getPosition();
-	if (X < MINLENTH) 
+	if (X < MINLENTH || _keyLeft)
     {
 		if (_tileMap->getPositionX() + SPEED < 0) 
         {
@@ -344,7 +398,7 @@ void GameScene::scrollMap()
             moveSpritesWithMap(Vec2(-mapPosition.x, 0));
 		}
 	}
-    else if (X > visibleSize.width - MINLENTH)
+    else if (X > visibleSize.width - MINLENTH || _keyRight)
     {
         if (_tileMap->getPositionX() - SPEED > -MAPX + visibleSize.width)
         {
@@ -358,7 +412,7 @@ void GameScene::scrollMap()
         }
     }
 
-	if (Y < MINLENTH) 
+	if (Y < MINLENTH || _keyDown)
     {
 		if (_tileMap->getPositionY() + SPEED < 0) 
         {
@@ -371,7 +425,7 @@ void GameScene::scrollMap()
             moveSpritesWithMap(Vec2(0, -mapPosition.y));
 		}
 	}
-	else if (Y > visibleSize.height - MINLENTH) 
+	else if (Y > visibleSize.height - MINLENTH || _keyUp)
     {
 		if (_tileMap->getPositionY() - SPEED >  -MAPY + visibleSize.height)
         {

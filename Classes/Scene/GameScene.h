@@ -25,6 +25,11 @@ private:
     int MAPX;
     int MAPY;
 
+	bool _keyUp = false;
+	bool _keyDown = false;
+	bool _keyLeft = false;
+	bool _keyRight = false;
+
 	cocos2d::Point _cursorPosition{ 0,0 };  // C++ 11 允许这样初始化
 	void scrollMap();
 
