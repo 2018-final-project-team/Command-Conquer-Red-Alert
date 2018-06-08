@@ -67,11 +67,7 @@ bool SettingsScene::init()
     addChild(createText());
 
 	//=====================键盘事件：按ESC退出该场景============================
-<<<<<<< HEAD
     keyEventListener = EventListenerKeyboard::create();
-=======
-    auto keyEventListener = EventListenerKeyboard::create();
->>>>>>> dev1-Manager
     keyEventListener->onKeyReleased = [](EventKeyboard::KeyCode code, Event* event)
     {
         if (code == EventKeyboard::KeyCode::KEY_ESCAPE)

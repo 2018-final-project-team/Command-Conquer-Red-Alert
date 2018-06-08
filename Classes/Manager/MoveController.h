@@ -56,13 +56,13 @@ public:
     * @return  void
     */
     void moveSoldiers();
-    void findRroute(Unit *soldier, std::vector<Point> &route);
+    void findRroute(Unit *soldier, std::vector<cocos2d::Point> &route);
     /**
     * @brief 传入起点和目的地(屏幕）和一个Vector<Point> route,来装找到的路
     如，第一帧，把坦克原坐标加上route[1],在刷新
     * @return  void
     */
-    bool is_find(Vec2 position, Vec2 destination);
+    bool is_find(cocos2d::Vec2 position, cocos2d::Vec2 destination);
     /*
     * @brief 是否可以放兵或坦克
     */

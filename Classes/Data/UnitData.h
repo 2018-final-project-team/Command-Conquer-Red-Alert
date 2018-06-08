@@ -93,13 +93,8 @@ public:
     CC_SYNTHESIZE(unsigned int, _ATKLimit, UnitATKLimit);
     
     //目的地
-<<<<<<< HEAD
     CC_SYNTHESIZE(cocos2d::Vec2, _destination, Destination);
     
-=======
-    CC_SYNTHESIZE(Vec2, _destination, Destination);
-
->>>>>>> dev1-Manager
     //是否抵达目的地
     CC_SYNTHESIZE(bool, _getDestination, GetDestination);
     
@@ -113,16 +108,11 @@ public:
     CC_SYNTHESIZE(std::string, _UnitName, _UnitName);
     
     //生成单位的方法
-<<<<<<< HEAD
-    static Unit * create(Tag _tag);
-    
-=======
     static Unit * create(Tag _unitTag);
 
     // 用于寻路
-    std::vector<Point> _route;
+    std::vector<cocos2d::Point> _route;
 
->>>>>>> dev1-Manager
 public:
     /*
      */

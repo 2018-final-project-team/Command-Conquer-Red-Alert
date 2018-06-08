@@ -209,12 +209,6 @@ bool GameScene::init()
 	return true;
 }
 
-void GameScene::onExit()
-{
-	Layer::onExit();
-	_gameEventDispatcher->removeEventListener(_gameListener);
-}
-
 void GameScene::dataInit()
 {
 	// To Do: 数据合理
@@ -255,6 +249,7 @@ void GameScene::onEnter()
     };
     Director::getInstance() -> getEventDispatcher() -> addEventListenerWithFixedPriority(listener, 1);
 }
+
 
 void GameScene::onExit()
 {
@@ -329,13 +324,14 @@ void GameScene::update(float time)
 	_manager->attack();
 	_manager->addMoneyUpdate();
 
-    _manager->waitCreateBuilding();
-    _manager->waitCreateSoldier();
-    _manager->waitCreateCar();
+	_manager->waitCreateBuilding();
+	_manager->waitCreateSoldier();
+	_manager->waitCreateCar();
 
 	_manager->getMoveController()->moveSoldiers();
 
 	scrollMap();
+}
 
 /*update by czd */
 void GameScene::scrollMap() 
@@ -364,7 +360,7 @@ void GameScene::scrollMap()
             _tileMap->runAction(MoveBy::create(0.1, Point(-SPEED, 0)));
             moveSpritesWithMap(Vec2(-SPEED, 0));
         }
-        else 
+		else
         {
             _tileMap->setPositionX(-MAPX + visibleSize.width);
             moveSpritesWithMap(Vec2(-MAPX + visibleSize.width - mapPosition.x, 0));

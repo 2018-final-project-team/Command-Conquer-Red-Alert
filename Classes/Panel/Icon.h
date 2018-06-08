@@ -29,11 +29,9 @@ enum IconsStatus
 
 };
 
-USING_NS_CC;
-
 class GameScene;
 
-class Icon : public Sprite
+class Icon : public cocos2d::Sprite
 {
 public:
 	bool initIcon(Tag tag,int money, GameScene* gameScene);
@@ -66,13 +64,13 @@ private:
 	cocos2d::ProgressTimer* progressTimer2;
 
     
-	Sprite* _icon;           //内层显示的图标
-	Sprite* _iconFrame;       //最外层框图
-	Sprite* _priceIcon;      //价格图标
-	Label* _priceLabel;      //价格label
-	Label* _statusLabel;      //状态label
-	Label* _statusLabel2;      //状态label2，当一个状态label不够用时使用
-	Sprite* _invalidIcon;     //不可点击效果的图标
+	cocos2d::Sprite* _icon;           //内层显示的图标
+	cocos2d::Sprite* _iconFrame;       //最外层框图
+	cocos2d::Sprite* _priceIcon;      //价格图标
+	cocos2d::Label* _priceLabel;      //价格label
+	cocos2d::Label* _statusLabel;      //状态label
+	cocos2d::Label* _statusLabel2;      //状态label2，当一个状态label不够用时使用
+	cocos2d::Sprite* _invalidIcon;     //不可点击效果的图标
 
 	IconsStatus _status;
 

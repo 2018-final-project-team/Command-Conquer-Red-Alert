@@ -121,6 +121,11 @@ void Unit::attack(Unit * enemy)
     CocosDenshion::SimpleAudioEngine::getInstance() -> playEffect("Unit/Explosion.mp3");
 }
 
+void Unit::attack(Building *)
+{
+
+}
+
 
 bool Unit::canAttack(Vec2 position)
 {

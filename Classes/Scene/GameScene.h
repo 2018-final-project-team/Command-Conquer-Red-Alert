@@ -18,8 +18,9 @@ public:
     Manager * _manager;
     cocos2d::TMXTiledMap* _tileMap;
 
+	Panel * panel;
+
 private:
-    Panel * panel;
 	cocos2d::TMXLayer* _barrier;
     int MAPX;
     int MAPY;
@@ -34,12 +35,12 @@ private:
 	cocos2d::Vector<Building*> _buildings;
     cocos2d::Vector<Building*> _enemyBuildings;
 
-	Point _touchBegan;
-	Point _touchEnd;
+	cocos2d::Point _touchBegan;
+	cocos2d::Point _touchEnd;
 
 public:
-	EventListenerTouchOneByOne* _gameListener;
-	EventDispatcher* _gameEventDispatcher;
+	cocos2d::EventListenerTouchOneByOne* _gameListener;
+	cocos2d::EventDispatcher* _gameEventDispatcher;
 
 public:
 
@@ -80,6 +81,7 @@ public:
 
 	virtual bool init();
 
+	virtual void onEnter();
 	virtual void onExit();
 
 	// 初始化数据
