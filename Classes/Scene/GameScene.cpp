@@ -48,14 +48,6 @@ bool GameScene::init()
 	this->addChild(_tileMap, 0);
 
 	_barrier = _tileMap->getLayer("barrier");
-	if (_barrier == nullptr)
-	{
-		log("_barrier is nullptr");
-	}
-	else
-	{
-		log("_barrier is not nullptr");
-	}
 
 	/*update by czd*/
 	Sprite* small_map = Sprite::create("GameItem/Map/small_map2.png"); 
@@ -71,11 +63,9 @@ bool GameScene::init()
 	//=====================测试Panel========================
 	auto panel = Panel::createWithGameScene(this);
 	if (panel == nullptr) { log("create panel error"); }
-	//auto _panelSize = panel->getContentSize();   //为什么是0，0？
-	//log("%f %f %f %f",_panelSize.width,_panelSize.height,panel->getAnchorPoint().x,panel->getAnchorPoint().y);
 	panel->setPosition(visibleSize.width - 112, visibleSize.height - 400);
 	this->addChild(panel);
-	//log("the tag of panel is:%d", panel->getTag());
+
 
 
 
