@@ -1,7 +1,7 @@
-/*
+/**
 *  @file     GameManager.h
 *  @brief    游戏的控制类
-*/
+**/
 
 #ifndef __GameManager_H_
 #define __GameManager_H_
@@ -9,7 +9,6 @@
 #include "cocos2d.h"
 #include "MoveController.h"
 #include <queue>
-#include <map>
 #include <iostream>
 #include <time.h>
 
@@ -28,9 +27,6 @@ private:
 
     GameScene* _gameScene;
     MoveController* _moveController;
-
-    std::map<cocos2d::Point, bool> _putSoldierPoints;
-    std::map<cocos2d::Point, bool> _putCarPoints;
 
     std::queue<Tag> _carQueue;               // 待建车队列
     std::queue<Tag> _soldierQueue;           // 待建士兵队列 
@@ -141,9 +137,10 @@ public:
         return _moveController;
     }
 
-    /*
-    * @brief set _putSoldierPoints
-    */
+    // 放士兵和坦克
+    cocos2d::Point getPutSoldierPosition();
+
+    cocos2d::Point getPutCarPosition();
 
 };
 

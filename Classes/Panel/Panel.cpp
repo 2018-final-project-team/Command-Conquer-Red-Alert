@@ -81,7 +81,7 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 		{
 			switch (_selectedButton->getTag())
 			{
-				//================三个标签按钮的点击处理==================
+			//================三个标签按钮的点击处理==================
 			case BUILDING_BUTTON:
 				log("select building button, the tag is:%d", _selectedButton->getTag());
 				setCurButton(BUILDING_BUTTON);
