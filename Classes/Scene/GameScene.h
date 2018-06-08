@@ -5,8 +5,8 @@ const clock_t addMoneyDelay = 1000 * 10;
 
 #include <time.h>
 #include "cocos2d.h"
-#include "Data\UnitData.h"
-#include "Manager\GameManager.h"
+#include "Data/UnitData.h"
+#include "Manager/GameManager.h"
 #include "Panel/Panel.h"
 
 class Manager;   //解决头文件互相包含时带来的问题
@@ -34,13 +34,13 @@ private:
 	cocos2d::Vector<Building*> _enemyBuildings;
 
 
-	Point _touchBegan;
-	Point _touchEnd;
+	cocos2d::Point _touchBegan;
+	cocos2d::Point _touchEnd;
 	
 
 public:
-	EventListenerTouchOneByOne* _gameListener;
-	EventDispatcher* _gameEventDispatcher;
+	cocos2d::EventListenerTouchOneByOne* _gameListener;
+	cocos2d::EventDispatcher* _gameEventDispatcher;
 
 public:
 	CC_SYNTHESIZE(int, _money, Money);
