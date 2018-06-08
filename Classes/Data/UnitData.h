@@ -12,7 +12,6 @@
 #include "string"
 #include "TagData.h"
 #include "Building.h"
-#include <vector>
 
 //TODO: 加入动画和图片素材，之后实现。
 //TODO: 添加注释。
@@ -108,15 +107,15 @@ public:
     CC_SYNTHESIZE(std::string, _UnitName, _UnitName);
     
     //生成单位的方法
-    static Unit * create(Tag _unitTag);
+    static Unit * create(Tag _tag);
 
     // 用于寻路
     std::vector<cocos2d::Point> _route;
-
+    
 public:
     /*
      */
-    void moveTo(cocos2d::Vec2(destination),float time);
+    void moveTo(cocos2d::Vec2 destination, float time);
     /*
      */
     void getInjuredBy(Unit *);

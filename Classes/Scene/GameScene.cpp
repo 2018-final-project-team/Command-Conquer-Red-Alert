@@ -19,14 +19,12 @@ static void problemLoading(const char* filename)
 
 Scene* GameScene::createScene()
 {
-	auto scene = Scene::createWithPhysics();
-    
-    scene -> getPhysicsWorld() -> setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
-    
-    auto layer = GameScene::create();
-    
+	auto scene = Scene::create();
+
+	auto layer = GameScene::create();
+
 	scene->addChild(layer);
-    
+
 	return scene;
 
 }
@@ -54,7 +52,7 @@ bool GameScene::init()
 	/*update by czd*/
 	Sprite* small_map = Sprite::create("GameItem/Map/small_map1.png"); 
     small_map->setPosition(Point(visibleSize.width - small_mapX / 2, visibleSize.height - small_mapX / 2));
-	this->addChild(small_map);
+	this->addChild(small_map, 0);
 
 
     //DrawNode
@@ -62,21 +60,25 @@ bool GameScene::init()
     this->addChild(drawNode);
 
 
-	//=====================添加Panel========================
+	//=====================测试Panel========================
 	auto panel = Panel::createWithGameScene(this);
 	if (panel == nullptr) { log("create panel error"); }
+	//auto _panelSize = panel->getContentSize();   //为什么是0，0？
+	//log("%f %f %f %f",_panelSize.width,_panelSize.height,panel->getAnchorPoint().x,panel->getAnchorPoint().y);
 	panel->setPosition(visibleSize.width - 112, visibleSize.height - 400);
 	this->addChild(panel);
+	//log("the tag of panel is:%d", panel->getTag());
 
 
 
 
-	//=========== 点击小地图的移动功能 ===============
+
 	_gameListener = EventListenerTouchOneByOne::create();
 	_gameListener->onTouchBegan = [=](Touch* touch, Event* event) {
-		
+		//=========== 点击小地图的移动功能 ===============
 		Point position = touch->getLocation();
-		if (position.x > visibleSize.width - small_mapX && position.y > visibleSize.height - small_mapY) {
+		if (position.x > visibleSize.width - small_mapX && position.y > visibleSize.height - small_mapY) 
+        {
             auto X = (position.x - (visibleSize.width - small_mapX)) / small_mapX * MAPX - visibleSize.width / 2;
             auto Y = (position.y - (visibleSize.height - small_mapY)) / small_mapY * MAPY - visibleSize.width / 2;
 			if (X < 0) X = 0;
@@ -87,8 +89,9 @@ bool GameScene::init()
                 Y = MAPY - visibleSize.height;
             //direction to move sprites
             Vec2 direction = Point(-X, -Y) - _tileMap->getPosition();
+            log("%f %f", -X, -Y);
 
-			_tileMap->runAction(MoveTo::create(0.1, Point(-X, -Y)));
+			_tileMap->setPosition(Point(-X, -Y));
             moveSpritesWithMap(direction);
             
 			return false;
@@ -209,6 +212,12 @@ bool GameScene::init()
 	return true;
 }
 
+void GameScene::onExit()
+{
+	Layer::onExit();
+	_gameEventDispatcher->removeEventListener(_gameListener);
+}
+
 void GameScene::dataInit()
 {
 	// To Do: 数据合理
@@ -227,34 +236,14 @@ void GameScene::dataInit()
 
 	_carFactoryPosition = _barracksPosition = Vec2::ZERO;
 
-	_isBaseExist = false;
+	_isBaseExist = true;   //暂时的
 }
 
 void GameScene::menuBackCallback(Ref *pSender)
 {
-	const auto transition = TransitionFade::create(1, WelcomeScene::createScene());
-	Director::getInstance()->replaceScene(transition);
-}
-
-void GameScene::onEnter()
-{
-    Layer::onEnter();
-    auto listener = EventListenerPhysicsContact::create();
-    listener -> onContactBegin = [](PhysicsContact & contact)
-    {
-        //        auto spriteA = (Sprite *)contact.getShapeA() -> getBody() -> getNode();
-        //        auto spriteB = (Sprite *)contact.getShapeB() -> getBody() -> getNode();
-        log("onContact");
-        return true;
-    };
-    Director::getInstance() -> getEventDispatcher() -> addEventListenerWithFixedPriority(listener, 1);
-}
-
-
-void GameScene::onExit()
-{
-	Layer::onExit();
-	_gameEventDispatcher->removeEventListener(_gameListener);
+	//跳转到第一个场景，记得包含第一个场景的头文件：GameScene.h  
+	//Director::getInstance()->replaceScene(MyFirstScene::createScene());  
+	Director::getInstance()->popScene();
 }
 
 Vector<Unit*>* GameScene::getSelectedSoldiers()
@@ -320,17 +309,19 @@ void GameScene::decreaseTotalPower(int power)
 
 void GameScene::update(float time)
 {
+    Layer::update(time);
 
 	_manager->attack();
 	_manager->addMoneyUpdate();
 
-	_manager->waitCreateBuilding();
-	_manager->waitCreateSoldier();
-	_manager->waitCreateCar();
+    _manager->waitCreateBuilding();
+    _manager->waitCreateSoldier();
+    _manager->waitCreateCar();
 
 	_manager->getMoveController()->moveSoldiers();
 
 	scrollMap();
+
 }
 
 /*update by czd */
@@ -344,23 +335,23 @@ void GameScene::scrollMap()
     {
 		if (_tileMap->getPositionX() + SPEED < 0) 
         {
-			_tileMap->runAction(MoveBy::create(0.1, Point(SPEED, 0)));
+			_tileMap->setPosition(Vec2(SPEED, 0) + mapPosition);
             moveSpritesWithMap(Vec2(SPEED, 0));
 		}
 		else 
         {
 			_tileMap->setPositionX(0);
-            moveSpritesWithMap(Vec2(mapPosition.x, 0));
+            moveSpritesWithMap(Vec2(-mapPosition.x, 0));
 		}
 	}
     else if (X > visibleSize.width - MINLENTH)
     {
         if (_tileMap->getPositionX() - SPEED > -MAPX + visibleSize.width)
         {
-            _tileMap->runAction(MoveBy::create(0.1, Point(-SPEED, 0)));
+            _tileMap->setPosition(mapPosition + Vec2(-SPEED, 0));
             moveSpritesWithMap(Vec2(-SPEED, 0));
         }
-		else
+        else 
         {
             _tileMap->setPositionX(-MAPX + visibleSize.width);
             moveSpritesWithMap(Vec2(-MAPX + visibleSize.width - mapPosition.x, 0));
@@ -371,20 +362,20 @@ void GameScene::scrollMap()
     {
 		if (_tileMap->getPositionY() + SPEED < 0) 
         {
-			_tileMap->runAction(MoveBy::create(0.1, Point(0, SPEED)));
+			_tileMap->setPosition(mapPosition + Point(0, SPEED));
             moveSpritesWithMap(Vec2(0, SPEED));
 		}
 		else 
         {
 			_tileMap->setPositionY(0);
-            moveSpritesWithMap(Vec2(0, mapPosition.y));
+            moveSpritesWithMap(Vec2(0, -mapPosition.y));
 		}
 	}
 	else if (Y > visibleSize.height - MINLENTH) 
     {
 		if (_tileMap->getPositionY() - SPEED >  -MAPY + visibleSize.height)
         {
-			_tileMap->runAction(MoveBy::create(0.1, Point(0, -SPEED)));
+			_tileMap->setPosition(Vec2(0, -SPEED) + mapPosition);
             moveSpritesWithMap(Vec2(0, -SPEED));
 		}
 		else 

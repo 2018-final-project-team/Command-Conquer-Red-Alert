@@ -1,6 +1,6 @@
 /*
 *  @file     MoveController.cpp
-*  @brief    å„ç§å…µçš„ç§»åŠ¨æ§åˆ¶
+*  @brief    ¸÷ÖÖ±øµÄÒÆ¶¯¿ØÖÆ
 */
 #include "MoveController.h"
 #include "../Data/Building.h"
@@ -62,16 +62,16 @@ void MoveController::selectSoldiersWithTag(Tag tag)
 
 void MoveController::setDestination(cocos2d::Vec2 position)
 {
-    // æ£€æµ‹æ˜¯å¦éšœç¢
+    // ¼ì²âÊÇ·ñÕÏ°­
     if (_gameScene->isCollision(position))
     {
         return;
     }
- //===========å‡çš„åƒåœ¾é˜Ÿå½¢===================
-    int col;                     // å½“å‰åˆ—
-    int row = 0;                     // å½“å‰è¡Œ  
+ //===========¼ÙµÄÀ¬»ø¶ÓĞÎ===================
+    int col;                     // µ±Ç°ÁĞ
+    int row = 0;                     // µ±Ç°ĞĞ  
     int soldierSize = 40;            // To Do
-    // å…ˆæ”¾è½¦
+    // ÏÈ·Å³µ
     col = 4;
     for (auto& car : *_selectedSoldiers)
     {
@@ -79,30 +79,30 @@ void MoveController::setDestination(cocos2d::Vec2 position)
         {
             while (!canPut(position + Vec2(col * soldierSize, -row * soldierSize)))
             {
-                col -= 2;              // æš‚ä¸”è®¤ä¸ºå¦å…‹å°ºå¯¸ä¸ºå…µçš„ä¸¤å€ æ‰€ä»¥å‡2
+                col -= 2;              // ÔİÇÒÈÏÎªÌ¹¿Ë³ß´çÎª±øµÄÁ½±¶ ËùÒÔ¼õ2
                 if (col < -4)
                 {
                     col = 4;
-                    row += 2;          // æš‚ä¸”è®¤ä¸ºå¦å…‹å°ºå¯¸ä¸ºå…µçš„ä¸¤å€ æ‰€ä»¥åŠ 2
+                    row += 2;          // ÔİÇÒÈÏÎªÌ¹¿Ë³ß´çÎª±øµÄÁ½±¶ ËùÒÔ¼Ó2
                 }
             }
             car->setDestination(position + Vec2(col * soldierSize, -row * soldierSize));
-            // å¯»è·¯
+            // Ñ°Â·
             findRroute(car, car->_route);
-            // ç¬¬ä¸€ç‚¹
+            // µÚÒ»µã
             car->setDestination(car->_route.front());
             (car->_route).erase((car->_route).begin());
             car->setGetDestination(false);
         }
 
-        col -= 2;             // æš‚ä¸”è®¤ä¸ºå¦å…‹å°ºå¯¸ä¸ºå…µçš„ä¸¤å€ æ‰€ä»¥å‡2
+        col -= 2;             // ÔİÇÒÈÏÎªÌ¹¿Ë³ß´çÎª±øµÄÁ½±¶ ËùÒÔ¼õ2
         if (col < -4)
         {
             col = 4;
-            row += 2;          // æš‚ä¸”è®¤ä¸ºå¦å…‹å°ºå¯¸ä¸ºå…µçš„ä¸¤å€ æ‰€ä»¥åŠ 2
+            row += 2;          // ÔİÇÒÈÏÎªÌ¹¿Ë³ß´çÎª±øµÄÁ½±¶ ËùÒÔ¼Ó2
         }
     }
-    // å†æ”¾å…µ
+    // ÔÙ·Å±ø
     for (auto& soldier : *_selectedSoldiers)
     {
         switch (soldier->getUnitTag())
@@ -122,9 +122,9 @@ void MoveController::setDestination(cocos2d::Vec2 position)
             soldier->setDestination(position + Vec2(col * soldierSize, -row * soldierSize));
             break;
         }
-        // å¯»è·¯
+        // Ñ°Â·
         findRroute(soldier, soldier->_route);
-        // ç¬¬ä¸€ç‚¹
+        // µÚÒ»µã
         soldier->setDestination(soldier->_route.front());
         (soldier->_route).erase( (soldier->_route).begin() );
         soldier->setGetDestination(false);
@@ -155,7 +155,7 @@ void MoveController::moveSoldiers()
             float distance = destination.distance(nowPosition);
          
             Vec2 move = soldier->getUnitSpeed() * interval * direction;
-            // å¦‚æœmoveçš„è·ç¦»å¤§äºåˆ°è¾¾ç›®çš„åœ°çš„è·ç¦»åˆ™ç›´æ¥åˆ°è¾¾ç›®çš„åœ°çš„
+            // Èç¹ûmoveµÄ¾àÀë´óÓÚµ½´ïÄ¿µÄµØµÄ¾àÀëÔòÖ±½Óµ½´ïÄ¿µÄµØµÄ
             if (move.length() > distance)
             {
                 soldier->moveTo(destination, 0.01);
@@ -173,10 +173,10 @@ void MoveController::moveSoldiers()
     }
 }
 
-//ç”¨äºå¯»è·¯çš„èŠ‚ç‚¹
-//whereX,whereY,å½“å‰å£«å…µä½ç½®ï¼Œä»¥åœ°å›¾å·¦ä¸‹ä¸ºåŸç‚¹
-//cost èŠ±è´¹
-//father çˆ¶èŠ‚ç‚¹ï¼Œç”¨äºæ‰¾åˆ°è·¯åè¿”å›
+//ÓÃÓÚÑ°Â·µÄ½Úµã
+//whereX,whereY,µ±Ç°Ê¿±øÎ»ÖÃ£¬ÒÔµØÍ¼×óÏÂÎªÔ­µã
+//cost »¨·Ñ
+//father ¸¸½Úµã£¬ÓÃÓÚÕÒµ½Â·ºó·µ»Ø
 struct node 
 {
     int whereX;
@@ -192,16 +192,16 @@ struct node
     }
 };
 
-//å¯»è·¯ç®—æ³•çš„ç»„æˆéƒ¨åˆ†
-//åˆ¤æ–­å½“å‰æ‰¾åˆ°çš„åœ°å’Œç›®çš„åœ°é—´æ˜¯å¦æœ‰éšœç¢
-//å¦‚æœæ²¡æœ‰éšœç¢ï¼Œç»“æŸå¯»è·¯
-//å‰é¢çš„è·¯æŒ‰æ‰¾åˆ°çš„è·¯èµ°ï¼Œåé¢çš„è·¯ç›´æ¥èµ°ç›´çº¿
-//ä¼ å…¥å½“å‰ä½ç½®ï¼Œç›®çš„åœ°ï¼ˆåœ°å›¾åæ ‡
+//Ñ°Â·Ëã·¨µÄ×é³É²¿·Ö
+//ÅĞ¶Ïµ±Ç°ÕÒµ½µÄµØºÍÄ¿µÄµØ¼äÊÇ·ñÓĞÕÏ°­
+//Èç¹ûÃ»ÓĞÕÏ°­£¬½áÊøÑ°Â·
+//Ç°ÃæµÄÂ·°´ÕÒµ½µÄÂ·×ß£¬ºóÃæµÄÂ·Ö±½Ó×ßÖ±Ïß
+//´«Èëµ±Ç°Î»ÖÃ£¬Ä¿µÄµØ£¨µØÍ¼×ø±ê
 bool MoveController::is_find(Vec2 position, Vec2 destination)
 {
     Vec2 direction = destination - position;
-    //ä¸¤ç‚¹ä¹‹é—´ä»»å–15ä¸ªç‚¹ï¼Œå¦‚æœéƒ½æ²¡éšœç¢ï¼Œå³æ²¡éšœç¢
-    //å› ä¸ºåœ°å›¾ç‰¹æ®Šæ‰€ä»¥ç²¾åº¦åº”è¯¥è¶³å¤Ÿ  
+    //Á½µãÖ®¼äÈÎÈ¡15¸öµã£¬Èç¹û¶¼Ã»ÕÏ°­£¬¼´Ã»ÕÏ°­
+    //ÒòÎªµØÍ¼ÌØÊâËùÒÔ¾«¶ÈÓ¦¸Ã×ã¹»  
     for (int i = 0; i < 15; ++i)
     {
         if (!_gameScene->isCollision(_gameScene->
@@ -215,11 +215,11 @@ bool MoveController::is_find(Vec2 position, Vec2 destination)
 }
 
 /**
-å¯»è·¯ç®—æ³•ä¸»ä½“
-ç±»ä¼¼A*ç®—æ³•
-å¯å‚è€ƒ https://blog.csdn.net/jialeheyeshu/article/details/53105810
-* @brief ä¼ å…¥è¦ç§»åŠ¨çš„å£«å…µå’Œä¸€ä¸ªVector<Point*> route,æ¥è£…æ‰¾åˆ°çš„è·¯
-ä¸ºäº†æ•ˆç‡è€ƒè™‘ï¼Œç›¸é‚»ä¸¤ä¸ªèŠ‚ç‚¹çš„distance=240,ï¼Œå¯ä»¥é€šè¿‡é™¤ä»¥é€Ÿåº¦å¾—åˆ°æ¯ç§’ä»¥åŠæ¯å¸§çš„ä½ç½®
+Ñ°Â·Ëã·¨Ö÷Ìå
+ÀàËÆA*Ëã·¨
+¿É²Î¿¼ https://blog.csdn.net/jialeheyeshu/article/details/53105810
+* @brief ´«ÈëÒªÒÆ¶¯µÄÊ¿±øºÍÒ»¸öVector<Point*> route,À´×°ÕÒµ½µÄÂ·
+ÎªÁËĞ§ÂÊ¿¼ÂÇ£¬ÏàÁÚÁ½¸ö½ÚµãµÄdistance=240,£¬¿ÉÒÔÍ¨¹ı³ıÒÔËÙ¶ÈµÃµ½Ã¿ÃëÒÔ¼°Ã¿Ö¡µÄÎ»ÖÃ
 by czd
 * @return  void
 */
@@ -227,10 +227,10 @@ void MoveController::findRroute(Unit *soldier, std::vector<Point> &route)
 {
     Vec2 screenNowPosition = soldier->getPosition();
     Vec2 screenDestination = soldier->getDestination();
-    //è½¬åŒ–ä¸ºä»¥åœ°å›¾å·¦ä¸‹è§’ä¸ºåŸç‚¹çš„åæ ‡    
+    //×ª»¯ÎªÒÔµØÍ¼×óÏÂ½ÇÎªÔ­µãµÄ×ø±ê    
     Vec2 nowPosition = _gameScene->_tileMap->convertToNodeSpace(screenNowPosition);
     Vec2 nowDestination = _gameScene->_tileMap->convertToNodeSpace(screenDestination);
-    //è¿™ä¸ªä»¥åå¯èƒ½æœ‰ç”¨
+    //Õâ¸öÒÔºó¿ÉÄÜÓĞÓÃ
     //struct cmp {
     //	bool operator()(node *a, node *b) {
     //		return a->cost >= b->cost;
@@ -244,12 +244,12 @@ void MoveController::findRroute(Unit *soldier, std::vector<Point> &route)
     node *myend = head;
     open.push(head);
     int distance = 240;
-    //8ä¸ªæ–¹å‘
-    //ä¸Šä¸‹å·¦å³ï¼Œå·¦ä¸Šå·¦ä¸‹ç­‰
+    //8¸ö·½Ïò
+    //ÉÏÏÂ×óÓÒ£¬×óÉÏ×óÏÂµÈ
     float directX[8] = { 0,0,-1 * distance ,distance,0.7*distance ,0.7* distance ,-0.7* distance ,-0.7* distance };
     float directY[8] = { distance,-1 * distance,0 ,0,0.7* distance ,-0.7* distance ,0.7* distance ,-0.7* distance };
     int is_not_find = 1;
-    //è¿™ä¸¤ä¸ªç‚¹é—´æ— éšœç¢
+    //ÕâÁ½¸öµã¼äÎŞÕÏ°­
     if (is_find(nowPosition, nowDestination))
     {
         is_not_find = 0;
@@ -259,14 +259,14 @@ void MoveController::findRroute(Unit *soldier, std::vector<Point> &route)
         node *cur = open.front();
         //close.push(cur);
         open.pop();
-        //åˆ—ä¸¾8ä¸ªæ–¹å‘        
+        //ÁĞ¾Ù8¸ö·½Ïò        
         for (int i = 0; i < 8; i++)
         {
-            //ç»‘å®šä½ç½®æ˜¯å¦æœ‰éšœç¢            
+            //°ó¶¨Î»ÖÃÊÇ·ñÓĞÕÏ°­            
             if (_gameScene->isCollision(_gameScene->_tileMap->convertToWorldSpace
             (Point(cur->whereX + directX[i], cur->whereY + directY[i]))))
             {
-                //è¿›ä¸€æ­¥ç­›é€‰                
+                //½øÒ»²½É¸Ñ¡                
                 if (Vec2(nowDestination.x - (cur->whereX), nowDestination.y - (cur->whereY)).length() >
                     Vec2(nowDestination.x - (cur->whereX) - directX[i], nowDestination.y - (cur->whereY) - directY[i]).length()
                     - 0.7*distance)
@@ -285,21 +285,21 @@ void MoveController::findRroute(Unit *soldier, std::vector<Point> &route)
 
         }
     }
-    //è¯¥åœ°å’Œç›®çš„åœ°å¯ç›´è¾¾
+    //¸ÃµØºÍÄ¿µÄµØ¿ÉÖ±´ï
     Point nowPlace{ 0,0 };
     nowPlace.x = static_cast<float>(myend->whereX);
     nowPlace.y = static_cast<float>(myend->whereY);
     Point direction = nowDestination - nowPlace;
     direction.normalize();
-    //ä»æ‰¾åˆ°çš„åœ°åˆ°å‡ºå‘åœ°
+    //´ÓÕÒµ½µÄµØµ½³ö·¢µØ
     while (myend != NULL)
     {
         route.push_back(Point(myend->whereX, myend->whereY));
         myend = myend->father;
     }
-    //reverseåï¼Œå°±æ˜¯å‡ºå‘åœ°åˆ°æ‰¾åˆ°åœ°
+    //reverseºó£¬¾ÍÊÇ³ö·¢µØµ½ÕÒµ½µØ
     std::reverse(route.begin(), route.end());
-    //å†æŠŠåé¢çš„è·¯åŠ å…¥route
+    //ÔÙ°ÑºóÃæµÄÂ·¼ÓÈëroute
     while ((nowDestination - nowPlace).length() > distance)
     {
         route.push_back(nowPlace + distance * direction);
@@ -312,7 +312,7 @@ void MoveController::findRroute(Unit *soldier, std::vector<Point> &route)
     {
         delete *iter;
     }
-    // è½¬åŒ–ä¸ºä¸–ç•Œåæ ‡
+    // ×ª»¯ÎªÊÀ½ç×ø±ê
     std::vector<Point>::iterator iter2;
     for (iter2 = route.begin(); iter2 != route.end(); iter2++)
     {
@@ -323,17 +323,17 @@ void MoveController::findRroute(Unit *soldier, std::vector<Point> &route)
 bool MoveController::canPut(cocos2d::Point position)
 {
     Vec2 mapPosition = _gameScene->_tileMap->convertToNodeSpace(position);
-    // æ˜¯å¦åœ¨åœ°å›¾å¤–
+    // ÊÇ·ñÔÚµØÍ¼Íâ
     if (mapPosition.x < 0 || mapPosition.y < 0)
     {
         return false;
     }
-    // æ˜¯å¦åœ¨æµ·ä¸Š
+    // ÊÇ·ñÔÚº£ÉÏ
     if (_gameScene->isCollision(mapPosition))
     {
         return false;
     }
-    // æ˜¯å¦æœ‰å»ºç­‘å£«å…µ
+    // ÊÇ·ñÓĞ½¨ÖşÊ¿±ø
     for (auto& soldier : *(_gameScene->getSoldiers()))
     {
         Rect rect = Rect(soldier->getPositionX() - soldier->getContentSize().width / 2,
@@ -354,6 +354,6 @@ bool MoveController::canPut(cocos2d::Point position)
             return false;
         }
     }
-    // éƒ½æ²¡æœ‰
+    // ¶¼Ã»ÓĞ
     return true;
 }

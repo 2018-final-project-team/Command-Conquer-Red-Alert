@@ -190,7 +190,6 @@ void Manager::waitCreateSoldier()
             {
                 _waitTimeToCreateSoldier = unitData::NotEnoughPower::infantryWait;
             }
-			_gameScene->panel->_infantryIcon->showProgressOfWait(_waitTimeToCreateSoldier/1000);
             break;
 
         case DOG_TAG:
@@ -207,7 +206,6 @@ void Manager::waitCreateSoldier()
             {
                 _waitTimeToCreateSoldier = unitData::NotEnoughPower::dogWait;
             }
-			_gameScene->panel->_dogIcon->showProgressOfWait(_waitTimeToCreateSoldier/1000);
             break;
 
         case TANK_TAG:
@@ -224,7 +222,6 @@ void Manager::waitCreateSoldier()
             {
                 _waitTimeToCreateCar = unitData::NotEnoughPower::tankWait;
             }
-			_gameScene->panel->_tankIcon->showProgressOfWait(_waitTimeToCreateCar / 1000);
             break;
         }
 
@@ -345,7 +342,7 @@ void Manager::attack()
     bool isBuildingDied = false;
     bool isBuildingHurt = false;
     Tag selectedBuildingTag = NONE;
-    Vector<Unit*>* enemySoldiers/* = _gameScene->getEnemySoldiers()*/;
+    Vector<Unit*>* enemySoldiers = _gameScene->getEnemySoldiers();
     clock_t nowT = clock();
 
     for (auto& soldier : *(_gameScene->getSoldiers()))

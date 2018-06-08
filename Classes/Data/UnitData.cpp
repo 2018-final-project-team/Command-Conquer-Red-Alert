@@ -105,7 +105,6 @@ Unit * Unit::create(Tag unitTag)
 
 void Unit::moveTo(Vec2 destination, float time)
 {
-    // To Do: 我觉得动画可以写在这里(HLR)
     auto move = MoveTo::create(time, destination);
     this->runAction(move);
 }
@@ -120,7 +119,6 @@ void Unit::attack(Unit * enemy)
     enemy->getInjuredBy(this);
     CocosDenshion::SimpleAudioEngine::getInstance() -> playEffect("Unit/Explosion.mp3");
 }
-
 void Unit::attack(Building *)
 {
 
