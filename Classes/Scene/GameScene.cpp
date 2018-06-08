@@ -223,7 +223,7 @@ bool GameScene::init()
 	}
 	else
 	{
-		float x = origin.x + visibleSize.width - backItem->getContentSize().width / 2;
+		float x = origin.x + backItem->getContentSize().width / 2;
 		float y = origin.y + visibleSize.height - backItem->getContentSize().height / 2;
 		backItem->setPosition(Vec2(x, y));
 	}
