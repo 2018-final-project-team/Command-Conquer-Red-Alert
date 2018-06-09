@@ -24,16 +24,16 @@ namespace unitData
     
     namespace EnoughPower
     {
-        const int infantryWait = 5 * 1000;
-        const int dogWait = 5 * 1000;
-        const int tankWait = 10 * 1000;
+        const int infantryWait = 3 * 1000;
+        const int dogWait = 3 * 1000;
+        const int tankWait = 6 * 1000;
     }
     
     namespace NotEnoughPower
     {
-        const int infantryWait = 10 * 1000;
-        const int dogWait = 10 * 1000;
-        const int tankWait = 20 * 1000;
+        const int infantryWait = 6 * 1000;
+        const int dogWait = 6 * 1000;
+        const int tankWait = 12 * 1000;
     }
 }
 
