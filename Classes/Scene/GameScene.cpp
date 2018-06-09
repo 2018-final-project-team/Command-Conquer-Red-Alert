@@ -10,9 +10,6 @@
 USING_NS_CC;
 using namespace ui;
 
-USING_NS_CC;
-using namespace ui;
-
 // Print useful error message instead of segfaulting when files are not there.
 static void problemLoading(const char* filename)
 {
@@ -22,7 +19,12 @@ static void problemLoading(const char* filename)
 
 Scene* GameScene::createScene()
 {
-	auto scene = Scene::create();
+	auto scene = Scene::createWithPhysics();
+
+	//调试用
+	scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+	
+	scene->getPhysicsWorld()->setGravity(Vec2(0, 0));
 
 	auto layer = GameScene::create();
 
@@ -256,6 +258,20 @@ bool GameScene::init()
 	return true;
 }
 
+void GameScene::onEnter()
+{
+	Layer::onEnter();
+	auto listener = EventListenerPhysicsContact::create();
+	listener->onContactBegin = [](PhysicsContact & contact)
+	{
+		//        auto spriteA = (Sprite *)contact.getShapeA() -> getBody() -> getNode();
+		//        auto spriteB = (Sprite *)contact.getShapeB() -> getBody() -> getNode();
+		log("onContact");
+		return true;
+	};
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(listener, 1);
+}
+
 void GameScene::onExit()
 {
 	Layer::onExit();
@@ -266,7 +282,7 @@ void GameScene::dataInit()
 {
 	// To Do: 数据合理
 	_isPowerEnough = false;
-	_money = 1000;
+	_money = 2000;
 	_power = 0;
 
 	_barracksNum = 0;
