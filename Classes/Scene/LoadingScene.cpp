@@ -9,7 +9,7 @@
 #include "Scene/LoginScene.h"
 #include "PreloadList.h"
 #include "Util/GameAudio.h"
-
+#include "Util/GameAnimation.h"
 USING_NS_CC;
 
 Scene* LoadingScene::createScene()
@@ -35,11 +35,19 @@ void LoadingScene::loading()
 	loadSpriteFrame();
 	loadingBar->setPercent(40);
 
+	loadAnimation();
+	loadingBar->setPercent(60);
+
 	loadSound();
 	loadingBar->setPercent(70);
 
 	loadImage();
 	loadingBar->setPercent(100);
+}
+
+void LoadingScene::loadAnimation()
+{
+	GameAnimation::getInstance()->init();
 }
 
 void LoadingScene::loadSound()

@@ -10,7 +10,7 @@
 #include "Scene/GameScene.h"
 #include "cocos2d.h"
 #include "math.h"
-#include "SimpleAudioEngine.h"
+#include "Util/GameAnimation.h"
 
 USING_NS_CC;
 
@@ -29,7 +29,7 @@ Unit * Unit::create(Tag unitTag)
     temp -> setPhysicsBody(body);
     
     //单位图片
-    std::string (picture[3]) = { "Unit/infantry.png","Unit/dog.png","Unit/tank.png" };
+    std::string (picture[3]) = { "GameItem/Unit/Unit1-normal.png","GameItem/Unit/Unit2-normal.png","GameItem/Unit/Unit3-normal.png" };
     
     //初始化召唤单位是否被选中
     bool sisselected[3] = { false, false, false };
@@ -71,34 +71,34 @@ Unit * Unit::create(Tag unitTag)
     temp->_unitTag = unitTag;
     
     //初始化选中
-    temp->_isSelected = sisselected[unitTag];
+    temp->_isSelected = sisselected[unitTag - 5];
     
     //设置血量
-    temp->_HP = shp[unitTag];
+    temp->_HP = shp[unitTag - 5];
     
     //设置攻击力
-    temp->_ATK = satk[unitTag];
+    temp->_ATK = satk[unitTag - 5];
     
     //设置速度
-    temp->_Speed = sspeed[unitTag];
+    temp->_Speed = sspeed[unitTag - 5];
     
     //设置金钱消耗
-    temp->_Value = svalue[unitTag];
+    temp->_Value = svalue[unitTag - 5];
     
     //设置cd时间
-    temp->_CD = scd[unitTag];
+    temp->_CD = scd[unitTag - 5];
     
     //设置攻击间隔
-    temp->_ATKCD = satkcd[unitTag];
+    temp->_ATKCD = satkcd[unitTag - 5];
     
     //设置单位锁敌区域
-    temp->_LockLimit = slocklimit[unitTag];
+    temp->_LockLimit = slocklimit[unitTag - 5];
     
     //设置单位攻击区域
-    temp->_ATKLimit = satklimit[unitTag];
+    temp->_ATKLimit = satklimit[unitTag - 5];
     
     //设置单位名称
-    temp->_UnitName = sunitname[unitTag];
+    temp->_UnitName = sunitname[unitTag - 5];
     
     return temp;
 }
@@ -117,7 +117,7 @@ void Unit::getInjuredBy(Unit * enemy)
 void Unit::attack(Unit * enemy)
 {
     enemy->getInjuredBy(this);
-    CocosDenshion::SimpleAudioEngine::getInstance() -> playEffect("Unit/Explosion.mp3");
+    //==========TO DO:音效=====================
 }
 void Unit::attack(Building *)
 {

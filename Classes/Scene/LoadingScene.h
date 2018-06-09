@@ -34,6 +34,7 @@ private:
 	void loadSound();
 	void loadImage();
 	void loadSpriteFrame();
+	void loadAnimation();
 
 
 	void initBackground(cocos2d::Vec2 origin, cocos2d::Size visibleSize);

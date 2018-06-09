@@ -49,6 +49,8 @@ public:
 
 public:
 
+	
+	
 	CC_SYNTHESIZE(int, _money, Money);
 
 	// 总电力
@@ -85,6 +87,9 @@ public:
 	static cocos2d::Scene* createScene();
 
 	virtual bool init();
+
+	//物理碰撞监听
+	virtual void onEnter();
 
 	virtual void onExit();
 

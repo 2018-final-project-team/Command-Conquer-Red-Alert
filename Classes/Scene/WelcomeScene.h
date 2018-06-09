@@ -25,13 +25,6 @@ public:
 
 	CREATE_FUNC(WelcomeScene);
 
-	/**
-	@brief  从精灵图集缓存中获取动画相关的精灵帧的Vector
-	@param  format         变量1 精灵图集中与动画相关图片名称的格式，注意要包含路径
-	@param  count          变量2 相关图片的数量
-	@return Vector<SpriteFrame*>
-	*/
-	cocos2d::Vector<cocos2d::SpriteFrame*> getAnimation(const char* format, int count);
-};
+	};
 
 #endif // __Welcome_SCENE_H__
