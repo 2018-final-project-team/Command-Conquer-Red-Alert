@@ -247,8 +247,20 @@ bool GameScene::init()
     _moneyCount->setColor(Color3B(255, 185, 15)); //颜色
     addChild(_moneyCount, 3);
 
-	scheduleUpdate();
+    // 显示时间
+    // 时钟
+    Sprite* clock = Sprite::create("Scene/clock.png");
+    clock->setPosition(55, 100);
+    addChild(clock, 3);
+    // 时间
+    sprintf(_timeStr, "%d:%d:%d", _time / 3600, _time / 60, _time % 60);
+    _timeCount = Label::createWithTTF(_timeStr, "fonts/Marker Felt.ttf", 28);
+    _timeCount->setPosition(120, 100);
+    _timeCount->setColor(Color3B(0, 0, 0)); //颜色
+    addChild(_timeCount, 3);
 
+	scheduleUpdate();
+    schedule(schedule_selector(GameScene::printTime), 1.0f); // 每隔1s执行一次
 
 	_manager = Manager::createWithGameScene(this);
 
@@ -271,6 +283,9 @@ void GameScene::onExit()
 {
 	Layer::onExit();
 	_gameEventDispatcher->removeEventListener(_gameListener);
+    //释放定时器
+    this->unscheduleUpdate();
+    this->unscheduleAllSelectors();
 }
 
 void GameScene::dataInit()
@@ -524,4 +539,15 @@ bool GameScene::isCollision(cocos2d::Vec2 position1)
 float GameScene::getTileSize()
 {
 	return _tileMap->getTileSize().width;
+}
+
+void GameScene::printTime(float dt)
+{
+    ++_time;
+    removeChild(_timeCount);
+    sprintf(_timeStr, "%d:%d:%d", _time / 3600, _time / 60, _time % 60);
+    _timeCount = Label::createWithTTF(_timeStr, "fonts/Marker Felt.ttf", 28);
+    _timeCount->setPosition(120, 100);
+    _timeCount->setColor(Color3B(0, 0, 0)); //颜色
+    addChild(_timeCount, 3);
 }

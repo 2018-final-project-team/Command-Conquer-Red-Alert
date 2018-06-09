@@ -45,7 +45,12 @@ private:
 
     //显示金币
     char _moneyStr[8];
+    char _timeStr[10];
     cocos2d::Label* _moneyCount;
+    cocos2d::Label* _timeCount;
+
+    //时间
+    long _time = 0;
 
 public:
 	cocos2d::EventListenerTouchOneByOne* _gameListener;
@@ -265,6 +270,11 @@ public:
     *@brief 移动所有士兵建筑 包括目的地
     */
     void moveSpritesWithMap(cocos2d::Vec2 direction);
+
+    /*
+    * @brief print time every second
+    */
+    void printTime(float dt);
 
 };
 
