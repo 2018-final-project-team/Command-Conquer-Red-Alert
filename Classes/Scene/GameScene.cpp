@@ -64,6 +64,14 @@ bool GameScene::init()
     DrawNode* drawNode = DrawNode::create();
     this->addChild(drawNode);
 
+	//=====================测试胜负=========================
+	auto surrenderLabel = MenuItemFont::create("surrend", CC_CALLBACK_1(GameScene::menuEndingCallback, this));
+	float x = origin.x+visibleSize.width/10;
+	float y = origin.y+visibleSize.height/10;
+	surrenderLabel->setPosition(Vec2(x, y));
+	auto surrender = Menu::createWithItem(surrenderLabel);
+	surrender->setPosition(Point::ZERO);
+	this->addChild(surrender,2);
 
 	//=====================测试Panel========================
 	auto panel = Panel::createWithGameScene(this);
@@ -299,6 +307,10 @@ void GameScene::dataInit()
 	_isBaseExist = true;   //暂时的
 }
 
+void GameScene::menuEndingCallback(Ref *pSender)
+{
+	Director::getInstance()->pushScene(TransitionFade::create(1, EndingScene::createScene()));
+}
 void GameScene::menuBackCallback(Ref *pSender)
 {
 	//跳转到第一个场景，记得包含第一个场景的头文件：GameScene.h  
