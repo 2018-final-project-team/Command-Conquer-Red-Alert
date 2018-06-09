@@ -170,6 +170,7 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 		if (_clickToPlaceBuilding)
 		{
 			_gameScene->_manager->createBuilding(touch->getLocation());
+			setCurButton(_curCategoryTag);
 		}
 	};
 	_iconButtonListener->setSwallowTouches(true);   //吞没触摸事件，不向下传递

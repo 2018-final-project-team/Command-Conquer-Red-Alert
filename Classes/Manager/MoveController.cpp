@@ -63,7 +63,7 @@ void MoveController::selectSoldiersWithTag(Tag tag)
 void MoveController::setDestination(cocos2d::Vec2 position)
 {
     // 检测是否障碍
-    if (_gameScene->isCollision(position))
+    if (!_gameScene->isCollision(position))
     {
         return;
     }
@@ -307,10 +307,15 @@ void MoveController::findRroute(Unit *soldier, std::vector<Point> &route)
     }
     route.push_back(nowDestination);
     // delete
-    std::vector<node*>::iterator iter;
-    for (iter = storeNew.end() - 1; iter != storeNew.begin() - 1; iter--)
+    std::vector<node*>::iterator iter = storeNew.end() - 1;
+	size_t i = storeNew.size();
+    for (size_t cnt = 0; cnt < i; cnt++)
     {
         delete *iter;
+		if (cnt < i - 1)
+		{
+			iter--;
+		}
     }
     // 转化为世界坐标
     std::vector<Point>::iterator iter2;
@@ -329,7 +334,7 @@ bool MoveController::canPut(cocos2d::Point position)
         return false;
     }
     // 是否在海上
-    if (_gameScene->isCollision(mapPosition))
+    if (!_gameScene->isCollision(convertToWorldSpace(mapPosition)))
     {
         return false;
     }

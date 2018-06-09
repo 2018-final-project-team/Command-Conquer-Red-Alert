@@ -491,8 +491,8 @@ bool GameScene::isCollision(cocos2d::Vec2 position1)
     Size mapSize = _tileMap->getMapSize();
     Size tileSize = _tileMap->getTileSize();
     auto position = _tileMap->convertToNodeSpace(position1);
-    if (position.x < 0 || position.y<0 || position.x>tileSize.width 
-        || position.y < tileSize.height) 
+    if (position.x < 0 || position.y<0 || position.x > MAPX
+        || position.y > MAPY) 
     {
         return false;
     }
