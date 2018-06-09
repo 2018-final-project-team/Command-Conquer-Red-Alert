@@ -589,14 +589,17 @@ void Manager::attack()
 
 void Manager::addMoneyUpdate()
 {
-    static clock_t preT = clock();
-    clock_t nowT = clock();
-    if (_gameScene->getMineNum() != 0)
+    if (_gameScene->getMineNum())
     {
-        if (nowT - preT >= addMoneyDelay)
+        static clock_t preT = clock();
+        clock_t nowT = clock();
+        if (_gameScene->getMineNum() != 0)
         {
-            _gameScene->addMoney(_gameScene->getMineNum() * 1000);
-            preT = nowT;
+            if (nowT - preT >= addMoneyDelay)
+            {
+                _gameScene->addMoney(_gameScene->getMineNum() * 150);
+                preT = nowT;
+            }
         }
     }
 }

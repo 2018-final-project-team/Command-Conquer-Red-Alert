@@ -25,10 +25,10 @@ private:
     int MAPX;
     int MAPY;
 
-	bool _keyUp = false;
-	bool _keyDown = false;
-	bool _keyLeft = false;
-	bool _keyRight = false;
+    bool _keyUp = false;
+    bool _keyDown = false;
+    bool _keyRight = false;
+    bool _keyLeft = false;                 // C++ 11 的初始化方法
 
 	cocos2d::Point _cursorPosition{ 0,0 };  // C++ 11 允许这样初始化
 	void scrollMap();
@@ -42,6 +42,10 @@ private:
 
 	cocos2d::Point _touchBegan;
 	cocos2d::Point _touchEnd;
+
+    //显示金币
+    char _moneyStr[8];
+    cocos2d::Label* _moneyCount;
 
 public:
 	cocos2d::EventListenerTouchOneByOne* _gameListener;

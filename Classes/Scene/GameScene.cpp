@@ -10,9 +10,6 @@
 USING_NS_CC;
 using namespace ui;
 
-USING_NS_CC;
-using namespace ui;
-
 // Print useful error message instead of segfaulting when files are not there.
 static void problemLoading(const char* filename)
 {
@@ -41,21 +38,21 @@ bool GameScene::init()
 
 	this->dataInit();
 
-	auto visibleSize = Director::getInstance()->getVisibleSize();
+    auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	//===================Load map=========================
 	_tileMap = TMXTiledMap::create("GameItem/Map/mapbeautiful1.tmx");
     MAPX = _tileMap->getMapSize().width * _tileMap->getTileSize().width;
     MAPY = _tileMap->getMapSize().height * _tileMap->getTileSize().height;
-	this->addChild(_tileMap, 0);
+	this->addChild(_tileMap);
 
 	_barrier = _tileMap->getLayer("barrier");
 
 	/*update by czd*/
 	Sprite* small_map = Sprite::create("GameItem/Map/small_map1.png"); 
     small_map->setPosition(Point(visibleSize.width - small_mapX / 2, visibleSize.height - small_mapX / 2));
-	this->addChild(small_map, 0);
+	this->addChild(small_map, 3);
 
 
     //DrawNode
@@ -66,55 +63,14 @@ bool GameScene::init()
 	//=====================测试Panel========================
 	auto panel = Panel::createWithGameScene(this);
 	if (panel == nullptr) { log("create panel error"); }
+	//auto _panelSize = panel->getContentSize();   //为什么是0，0？
+	//log("%f %f %f %f",_panelSize.width,_panelSize.height,panel->getAnchorPoint().x,panel->getAnchorPoint().y);
 	panel->setPosition(visibleSize.width - 112, visibleSize.height - 400);
 	this->addChild(panel, 3);
+	//log("the tag of panel is:%d", panel->getTag());
 
 
-	/*键盘监听 by czd */
-	auto _keyboardListener = EventListenerKeyboard::create();
-	_keyboardListener->onKeyPressed = [=](EventKeyboard::KeyCode keyCode, Event* event) {
-		if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW) {
-			_keyUp = true;
-			CCLOG("按下了：上方向键");
-		}
-		else if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW) {
-			_keyLeft = true;
-			//CCLOG("按下了：左方向键");
-		}
-		else if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW) {
-			_keyRight = true;
-			//CCLOG("按下了：右方向键");
-		}
-		else if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW) {
-			_keyDown = true;
-			CCLOG("按下了：下方向键");
-		}
 
-		return true;
-	};
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(_keyboardListener, this);
-	auto _keyboardReleasedListener = EventListenerKeyboard::create();
-	_keyboardReleasedListener->onKeyReleased = [=](EventKeyboard::KeyCode keyCode, Event* event) {
-		if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW) {
-			_keyUp = false;
-			CCLOG("松开了：上方向键");
-		}
-		else if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW) {
-			_keyLeft = false;
-			//CCLOG("按下了：左方向键");
-		}
-		else if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW) {
-			_keyRight = false;
-			//CCLOG("按下了：右方向键");
-		}
-		else if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW) {
-			_keyDown = false;
-			CCLOG("松开了：下方向键");
-		}
-
-		return true;
-	};
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(_keyboardReleasedListener, this);
 
 
 	_gameListener = EventListenerTouchOneByOne::create();
@@ -201,6 +157,52 @@ bool GameScene::init()
 	_gameEventDispatcher = Director::getInstance()->getEventDispatcher();
 	_gameEventDispatcher->addEventListenerWithSceneGraphPriority(_gameListener, this);
 
+    /*键盘监听 by czd */
+    auto _keyboardListener = EventListenerKeyboard::create();
+    _keyboardListener->onKeyPressed = [=](EventKeyboard::KeyCode keyCode, Event* event) {
+        if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW) {
+            _keyUp = true;
+            //CCLOG("按下了：上方向键");
+        }
+        else if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW) {
+            _keyLeft = true;
+            //CCLOG("按下了：左方向键");
+        }
+        else if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW) {
+            _keyRight = true;
+            //CCLOG("按下了：右方向键");
+        }
+        else if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW) {
+            _keyDown = true;
+            //CCLOG("按下了：下方向键");
+        }
+
+        return true;
+    };
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(_keyboardListener, this);
+    auto _keyboardReleasedListener = EventListenerKeyboard::create();
+    _keyboardReleasedListener->onKeyReleased = [=](EventKeyboard::KeyCode keyCode, Event* event) {
+        if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW) {
+            _keyUp = false;
+            //CCLOG("松开了：上方向键");
+        }
+        else if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW) {
+            _keyLeft = false;
+            //CCLOG("按下了：左方向键");
+        }
+        else if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW) {
+            _keyRight = false;
+            //CCLOG("按下了：右方向键");
+        }
+        else if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW) {
+            _keyDown = false;
+            //CCLOG("松开了：下方向键");
+        }
+
+        return true;
+    };
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(_keyboardReleasedListener, this);
+
 	/*update by czd */
 	auto _mouseOutBoradListener = EventListenerMouse::create();
 	_mouseOutBoradListener->onMouseMove = [&](Event* event) {
@@ -223,7 +225,7 @@ bool GameScene::init()
 	}
 	else
 	{
-		float x = origin.x + backItem->getContentSize().width / 2;
+		float x = origin.x + visibleSize.width - backItem->getContentSize().width / 2;
 		float y = origin.y + visibleSize.height - backItem->getContentSize().height / 2;
 		backItem->setPosition(Vec2(x, y));
 	}
@@ -231,10 +233,19 @@ bool GameScene::init()
 	// create menu, it's an autorelease object
 	auto menu = Menu::create(backItem, NULL);
 	menu->setPosition(Vec2::ZERO);
-	this->addChild(menu, 1);
+	this->addChild(menu, 4);
 
-
-
+    // 显示金钱
+    //金币
+    Sprite* coin = Sprite::create("Scene/coin.png");
+    coin->setPosition(50, 50);
+    addChild(coin, 3);
+    //钱数
+    sprintf(_moneyStr, "%d", _money);
+    _moneyCount = Label::createWithTTF(_moneyStr, "fonts/Marker Felt.ttf", 36);
+    _moneyCount->setPosition(120, 50);
+    _moneyCount->setColor(Color3B(255, 185, 15)); //颜色
+    addChild(_moneyCount, 3);
 
 	scheduleUpdate();
 
@@ -266,7 +277,7 @@ void GameScene::dataInit()
 {
 	// To Do: 数据合理
 	_isPowerEnough = false;
-	_money = 1000;
+	_money = 2000;
 	_power = 0;
 
 	_barracksNum = 0;
@@ -308,11 +319,29 @@ Vector<Building*>* GameScene::getBuildings()
 void GameScene::addMoney(int money)
 {
 	_money += money;
+
+    auto visibleSize = Director::getInstance()->getVisibleSize();
+    // 显示金钱
+    removeChild(_moneyCount);
+    sprintf(_moneyStr, "%d", _money);
+    _moneyCount = Label::createWithTTF(_moneyStr, "fonts/Marker Felt.ttf", 36);
+    _moneyCount->setPosition(120, 50);
+    _moneyCount->setColor(Color3B(255, 185, 15)); //颜色
+    addChild(_moneyCount, 3);
 }
 
 void GameScene::decreaseMoney(int money)
 {
 	_money -= money;
+
+    auto visibleSize = Director::getInstance()->getVisibleSize();
+    // 显示金钱
+    removeChild(_moneyCount);
+    sprintf(_moneyStr, "%d", _money);
+    _moneyCount = Label::createWithTTF(_moneyStr, "fonts/Marker Felt.ttf", 36);
+    _moneyCount->setPosition(120, 50);
+    _moneyCount->setColor(Color3B(255, 185, 15)); //颜色
+    addChild(_moneyCount, 3);
 }
 
 void GameScene::addPower(int power)
@@ -375,7 +404,7 @@ void GameScene::scrollMap()
 	auto X = _cursorPosition.x;
 	auto Y = _cursorPosition.y;
     Point mapPosition = _tileMap->getPosition();
-	if (X < MINLENTH || _keyLeft)
+	if (X < MINLENTH || _keyLeft) 
     {
 		if (_tileMap->getPositionX() + SPEED < 0) 
         {
@@ -402,7 +431,7 @@ void GameScene::scrollMap()
         }
     }
 
-	if (Y < MINLENTH || _keyDown)
+	if (Y < MINLENTH || _keyDown) 
     {
 		if (_tileMap->getPositionY() + SPEED < 0) 
         {
@@ -415,7 +444,7 @@ void GameScene::scrollMap()
             moveSpritesWithMap(Vec2(0, -mapPosition.y));
 		}
 	}
-	else if (Y > visibleSize.height - MINLENTH || _keyUp)
+	else if (Y > visibleSize.height - MINLENTH || _keyUp) 
     {
 		if (_tileMap->getPositionY() - SPEED >  -MAPY + visibleSize.height)
         {

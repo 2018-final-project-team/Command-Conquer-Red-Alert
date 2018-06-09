@@ -1,6 +1,6 @@
 /*
 *  @file     MoveController.h
-*  @brief    å„ç§å…µçš„ç§»åŠ¨ç±»
+*  @brief    ¸÷ÖÖ±øµÄÒÆ¶¯Àà
 */
 
 #ifndef __MoveController_H_
@@ -14,23 +14,23 @@
 class GameScene;
 
 /*
-*@brief å„ç§å…µçš„ç§»åŠ¨æ§åˆ¶ç±»
-*æ§åˆ¶å…µçš„ç§»åŠ¨
+*@brief ¸÷ÖÖ±øµÄÒÆ¶¯¿ØÖÆÀà
+*¿ØÖÆ±øµÄÒÆ¶¯
 */
-//=========================To Do: æ’é˜Ÿå‹ å’Œ å¯»è·¯==========================
+//=========================To Do: ÅÅ¶ÓĞÍ ºÍ Ñ°Â·==========================
 
 class MoveController : public cocos2d::Node
 {
 
 protected:
 
-    GameScene* _gameScene;                             // game åœºæ™¯ç±»
+    GameScene* _gameScene;                             // game ³¡¾°Àà
     cocos2d::Vector< Unit* > *_selectedSoldiers;     // selected soldiers
 
 public:
 
     /**
-    * @brief MoveControllerçš„é™æ€æ„é€ å‡½æ•°
+    * @brief MoveControllerµÄ¾²Ì¬¹¹Ôìº¯Êı
     * @return  MoveController*
     */
     static MoveController* createWithGameScene(GameScene* gameScene);
@@ -42,43 +42,43 @@ public:
     bool initWithGameScene(GameScene* gameScene);
 
     /**
-    * @brief ç”¨é¼ æ ‡é€‰æ‹©å£«å…µå¦å…‹
-    * @param é¼ æ ‡æŒ‰ä¸‹çš„ç‚¹
-    * @param é¼ æ ‡æ¾å¼€çš„ç‚¹
+    * @brief ÓÃÊó±êÑ¡ÔñÊ¿±øÌ¹¿Ë
+    * @param Êó±ê°´ÏÂµÄµã
+    * @param Êó±êËÉ¿ªµÄµã
     * @return  void
     */
     void selectSoldiersWithMouse(cocos2d::Vec2 mouseDownPoint, cocos2d::Vec2 mouseUpPoint);
 
     /**
-    * @brief ç”¨å¿«æ·é”®(ä¼ é€’Tag)é€‰æ‹©å£«å…µå¦å…‹
-    # @param å…µç§çš„åå­—
+    * @brief ÓÃ¿ì½İ¼ü(´«µİTag)Ñ¡ÔñÊ¿±øÌ¹¿Ë
+    # @param ±øÖÖµÄÃû×Ö
     * @return  void
     */
     void selectSoldiersWithTag(Tag tag);
 
     /**
-    * @brief è®¾ç½®å£«å…µå¦å…‹ç›®çš„åœ°(ä¸èƒ½æ˜¯éšœç¢)
-    * @param ç›®çš„åœ°ç‚¹
+    * @brief ÉèÖÃÊ¿±øÌ¹¿ËÄ¿µÄµØ(²»ÄÜÊÇÕÏ°­)
+    * @param Ä¿µÄµØµã
     * @return  void
     */
     void setDestination(cocos2d::Vec2 position);
 
     /**
-    * @brief ç§»åŠ¨å£«å…µå¦å…‹ åœ¨Updateå‡½æ•°é‡Œè°ƒç”¨
+    * @brief ÒÆ¶¯Ê¿±øÌ¹¿Ë ÔÚUpdateº¯ÊıÀïµ÷ÓÃ
     * @return  void
     */
     void moveSoldiers();
 
     void findRroute(Unit *soldier, std::vector<cocos2d::Point> &route);
     /**
-    * @brief ä¼ å…¥èµ·ç‚¹å’Œç›®çš„åœ°(å±å¹•ï¼‰å’Œä¸€ä¸ªVector<Point> route,æ¥è£…æ‰¾åˆ°çš„è·¯
-    å¦‚ï¼Œç¬¬ä¸€å¸§ï¼ŒæŠŠå¦å…‹åŸåæ ‡åŠ ä¸Šroute[1],åœ¨åˆ·æ–°
+    * @brief ´«ÈëÆğµãºÍÄ¿µÄµØ(ÆÁÄ»£©ºÍÒ»¸öVector<Point> route,À´×°ÕÒµ½µÄÂ·
+    Èç£¬µÚÒ»Ö¡£¬°ÑÌ¹¿ËÔ­×ø±ê¼ÓÉÏroute[1],ÔÚË¢ĞÂ
     * @return  void
     */
     bool is_find(cocos2d::Vec2 position, cocos2d::Vec2 destination);
 
     /*
-    * @brief æ˜¯å¦å¯ä»¥æ”¾å…µæˆ–å¦å…‹
+    * @brief ÊÇ·ñ¿ÉÒÔ·Å±ø»òÌ¹¿Ë
     */
     bool canPut(cocos2d::Point position);
 

@@ -14,13 +14,13 @@
 
 namespace buildingData
 {
-    const int powerPlantCastMoney = 200; 
-    const int powerPlantCastPower = -1000;
-    const int mineCastMoney = 1000;
+    const int powerPlantCastMoney = 500; 
+    const int powerPlantCastPower = 0;
+    const int mineCastMoney = 500;
     const int mineCastPower = 600;
     const int barracksCastMoney = 500;
     const int barracksCastPower = 300;
-    const int carFactoryCastMoney = 800;
+    const int carFactoryCastMoney = 500;
     const int carFactoryCastPower = 500;
 
     namespace EnoughPower
