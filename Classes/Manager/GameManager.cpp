@@ -166,6 +166,7 @@ void Manager::waitCreateSoldier()
                 _gameScene->decreaseDog();
                 break;
             }
+
         }
     }
     else if (_soldierQueue.size())
@@ -350,8 +351,10 @@ void Manager::attack()
 
     for (auto& soldier : *(_gameScene->getSoldiers()))
     {
-        if (_selectedEnemy && soldier->canAttack(_selectedEnemy->getPosition()))    // 如果选中了敌方士兵
+        if (_selectedEnemy && soldier->canAttack(_selectedEnemy->getPosition())
+            && _selectedEnemy != soldier)    // 如果选中了敌方士兵  & cannot attak itself
         {
+            log("attack");
             switch (soldier->getUnitTag())
             {
             case INFANTRY_TAG:
@@ -624,8 +627,8 @@ void Manager::resetPower()
     }
     _gameScene->setTotalPower(totalPower);
     _gameScene->setPower(totalPower - castPower);
-    // updata power bar
-    if (_gameScene->getPower() <= 0)
+    // update power bar
+    if (_gameScene->getPower() <= 0 || _gameScene->getTotalPower() == 0)
     {
         auto progressTo = ProgressTo::create(0.5f, 0);
         _gameScene->_powerBar->runAction(progressTo);

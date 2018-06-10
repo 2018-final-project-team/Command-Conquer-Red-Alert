@@ -148,21 +148,22 @@ void MoveController::moveSoldiers()
             Vec2 direction = destination - nowPosition;
             direction.normalize();
             float distance = destination.distance(nowPosition);
-            log("now position %f %f", nowPosition.x, nowPosition.y);
-            log("deatination %f %f", destination.x, destination.y);
+            //log("now position %f %f", nowPosition.x, nowPosition.y);
+            //log("deatination %f %f", destination.x, destination.y);
          
             Vec2 move = soldier->getUnitSpeed() * interval * direction;
             // if the distance of this move is longer than destination
             if (move.length() > distance)
             {
-                soldier->moveTo(destination, 0.01);
+                soldier->moveTo(destination);
                 soldier->setGetDestination(true);
                 continue;
             }
-            soldier->moveTo(move + nowPosition, 0.01);
+            soldier->moveTo(move + nowPosition);
         }
         else if (soldier->_route.size())
         {
+            //log("route size %d", soldier->_route.size());
             soldier->setDestination(soldier->_route.front());
             (soldier->_route).erase((soldier->_route).begin());
             soldier->setGetDestination(false);

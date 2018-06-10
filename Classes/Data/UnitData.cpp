@@ -44,7 +44,7 @@ Unit * Unit::create(Tag unitTag)
     int satk[3] = { 30, 50, 100 };
     
     //初始化单位速度
-    int sspeed[3] = { 5, 10, 15 };
+    float sspeed[3] = { 0.5, 1, 1.5 };
     
     //初始化单位准备时间
     int scd[3] = { 10, 10, 30 };
@@ -109,10 +109,9 @@ Unit * Unit::create(Tag unitTag)
     return temp;
 }
 
-void Unit::moveTo(Vec2 destination, float time)
+void Unit::moveTo(Vec2 destination)
 {
-    auto move = MoveTo::create(time, destination);
-    this->runAction(move);
+    setPosition(destination);
 }
 
 void Unit::getInjuredBy(Unit * enemy)

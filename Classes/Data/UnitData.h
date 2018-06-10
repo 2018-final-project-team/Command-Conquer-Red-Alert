@@ -77,7 +77,7 @@ public:
     CC_SYNTHESIZE(float, _ATKCD, UnitATKCD);
     
     //单位速度
-    CC_SYNTHESIZE(int, _Speed, UnitSpeed);
+    CC_SYNTHESIZE(float, _Speed, UnitSpeed);
     
     //单位所需金钱
     CC_SYNTHESIZE(int, _Value, UnitValue);
@@ -115,7 +115,7 @@ public:
 public:
     /*
      */
-    void moveTo(cocos2d::Vec2 destination, float time);
+    void moveTo(cocos2d::Vec2 destination);
     /*
      */
     void getInjuredBy(Unit *);

@@ -442,7 +442,7 @@ void GameScene::addPower(int power)
 		_isPowerEnough = false;
 	}
     // updata power bar
-    if (_power <= 0)
+    if (_power <= 0 || _totalPower == 0)
     {
         auto progressTo = ProgressTo::create(0.5f, 0);
         _powerBar->runAction(progressTo);
@@ -466,7 +466,7 @@ void GameScene::decreasePower(int power)
 		_isPowerEnough = false;
 	}
     // updata power bar
-    if (_power <= 0)
+    if (_power <= 0 || _totalPower == 0)
     {
         auto progressTo = ProgressTo::create(0.5f, 0);
         _powerBar->runAction(progressTo);
