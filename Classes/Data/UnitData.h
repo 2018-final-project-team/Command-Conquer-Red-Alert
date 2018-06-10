@@ -18,22 +18,22 @@
 
 namespace unitData
 {
-    const int infantryCastMoney = 50;
-    const int dogCastMoney = 50;
-    const int tankCastMoney = 200;
+    const int infantryCostMoney = 50;
+    const int dogCostMoney = 50;
+    const int tankCostMoney = 200;
     
     namespace EnoughPower
     {
-        const int infantryWait = 10;
-        const int dogWait = 10;
-        const int tankWait = 30;
+        const int infantryWait = 5 * 1000;
+        const int dogWait = 5 * 1000;
+        const int tankWait = 10 * 1000;
     }
     
     namespace NotEnoughPower
     {
-        const int infantryWait = 10;
-        const int dogWait = 10;
-        const int tankWait = 30;
+        const int infantryWait = 10 * 1000;
+        const int dogWait = 10 * 1000;
+        const int tankWait = 20 * 1000;
     }
 }
 
@@ -107,7 +107,7 @@ public:
     CC_SYNTHESIZE(std::string, _UnitName, _UnitName);
     
     //生成单位的方法
-    static Unit * create(Tag _tag);
+    static Unit * create(Tag unitTag);
 
     // 用于寻路
     std::vector<cocos2d::Point> _route;

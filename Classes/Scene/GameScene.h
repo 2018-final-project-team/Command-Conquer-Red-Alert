@@ -52,6 +52,11 @@ private:
     //时间
     long _time = 0;
 
+    //sell building
+    cocos2d::Menu* _sellBuildingMenu;
+    Building* _sellBuilding = nullptr;
+    bool _isSellMenuExit = false;
+
 public:
 	cocos2d::EventListenerTouchOneByOne* _gameListener;
 	cocos2d::EventDispatcher* _gameEventDispatcher;
@@ -94,6 +99,8 @@ public:
 	static cocos2d::Scene* createScene();
 
 	virtual bool init();
+
+    virtual void onEnter();
 
 	virtual void onExit();
 
@@ -275,6 +282,11 @@ public:
     * @brief print time every second
     */
     void printTime(float dt);
+
+    /*
+    *@brief sell building call back function
+    */
+    void sellBuildingCallBack();
 
 };
 

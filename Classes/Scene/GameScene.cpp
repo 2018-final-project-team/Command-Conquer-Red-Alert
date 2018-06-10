@@ -19,7 +19,11 @@ static void problemLoading(const char* filename)
 
 Scene* GameScene::createScene()
 {
-	auto scene = Scene::create();
+	auto scene = Scene::createWithPhysics();
+
+    scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+
+    scene->getPhysicsWorld()->setGravity(Vec2(0, 0));
 
 	auto layer = GameScene::create();
 
@@ -69,10 +73,7 @@ bool GameScene::init()
 	this->addChild(panel, 3);
 	//log("the tag of panel is:%d", panel->getTag());
 
-
-
-
-
+//===============================监听地图精灵=====================================
 	_gameListener = EventListenerTouchOneByOne::create();
 	_gameListener->onTouchBegan = [=](Touch* touch, Event* event) {
 		//=========== 点击小地图的移动功能 ===============
@@ -93,6 +94,14 @@ bool GameScene::init()
 
 			_tileMap->setPosition(Point(-X, -Y));
             moveSpritesWithMap(direction);
+
+            // if sell menu exit, remove it
+            if (_isSellMenuExit)
+            {
+                removeChild(_sellBuildingMenu);
+                _sellBuilding = nullptr;
+                _isSellMenuExit = false;
+            }
             
 			return false;
 		}
@@ -100,6 +109,14 @@ bool GameScene::init()
 		{
 			_touchBegan = position;   // 记录起点
 		}
+        // if sell menu exit, remove it
+        if (_isSellMenuExit)
+        {
+            removeChild(_sellBuildingMenu);
+            _sellBuilding = nullptr;
+            _isSellMenuExit = false;
+        }
+
 		return true;
 	};
 
@@ -137,14 +154,33 @@ bool GameScene::init()
                 case CAR_FACTORY_TAG:
                 case BASE_TAG:
                 case BARRACKS_TAG:
+                    for (auto& building : _buildings)
+                    {
+                        if (building == target)
+                        {
+                            _sellBuilding = building;
+                            //sell menu
+                            auto sellBuildingMenuItem = MenuItemImage::create("Scene/sell_up.png", "Scene/sell_down.png",
+                                CC_CALLBACK_0(GameScene::sellBuildingCallBack, this));
+                            sellBuildingMenuItem->setPosition(building->getPosition());
+                            _sellBuildingMenu = Menu::create(sellBuildingMenuItem, NULL);
+                            _sellBuildingMenu->setPosition(Vec2::ZERO);
+                            addChild(_sellBuildingMenu, 4);
+                            _isSellMenuExit = true;
+
+                            return;
+                        }
+                    }
                     _manager->setBuilding(static_cast<Building*>(target));
-                    break;
+                    return;
                 default:
                     // 为层注册监听器后层也会响应 所以此处需要判断士兵建筑和空地
-                    log("default");
-                    // 测试 isCollision
-                    //log("%d", isCollision(_touchEnd));
-                    _manager->getMoveController()->setDestination(_touchEnd);
+                    //log("default");
+                    if (_manager->getMoveController()->canPut(_touchEnd))
+                    {
+                        log("can put");
+                        _manager->getMoveController()->setDestination(_touchEnd);
+                    }
                 }
             }
         }
@@ -157,7 +193,7 @@ bool GameScene::init()
 	_gameEventDispatcher = Director::getInstance()->getEventDispatcher();
 	_gameEventDispatcher->addEventListenerWithSceneGraphPriority(_gameListener, this);
 
-    /*键盘监听 by czd */
+//============================================键盘监听 by czd======================================
     auto _keyboardListener = EventListenerKeyboard::create();
     _keyboardListener->onKeyPressed = [=](EventKeyboard::KeyCode keyCode, Event* event) {
         if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW) {
@@ -203,7 +239,7 @@ bool GameScene::init()
     };
     _eventDispatcher->addEventListenerWithSceneGraphPriority(_keyboardReleasedListener, this);
 
-	/*update by czd */
+//==============================鼠标移动地图 by czd============================================
 	auto _mouseOutBoradListener = EventListenerMouse::create();
 	_mouseOutBoradListener->onMouseMove = [&](Event* event) {
 		EventMouse* pem = static_cast<EventMouse*>(event);
@@ -211,7 +247,7 @@ bool GameScene::init()
 	};
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(_mouseOutBoradListener, 1);
 
-
+//================================back menu============================================
 	auto backItem = MenuItemImage::create(
 		"backNormal.png",
 		"backSelected.png",
@@ -277,6 +313,20 @@ bool GameScene::init()
 	panel->_tankIcon->retain();
 
 	return true;
+}
+
+void GameScene::onEnter()
+{
+    Layer::onEnter();
+    auto listener = EventListenerPhysicsContact::create();
+    listener->onContactBegin = [](PhysicsContact & contact)
+    {
+        //        auto spriteA = (Sprite *)contact.getShapeA() -> getBody() -> getNode();
+        //        auto spriteB = (Sprite *)contact.getShapeB() -> getBody() -> getNode();
+        log("onContact");
+        return true;
+    };
+    Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(listener, 1);
 }
 
 void GameScene::onExit()
@@ -511,18 +561,23 @@ void GameScene::moveSpritesWithMap(cocos2d::Vec2 direction)
     {
         _carFactoryPosition += direction;
     }
+    // sell building menu
+    if (_isSellMenuExit)
+    {
+        _sellBuildingMenu->setPosition(_sellBuildingMenu->getPosition() + direction);
+    }
 }
 
-bool GameScene::isCollision(cocos2d::Vec2 position1)
+bool GameScene::isCollision(cocos2d::Vec2 position)
 {
     // turn PixelPosition to TileCoord
     Size mapSize = _tileMap->getMapSize();
     Size tileSize = _tileMap->getTileSize();
-    auto position = _tileMap->convertToNodeSpace(position1);
-    if (position.x < 0 || position.y<0 || position.x>tileSize.width 
-        || position.y < tileSize.height) 
+    auto mapPosition = _tileMap->convertToNodeSpace(position);
+    if (mapPosition.x < 30 || mapPosition.y < 30 || mapPosition.x > MAPX - 30 
+        || mapPosition.y > MAPY - 30) 
     {
-        return false;
+        return true;
     }
     position.x = static_cast<int>(position.x / tileSize.width);
     position.y = mapSize.height - static_cast<int>(position.y / tileSize.width) - 1;
@@ -531,9 +586,9 @@ bool GameScene::isCollision(cocos2d::Vec2 position1)
 
     if (!tileGID) 
     {
-        return true;
+        return false;
     }
-    return false;
+    return true;
 }
 
 float GameScene::getTileSize()
@@ -550,4 +605,68 @@ void GameScene::printTime(float dt)
     _timeCount->setPosition(120, 100);
     _timeCount->setColor(Color3B(0, 0, 0)); //颜色
     addChild(_timeCount, 3);
+}
+
+void GameScene::sellBuildingCallBack()
+{
+    if (!_sellBuilding)
+    {
+        return;
+    }
+
+    Tag sellBuildingTag = _sellBuilding->getBuildingTag();
+    _buildings.eraseObject(_sellBuilding);
+    removeChild(_sellBuilding);
+    _sellBuilding = nullptr;
+    switch (sellBuildingTag)
+    {
+    case POWER_PLANT_TAG:
+        decreasePowerPlant();            // 电厂数量减一
+        _manager->resetPower();                          // 重置电量
+        addMoney(buildingData::powerPlantCostMoney);
+        break;
+
+    case MINE_TAG:
+        decreaseMine();                  // 矿场数量-1
+        addPower(buildingData::mineCostPower);
+        addMoney(buildingData::mineCostMoney);
+        break;
+
+    case BARRACKS_TAG:
+        decreaseBarracks();
+        if (getBarracksNum())
+        {
+            for (auto& building : _buildings)
+            {
+                if (building->getBuildingTag() == BARRACKS_TAG)
+                {
+                    setBarracksPosition(building->getPosition());
+                }
+            }
+        }
+        addPower(buildingData::barracksCostPower);
+        addMoney(buildingData::barracksCostMoney);
+        break;
+
+    case CAR_FACTORY_TAG:
+        decreaseCarFactory();
+        if (getCarFactoryNum())
+        {
+            for (auto& building : _buildings)
+            {
+                if (building->getBuildingTag() == CAR_FACTORY_TAG)
+                {
+                    setCarFactoryPosition(building->getPosition());
+                }
+            }
+        }
+        addPower(buildingData::carFactoryCostPower);
+        addMoney(buildingData::carFactoryCostMoney);
+        break;
+    }
+
+    removeChild(_sellBuildingMenu);
+    _sellBuilding = nullptr;
+    _isSellMenuExit = false;
+
 }

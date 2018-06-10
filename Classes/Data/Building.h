@@ -12,16 +12,16 @@
 #include "cocos2d.h"
 #include "TagData.h"
 
-namespace buildingData
+namespace buildingData               //此处有个大问题 不应该是cast而应该是cost.....
 {
-    const int powerPlantCastMoney = 500; 
-    const int powerPlantCastPower = 0;
-    const int mineCastMoney = 500;
-    const int mineCastPower = 600;
-    const int barracksCastMoney = 500;
-    const int barracksCastPower = 300;
-    const int carFactoryCastMoney = 500;
-    const int carFactoryCastPower = 500;
+    const int powerPlantCostMoney = 500; 
+    const int powerPlantCostPower = 0;
+    const int mineCostMoney = 500;
+    const int mineCostPower = 600;
+    const int barracksCostMoney = 500;
+    const int barracksCostPower = 300;
+    const int carFactoryCostMoney = 500;
+    const int carFactoryCostPower = 500;
 
     namespace EnoughPower
     {
@@ -67,7 +67,7 @@ public:
 	//bool updateMark;
 
 	//建造建筑物的方法
-	static Building* create(Tag _tag);
+	static Building* create(Tag tag);
 
 
 	//////升级建筑物的方法
