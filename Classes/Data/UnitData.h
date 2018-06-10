@@ -11,7 +11,7 @@
 #include "cocos2d.h"
 #include "string"
 #include "TagData.h"
-#include "Building.h"
+
 
 //TODO: 加入动画和图片素材，之后实现。
 //TODO: 添加注释。

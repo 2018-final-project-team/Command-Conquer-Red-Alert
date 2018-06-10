@@ -1,3 +1,8 @@
+/*
+*  @file     EndingScene.cpp
+*  @brief    ½áÊø³¡¾°
+*  @author   ÍõÐÇÖÞ
+*/
 #include "Scene/EndingScene.h"
 #include "Scene/WelcomeScene.h"
 
@@ -32,14 +37,14 @@ bool EndingScene::init()
 
 	//Back to home
 	auto homeItem = MenuItemImage::create(
-		"Home.png","Home.png",
+		"Home1.jpg","Home2.jpg",
 		CC_CALLBACK_1(EndingScene::menuWelcomeCallback, this));
 
 	if (homeItem == nullptr ||
 		homeItem->getContentSize().width <= 0 ||
 		homeItem->getContentSize().height <= 0)
 	{
-		CCLOG("Error to loading close Item!");
+		CCLOG("Error to loading home Item!");
 	}
 	else
 	{
@@ -102,7 +107,35 @@ bool EndingScene::init()
 		this->addChild(label, 1);
 	}
 
+	//=====================label£º"Game Time"============================
+	auto timeLabel = Label::createWithTTF("GameTime:", "fonts/Marker Felt.ttf", 40);
+	timeLabel->setTextColor(Color4B::BLACK);
+	if (timeLabel == nullptr)
+	{
+		CCLOG("label loading error");
+	}
+	else
+	{
+		timeLabel->setPosition(Vec2(origin.x + visibleSize.width / 3,
+			origin.y + visibleSize.height/2 - timeLabel->getContentSize().height));
 
+		this->addChild(timeLabel, 1);
+	}
+	//=====================label£º"Score"============================
+	// Todo:judge for win/lose
+	auto scoreLabel = Label::createWithTTF("GameScore:", "fonts/Marker Felt.ttf", 40);
+	scoreLabel->setTextColor(Color4B::BLACK);
+	if (scoreLabel == nullptr)
+	{
+		CCLOG("label loading error");
+	}
+	else
+	{
+		scoreLabel->setPosition(Vec2(origin.x + visibleSize.width / 3,
+			origin.y + visibleSize.height/3 - scoreLabel->getContentSize().height));
+
+		this->addChild(scoreLabel, 1);
+	}
 
 	//=====================±³¾°Í¼Æ¬============================
 	auto background = Sprite::create("bg.jpg");

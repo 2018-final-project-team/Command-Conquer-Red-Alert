@@ -1,3 +1,8 @@
+/*
+*  @file     EndingScene.cpp
+*  @brief    Ω· ¯≥°æ∞
+*  @author   Õı–«÷ﬁ
+*/
 #ifndef _ENDINGSCENE_H_
 #define _ENDINGSCENE_H_
 

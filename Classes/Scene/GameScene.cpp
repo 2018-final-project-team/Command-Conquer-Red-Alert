@@ -309,6 +309,7 @@ void GameScene::dataInit()
 
 void GameScene::menuEndingCallback(Ref *pSender)
 {
+ 
 	Director::getInstance()->pushScene(TransitionFade::create(1, EndingScene::createScene()));
 }
 void GameScene::menuBackCallback(Ref *pSender)

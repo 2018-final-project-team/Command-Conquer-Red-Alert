@@ -12,6 +12,7 @@
 #include "cocos2d.h"
 #include "TagData.h"
 
+
 namespace buildingData
 {
     const int powerPlantCastMoney = 200; 
@@ -69,6 +70,7 @@ public:
 	//建造建筑物的方法
 	static Building* create(Tag _tag);
 
+	
 
 	//////升级建筑物的方法
 	////void updateData();
