@@ -64,8 +64,7 @@ bool GameScene::init()
     DrawNode* drawNode = DrawNode::create();
     this->addChild(drawNode);
 
-
-	//=====================测试Panel========================
+	//=====================添加Panel========================
 	auto panel = Panel::createWithGameScene(this);
 	if (panel == nullptr) { log("create panel error"); }
 	panel->setPosition(visibleSize.width - 112, visibleSize.height - 400);
@@ -191,6 +190,14 @@ bool GameScene::init()
                     // 测试 isCollision
                     //log("%d", isCollision(_touchEnd));
                     _manager->getMoveController()->setDestination(_touchEnd);
+
+
+					////====测试血条功能=====
+					//for (auto& soldier : _selectedSoldiers)
+					//{
+					//	soldier->decreaseHP(20);
+					//}
+
                 }
             }
         }

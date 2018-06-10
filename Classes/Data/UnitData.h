@@ -60,6 +60,8 @@ class Building;
 class Unit : public cocos2d::Sprite{
 
 public:
+	cocos2d::Sprite* _bloodBox;           //血槽Sprite
+	cocos2d::ProgressTimer* _bloodBarPt;     //血条ProgressTimer
    
     //是否被选中
     CC_SYNTHESIZE(bool, _isSelected, IsSelected)
@@ -119,6 +121,8 @@ public:
     /*
      */
     void getInjuredBy(Unit *);
+
+	void decreaseHP(int num);
     /*
      */
     void attack(Unit *);

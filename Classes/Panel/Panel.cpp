@@ -101,11 +101,10 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 			return false;
 		}
 	};
-	_mainButtonListener->setSwallowTouches(true);   //吞没触摸事件，不向下传递
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(_mainButtonListener, _buildingButton);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(_mainButtonListener->clone(), _soldierButton);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(_mainButtonListener->clone(), _carButton);
-
+	_mainButtonListener->setSwallowTouches(true);   //吞没触摸事件，不向下传递
 
 
 	//===============图标按钮触摸事件监听===================

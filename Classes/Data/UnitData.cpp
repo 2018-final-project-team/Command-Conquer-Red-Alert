@@ -57,7 +57,20 @@ Unit * Unit::create(Tag unitTag)
     
     //初始化攻击区域
     int satklimit[3] = { 20, 5, 30 };
-    
+
+	//血槽
+	temp->_bloodBox = Sprite::create("GameItem/BloodBar/SoldierBloodBox.png");
+	temp->_bloodBox->setPosition(Vec2(16, 40));
+	temp->addChild(temp->_bloodBox);
+
+	//血条
+	temp->_bloodBarPt = ProgressTimer::create(Sprite::create("GameItem/BloodBar/SoldierBloodBar.png"));
+	temp->_bloodBarPt->setPosition(Vec2(16, 40));
+	temp->_bloodBarPt->setType(ProgressTimer::Type::BAR);
+	temp->_bloodBarPt->setMidpoint(Vec2(0, 0.5));
+	temp->_bloodBarPt->setPercentage(100);
+	temp->addChild(temp->_bloodBarPt);
+
     //初始化单位名字
     std::string sunitname[3] = { "infantry","dog","tank" };
     
@@ -111,7 +124,15 @@ void Unit::moveTo(Vec2 destination, float time)
 
 void Unit::getInjuredBy(Unit * enemy)
 {
-    _HP -= enemy->_ATK;
+    decreaseHP(enemy->_ATK);
+}
+
+void Unit::decreaseHP(int num)
+{
+	_HP -= num;
+
+	auto progressTo = ProgressTo::create(0.5f, _HP);
+	_bloodBarPt->runAction(progressTo);
 }
 
 void Unit::attack(Unit * enemy)
