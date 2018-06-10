@@ -43,7 +43,7 @@ Building* Building::create(Tag tag)
     //设置精灵自身Tag
     temp->setTag(tag);
     //设置血量
-	temp->_FullHp = sHP[_buildingTag];
+	temp->_FullHp = sHP[tag];
 	temp->_hp = temp->_FullHp;
     //根据_tag设置安装各建筑物时需要的金钱
     temp->_value = sValue[tag];

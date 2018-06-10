@@ -178,24 +178,23 @@ bool GameScene::init()
                     }
                     _manager->setBuilding(static_cast<Building*>(target));
                     return;
-				case BASE_CAR_TAG:
-					if (_selectedSoldiers.contains(static_cast<Unit*>(target)))
-					{
-						//基地车展开成基地
-						//移除基地车
-						_selectedSoldiers.clear();
-						_soldiers.eraseObject(static_cast<Unit*>(target), false);
-						Vec2 position = target->getPosition();
-						this->removeChild(target);
-						//创建基地
-						Building* base = Building::create(BASE_TAG);
-						_gameEventDispatcher->addEventListenerWithSceneGraphPriority
-						(_gameListener->clone(), base);
-						base->setPosition(position);
-						this->addChild(base, 2);
-						_isBaseExist = true;
-						_buildings.pushBack(base);
-					}
+				case BASE_CAR_TAG:       //if there is any definition in the case
+                {                        // you must use {} to contain it
+                    //基地车展开成基地
+                    //移除基地车
+                    Vec2 position = target->getPosition();
+                    _soldiers.eraseObject(static_cast<Unit*>(target), false);
+                    this->removeChild(target);
+                    //创建基地
+                    Building* base = Building::create(BASE_TAG);
+                    _gameEventDispatcher->addEventListenerWithSceneGraphPriority
+                    (_gameListener->clone(), base);
+                    base->setPosition(position);
+                    this->addChild(base, 2);
+                    _isBaseExist = true;
+                    _buildings.pushBack(base);
+                    break;
+                }
 
                 default:
                     // 为层注册监听器后层也会响应 所以此处需要判断士兵建筑和空地
@@ -306,7 +305,7 @@ bool GameScene::init()
 	_gameEventDispatcher->addEventListenerWithSceneGraphPriority
 	(_gameListener->clone(), baseCar);
 	_soldiers.pushBack(baseCar);
-	log("%f %f", baseCar->getPosition().x, baseCar->getPosition().y);
+	//log("%f %f", baseCar->getPosition().x, baseCar->getPosition().y);
 
 
 
@@ -694,6 +693,31 @@ void GameScene::sellBuildingCallBack()
         return;
     }
 
+    // if is the base
+    if (_sellBuilding->getBuildingTag() == BASE_TAG)
+    {
+        //turn base to base car
+        //remove base
+        _buildings.eraseObject(_sellBuilding, false);
+        Vec2 position = _sellBuilding->getPosition();
+        this->removeChild(_sellBuilding);
+        //create base car
+        Unit* baseCar = Unit::create(BASE_CAR_TAG);
+        _gameEventDispatcher->addEventListenerWithSceneGraphPriority
+        (_gameListener->clone(), baseCar);
+        baseCar->setPosition(position);
+        baseCar->setGetDestination(true);
+        this->addChild(baseCar, 1);
+        _isBaseExist = false;
+        _soldiers.pushBack(baseCar);
+
+        removeChild(_sellBuildingMenu);
+        _sellBuilding = nullptr;
+        _isSellMenuExit = false;
+
+        return;
+    }
+        
     Tag sellBuildingTag = _sellBuilding->getBuildingTag();
     _buildings.eraseObject(_sellBuilding);
     removeChild(_sellBuilding);
@@ -743,6 +767,7 @@ void GameScene::sellBuildingCallBack()
         addPower(buildingData::carFactoryCostPower);
         addMoney(buildingData::carFactoryCostMoney);
         break;
+
     }
 
     removeChild(_sellBuildingMenu);

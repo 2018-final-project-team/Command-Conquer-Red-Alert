@@ -138,7 +138,6 @@ Unit * Unit::create(Tag unitTag)
     
     //获取对应_tag
     temp->_unitTag = unitTag;
-<<<<<<< HEAD
 
     //设置精灵自身Tag
     temp->setTag(unitTag);
@@ -149,16 +148,6 @@ Unit * Unit::create(Tag unitTag)
     //设置血量
     temp->_FullHP = shp[unitTag - 5];
     temp->_HP = temp->_FullHP;
-=======
-	temp->setTag(unitTag);
-    
-    //初始化选中
-    temp->_isSelected = sisselected[unitTag - 5];
-    
-    //设置血量
-    temp->_FullHP = shp[unitTag - 5];
-	temp->_HP = temp->_FullHP;
->>>>>>> dev1-UnitAnimation
     
     //设置攻击力
     temp->_ATK = satk[unitTag - 5];
@@ -184,7 +173,6 @@ Unit * Unit::create(Tag unitTag)
     //设置单位名称
     temp->_UnitName = sunitname[unitTag - 5];
 
-<<<<<<< HEAD
     //clear route
     temp->_route.clear();
 
@@ -200,20 +188,6 @@ Unit * Unit::create(Tag unitTag)
     temp->_bloodBarPt->setMidpoint(Vec2(0, 0.5));
     temp->_bloodBarPt->setPercentage(100);
     temp->addChild(temp->_bloodBarPt);
-=======
-	//血槽
-	temp->_bloodBox = Sprite::create("GameItem/BloodBar/SoldierBloodBox.png");
-	temp->_bloodBox->setPosition(Vec2(temp->getContentSize().width / 2, temp->getContentSize().height + 10));
-	temp->addChild(temp->_bloodBox);
-
-	//血条
-	temp->_bloodBarPt = ProgressTimer::create(Sprite::create("GameItem/BloodBar/SoldierBloodBar.png"));
-	temp->_bloodBarPt->setPosition(Vec2(temp->getContentSize().width / 2, temp->getContentSize().height + 10));
-	temp->_bloodBarPt->setType(ProgressTimer::Type::BAR);
-	temp->_bloodBarPt->setMidpoint(Vec2(0, 0.5));
-	temp->_bloodBarPt->setPercentage(100);
-	temp->addChild(temp->_bloodBarPt);
->>>>>>> dev1-UnitAnimation
     
     return temp;
 }
@@ -230,27 +204,16 @@ void Unit::getInjuredBy(Unit * enemy)
 
 void Unit::decreaseHP(int num)
 {
-<<<<<<< HEAD
     _HP -= num;
 
     auto progressTo = ProgressTo::create(0.5f, 100 * _HP / _FullHP);
     _bloodBarPt->runAction(progressTo);
-=======
-	_HP -= num;
-
-	auto progressTo = ProgressTo::create(0.5f, 100 * _HP/_FullHP);
-	_bloodBarPt->runAction(progressTo);
->>>>>>> dev1-UnitAnimation
 }
 
 void Unit::attack(Unit * enemy)
 {
     enemy->getInjuredBy(this);
-<<<<<<< HEAD
-
-=======
     //==========TO DO:音效=====================
->>>>>>> dev1-UnitAnimation
 }
 void Unit::attack(Building *)
 {
