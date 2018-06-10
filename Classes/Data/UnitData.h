@@ -60,15 +60,20 @@ class Building;
 class Unit : public cocos2d::Sprite{
 
 public:
-   
+    cocos2d::Sprite* _bloodBox;           //血槽Sprite
+    cocos2d::ProgressTimer* _bloodBarPt;     //血条ProgressTimer
+
     //是否被选中
     CC_SYNTHESIZE(bool, _isSelected, IsSelected)
     
     //单位tag（步兵，狗，矿车，坦克）
     CC_SYNTHESIZE(Tag, _unitTag, UnitTag);
     
-    //单位血量
+    //当前血量
     CC_SYNTHESIZE(int, _HP, UnitHP);
+
+    //满血血量
+    CC_SYNTHESIZE(int, _FullHP, UnitFullHP);
     
     //单位攻击力
     CC_SYNTHESIZE(int, _ATK, UnitATK);
@@ -119,6 +124,8 @@ public:
     /*
      */
     void getInjuredBy(Unit *);
+
+    void decreaseHP(int num);
     /*
      */
     void attack(Unit *);

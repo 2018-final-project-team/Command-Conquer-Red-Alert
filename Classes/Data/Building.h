@@ -44,6 +44,8 @@ namespace buildingData               //此处有个大问题 不应该是cast而
 class Building : public cocos2d::Sprite
 {
 public:
+    cocos2d::Sprite* _bloodBox;           //血槽Sprite
+    cocos2d::ProgressTimer* _bloodBarPt;     //血条ProgressTimer
 
 	//建筑物的tag（基地、电厂、矿场、兵营、战车工厂）
 	CC_SYNTHESIZE(Tag, _buildingTag, BuildingTag);
