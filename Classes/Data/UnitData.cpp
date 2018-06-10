@@ -125,7 +125,7 @@ Unit * Unit::create(Tag unitTag)
     int slocklimit[3] = { 50, 50, 50 };
     
     //初始化攻击区域
-    int satklimit[3] = { 20, 5, 30 };
+    int satklimit[3] = { 100, 5, 100 };
 
     //初始化单位名字
     std::string sunitname[3] = { "infantry","dog","tank" };

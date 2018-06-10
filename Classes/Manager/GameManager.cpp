@@ -338,6 +338,8 @@ void Manager::attack()
     bool isTankAttack = false;
     bool isBuildingDied = false;
     bool isBuildingHurt = false;
+    bool isMySoldierDied = false;
+    Unit* myDiedSoldier = nullptr;
     Tag selectedBuildingTag = NONE;
     Vector<Unit*>* enemySoldiers = _gameScene->getEnemySoldiers();
     clock_t nowT = clock();
@@ -357,8 +359,16 @@ void Manager::attack()
                     if (_selectedEnemy->getUnitHP() <= 0)
                     {
                         _selectedEnemy->setDeath();
-                        enemySoldiers->eraseObject(_selectedEnemy);
-                        _gameScene->removeChild(_selectedEnemy);
+                        if (_gameScene->getSoldiers()->contains(_selectedEnemy))
+                        {
+                            isMySoldierDied = true;
+                            myDiedSoldier = _selectedEnemy;
+                        }
+                        else
+                        {
+                            enemySoldiers->eraseObject(_selectedEnemy);
+                            _gameScene->removeChild(_selectedEnemy);
+                        }
                         _selectedEnemy = nullptr;
                     }
                     isInfantryAttack = true;
@@ -370,9 +380,17 @@ void Manager::attack()
                     soldier->attack(_selectedEnemy);
                     if (_selectedEnemy->getUnitHP() <= 0)
                     {
-                        _selectedEnemy->setDeath();
-                        enemySoldiers->eraseObject(_selectedEnemy);
-                        _gameScene->removeChild(_selectedEnemy);
+                        _selectedEnemy->setDeath(); 
+                        if (_gameScene->getSoldiers()->contains(_selectedEnemy))
+                        {
+                            isMySoldierDied = true;
+                            myDiedSoldier = _selectedEnemy;
+                        }
+                        else
+                        {
+                            enemySoldiers->eraseObject(_selectedEnemy);
+                            _gameScene->removeChild(_selectedEnemy);
+                        }
                         _selectedEnemy = nullptr;
                     }
                     isDogAttack = true;
@@ -385,8 +403,16 @@ void Manager::attack()
                     if (_selectedEnemy->getUnitHP() <= 0)
                     {
                         _selectedEnemy->setDeath();
-                        enemySoldiers->eraseObject(_selectedEnemy);
-                        _gameScene->removeChild(_selectedEnemy);
+                        if (_gameScene->getSoldiers()->contains(_selectedEnemy))
+                        {
+                            isMySoldierDied = true;
+                            myDiedSoldier = _selectedEnemy;
+                        }
+                        else
+                        {
+                            enemySoldiers->eraseObject(_selectedEnemy);
+                            _gameScene->removeChild(_selectedEnemy);
+                        }
                         _selectedEnemy = nullptr;
                     }
                     isTankAttack = true;
@@ -504,6 +530,11 @@ void Manager::attack()
                 break;
             }
         }
+    }
+    if (isMySoldierDied)
+    {
+        _gameScene->getSoldiers()->eraseObject(myDiedSoldier);
+        _gameScene->removeChild(myDiedSoldier);
     }
 
     if (isInfantryAttack)
