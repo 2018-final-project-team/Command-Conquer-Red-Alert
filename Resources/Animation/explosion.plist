@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>frames</key>
+        <dict>
+            <key>explosion_air_1.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,-1.5}</string>
+                <key>spriteSize</key>
+                <string>{26,23}</string>
+                <key>spriteSourceSize</key>
+                <string>{88,88}</string>
+                <key>textureRect</key>
+                <string>{{1,171},{26,23}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>1 2 3 0 1 3</string>
+                <key>vertices</key>
+                <string>57 57 31 57 31 34 57 34</string>
+                <key>verticesUV</key>
+                <string>27 194 1 194 1 171 27 171</string>
+            </dict>
+            <key>explosion_air_10.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{-4.5,6.5}</string>
+                <key>spriteSize</key>
+                <string>{59,63}</string>
+                <key>spriteSourceSize</key>
+                <string>{88,88}</string>
+                <key>textureRect</key>
+                <string>{{177,1},{59,63}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>0 3 4 0 2 3 0 1 2</string>
+                <key>vertices</key>
+                <string>69 42 36 69 16 48 10 13 69 6</string>
+                <key>verticesUV</key>
+                <string>236 37 203 64 183 43 177 8 236 1</string>
+            </dict>
+            <key>explosion_air_2.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{-1,-0.5}</string>
+                <key>spriteSize</key>
+                <string>{52,39}</string>
+                <key>spriteSourceSize</key>
+                <string>{88,88}</string>
+                <key>textureRect</key>
+                <string>{{195,138},{52,39}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>1 2 3 0 1 3</string>
+                <key>vertices</key>
+                <string>69 64 17 64 17 25 69 25</string>
+                <key>verticesUV</key>
+                <string>247 177 195 177 195 138 247 138</string>
+            </dict>
+            <key>explosion_air_3.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{-1.5,0.5}</string>
+                <key>spriteSize</key>
+                <string>{73,63}</string>
+                <key>spriteSourceSize</key>
+                <string>{88,88}</string>
+                <key>textureRect</key>
+                <string>{{170,72},{73,63}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>0 4 5 0 1 2 0 2 3 0 3 4</string>
+                <key>vertices</key>
+                <string>63 18 79 46 64 75 15 65 6 46 22 12</string>
+                <key>verticesUV</key>
+                <string>227 78 243 106 228 135 179 125 170 106 186 72</string>
+            </dict>
+            <key>explosion_air_4.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{-2,1.5}</string>
+                <key>spriteSize</key>
+                <string>{84,73}</string>
+                <key>spriteSourceSize</key>
+                <string>{88,88}</string>
+                <key>textureRect</key>
+                <string>{{45,159},{84,73}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>0 1 4 2 3 4 1 2 4 0 4 5</string>
+                <key>vertices</key>
+                <string>84 47 67 78 17 79 0 43 15 17 59 6</string>
+                <key>verticesUV</key>
+                <string>129 200 112 231 62 232 45 196 60 170 104 159</string>
+            </dict>
+            <key>explosion_air_5.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0.5}</string>
+                <key>spriteSize</key>
+                <string>{86,83}</string>
+                <key>spriteSourceSize</key>
+                <string>{88,88}</string>
+                <key>textureRect</key>
+                <string>{{91,84},{86,83}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>4 5 6 0 4 6 1 2 3 0 1 3 0 3 4</string>
+                <key>vertices</key>
+                <string>71 14 87 46 74 78 25 85 1 61 1 23 46 2</string>
+                <key>verticesUV</key>
+                <string>161 96 177 128 164 160 115 167 91 143 91 105 136 84</string>
+            </dict>
+            <key>explosion_air_6.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,-1.5}</string>
+                <key>spriteSize</key>
+                <string>{88,85}</string>
+                <key>spriteSourceSize</key>
+                <string>{88,88}</string>
+                <key>textureRect</key>
+                <string>{{1,1},{88,85}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>4 5 6 3 1 2 3 4 1 1 4 6 0 1 6</string>
+                <key>vertices</key>
+                <string>66 7 88 41 88 81 13 88 0 50 0 15 41 3</string>
+                <key>verticesUV</key>
+                <string>67 5 89 39 89 79 14 86 1 48 1 13 42 1</string>
+            </dict>
+            <key>explosion_air_7.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,-0.5}</string>
+                <key>spriteSize</key>
+                <string>{88,81}</string>
+                <key>spriteSourceSize</key>
+                <string>{88,88}</string>
+                <key>textureRect</key>
+                <string>{{91,1},{88,81}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>0 5 6 3 4 5 3 0 2 0 1 2 3 5 0</string>
+                <key>vertices</key>
+                <string>88 39 88 84 13 85 0 49 0 23 35 5 61 4</string>
+                <key>verticesUV</key>
+                <string>179 36 179 81 104 82 91 46 91 20 126 2 152 1</string>
+            </dict>
+            <key>explosion_air_8.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,-1}</string>
+                <key>spriteSize</key>
+                <string>{88,84}</string>
+                <key>spriteSourceSize</key>
+                <string>{88,88}</string>
+                <key>textureRect</key>
+                <string>{{1,85},{88,84}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>2 7 8 5 6 7 2 5 7 2 3 4 2 4 5 1 2 8 0 1 8 10 11 12 9 10 12</string>
+                <key>vertices</key>
+                <string>88 33 88 50 31 78 37 84 11 87 0 34 0 26 20 6 58 3 77 81 64 81 64 72 77 72</string>
+                <key>verticesUV</key>
+                <string>89 115 89 132 32 160 38 166 12 169 1 116 1 108 21 88 59 85 78 163 65 163 65 154 78 154</string>
+            </dict>
+            <key>explosion_air_9.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,10}</string>
+                <key>spriteSize</key>
+                <string>{88,62}</string>
+                <key>spriteSourceSize</key>
+                <string>{88,88}</string>
+                <key>textureRect</key>
+                <string>{{127,164},{88,62}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>4 8 9 6 7 8 5 6 8 4 5 8 0 3 4 3 0 1 3 1 2 0 4 9</string>
+                <key>vertices</key>
+                <string>76 38 88 32 88 65 75 42 52 61 24 62 1 32 0 27 29 3 59 3</string>
+                <key>verticesUV</key>
+                <string>203 199 215 193 215 226 202 203 179 222 151 223 128 193 127 188 156 164 186 164</string>
+            </dict>
+        </dict>
+        <key>metadata</key>
+        <dict>
+            <key>format</key>
+            <integer>3</integer>
+            <key>pixelFormat</key>
+            <string>RGBA8888</string>
+            <key>premultiplyAlpha</key>
+            <false/>
+            <key>realTextureFileName</key>
+            <string>explosion.png</string>
+            <key>size</key>
+            <string>{248,233}</string>
+            <key>smartupdate</key>
+            <string>$TexturePacker:SmartUpdate:883094be69e454dbcb6ee5dc066070a7:7ec0564b2a51f36167842d000747677f:c5a2c42043f2b0dda1e7e7adb0cc6144$</string>
+            <key>textureFileName</key>
+            <string>explosion.png</string>
+        </dict>
+    </dict>
+</plist>
