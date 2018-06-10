@@ -101,11 +101,10 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 			return false;
 		}
 	};
-	_mainButtonListener->setSwallowTouches(true);   //吞没触摸事件，不向下传递
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(_mainButtonListener, _buildingButton);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(_mainButtonListener->clone(), _soldierButton);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(_mainButtonListener->clone(), _carButton);
-
+	_mainButtonListener->setSwallowTouches(true);   //吞没触摸事件，不向下传递
 
 
 	//===============图标按钮触摸事件监听===================
@@ -120,7 +119,7 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 		if (rect2.containsPoint(locationInNode))
 		{
 			log("touch icon");
-			switch (_selectedButton->getTag())
+			switch (_selectedButton->getIconTag())
 			{
 			//==================建筑类图标的点击处理===================
 			case POWER_PLANT_TAG:
@@ -129,7 +128,7 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 			case CAR_FACTORY_TAG:
 				if (_selectedButton->getIsAble())
 				{
-					_gameScene->_manager->clickCreateBuildingByTag(static_cast<Tag>(_selectedButton->getTag()), clock());
+					_gameScene->_manager->clickCreateBuildingByTag(static_cast<Tag>(_selectedButton->getIconTag()), clock());
 					_selectedButton->showProgressOfWait((_gameScene->_manager->getWaitTimeToCreateBuilding())/1000);  //单位转化为秒
 				}
 				else if (_selectedButton->getStatus() == eIconOK)
@@ -147,7 +146,7 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 			case DOG_TAG:
 				if (_selectedButton->getIsAble())
 				{
-					_gameScene->_manager->clickCreateSoldierByTag(static_cast<Tag>(_selectedButton->getTag()));
+					_gameScene->_manager->clickCreateSoldierByTag(static_cast<Tag>(_selectedButton->getIconTag()));
 				}
 				break;
 			//=======================================================
@@ -156,7 +155,7 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 			case TANK_TAG:
 				if (_selectedButton->getIsAble())
 				{
-					_gameScene->_manager->clickCreateSoldierByTag(static_cast<Tag>(_selectedButton->getTag()));
+					_gameScene->_manager->clickCreateSoldierByTag(static_cast<Tag>(_selectedButton->getIconTag()));
 				}
 				break;
 			//=======================================================
@@ -170,6 +169,7 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 		if (_clickToPlaceBuilding)
 		{
 			_gameScene->_manager->createBuilding(touch->getLocation());
+			setCurButton(_curCategoryTag);
 		}
 	};
 	_iconButtonListener->setSwallowTouches(true);   //吞没触摸事件，不向下传递
@@ -186,6 +186,7 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 	_buildingList = Vector<Icon*>();
 	_soldierList = Vector<Icon*>();
 	_carList = Vector<Icon*>();
+
 
 	scheduleUpdate();
 
@@ -300,6 +301,7 @@ void Panel::addIcons()
 	_infantryIcon = Icon::createIcon(INFANTRY_TAG, sValue[INFANTRY_TAG - 1], _gameScene);
 	_dogIcon = Icon::createIcon(DOG_TAG, sValue[DOG_TAG - 1], _gameScene);
 	_tankIcon = Icon::createIcon(TANK_TAG, sValue[TANK_TAG - 1], _gameScene);
+
 }
 
 
@@ -309,7 +311,7 @@ void Panel::update(float dt)
 	{
 		for (Icon* i : *_curList)
 		{
-			auto tag = i->getTag();
+			auto tag = i->getIconTag();
 			//图标状态的处理，建筑与Unit方式不同
 			switch (tag)
 			{
@@ -367,7 +369,7 @@ void Panel::update(float dt)
 				{
 					i->setStatus(eIconPreForUnit);
 				}
-
+				break;
 
 			case TANK_TAG:
 				//===========TO DO:与gamescene中的变量名保持一致===========

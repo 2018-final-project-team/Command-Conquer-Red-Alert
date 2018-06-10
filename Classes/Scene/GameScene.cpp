@@ -21,9 +21,10 @@ Scene* GameScene::createScene()
 {
 	auto scene = Scene::createWithPhysics();
 
-    scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
-
-    scene->getPhysicsWorld()->setGravity(Vec2(0, 0));
+	//调试用
+	scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+	
+	scene->getPhysicsWorld()->setGravity(Vec2(0, 0));
 
 	auto layer = GameScene::create();
 
@@ -63,8 +64,7 @@ bool GameScene::init()
     DrawNode* drawNode = DrawNode::create();
     this->addChild(drawNode);
 
-
-	//=====================测试Panel========================
+	//=====================添加Panel========================
 	auto panel = Panel::createWithGameScene(this);
 	if (panel == nullptr) { log("create panel error"); }
 	//auto _panelSize = panel->getContentSize();   //为什么是0，0？
@@ -178,6 +178,25 @@ bool GameScene::init()
                     }
                     _manager->setBuilding(static_cast<Building*>(target));
                     return;
+				case BASE_CAR_TAG:
+					if (_selectedSoldiers.contains(static_cast<Unit*>(target)))
+					{
+						//基地车展开成基地
+						//移除基地车
+						_selectedSoldiers.clear();
+						_soldiers.eraseObject(static_cast<Unit*>(target), false);
+						Vec2 position = target->getPosition();
+						this->removeChild(target);
+						//创建基地
+						Building* base = Building::create(BASE_TAG);
+						_gameEventDispatcher->addEventListenerWithSceneGraphPriority
+						(_gameListener->clone(), base);
+						base->setPosition(position);
+						this->addChild(base, 2);
+						_isBaseExist = true;
+						_buildings.pushBack(base);
+					}
+
                 default:
                     // 为层注册监听器后层也会响应 所以此处需要判断士兵建筑和空地
                     //log("default");
@@ -186,6 +205,8 @@ bool GameScene::init()
                         log("can put");
                         _manager->getMoveController()->setDestination(_touchEnd);
                     }
+                    break;
+
                 }
             }
         }
@@ -253,6 +274,7 @@ bool GameScene::init()
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(_mouseOutBoradListener, 1);
 
 //================================back menu============================================
+
 	auto backItem = MenuItemImage::create(
 		"backNormal.png",
 		"backSelected.png",
@@ -275,6 +297,18 @@ bool GameScene::init()
 	auto menu = Menu::create(backItem, NULL);
 	menu->setPosition(Vec2::ZERO);
 	this->addChild(menu, 4);
+
+//===================添加基地车==========================
+	auto baseCar = Unit::create(BASE_CAR_TAG);
+	baseCar->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
+	baseCar->setGetDestination(true);
+	this->addChild(baseCar, 1);
+	_gameEventDispatcher->addEventListenerWithSceneGraphPriority
+	(_gameListener->clone(), baseCar);
+	_soldiers.pushBack(baseCar);
+	log("%f %f", baseCar->getPosition().x, baseCar->getPosition().y);
+
+
 
 //===============================the first show of money and time===========================
     // 显示金钱
@@ -321,6 +355,9 @@ bool GameScene::init()
 	_manager = Manager::createWithGameScene(this);
 
 //==================================================some retain====================================
+	//由于GameScene中对panel指针的内存管理存在暂时无法解决的问题，所以采用直接向manager传递指针的方式
+	_manager->setPanel(panel);
+
 	_manager->retain();
 	_manager->getMoveController()->retain();
 
@@ -377,7 +414,7 @@ void GameScene::dataInit()
 
 	_carFactoryPosition = _barracksPosition = Vec2::ZERO;
 
-	_isBaseExist = true;   //暂时的
+	_isBaseExist = false;
 }
 
 void GameScene::menuBackCallback(Ref *pSender)

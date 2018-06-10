@@ -12,9 +12,10 @@
 namespace Preload
 {
 	//图集对应的plist文件名字符串数组
-    const std::array<std::string, 2> plists = {
-        "Animation/explosion.plist",
-        "Animation/wind.plist"
+	const std::array<std::string, 3> plists = {
+		"Animation/explosion.plist",
+		"Animation/wind.plist",
+		"GameItem/Unit/unit1.plist"
     };
 
 	//图片文件名字符串数组

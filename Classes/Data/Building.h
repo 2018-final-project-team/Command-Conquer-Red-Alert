@@ -12,7 +12,9 @@
 #include "cocos2d.h"
 #include "TagData.h"
 
-namespace buildingData               //此处有个大问题 不应该是cast而应该是cost.....
+class Unit;
+
+namespace buildingData
 {
     const int powerPlantCostMoney = 500; 
     const int powerPlantCostPower = 0;
@@ -56,8 +58,10 @@ public:
 	////建筑的级别，1，2，3
 	//int level;
 
-	//建筑物的血量
+	//建筑物的当前血量
 	CC_SYNTHESIZE(int, _hp, HP);
+	//建筑物的满血血量
+	CC_SYNTHESIZE(int, _FullHp, FullHP);
 	//建造建筑物需要的金钱数
 	CC_SYNTHESIZE(int, _value, BuildingValue);
 	////升级建筑物需要的金钱数
@@ -71,6 +75,10 @@ public:
 	//建造建筑物的方法
 	static Building* create(Tag tag);
 
+
+	void getInjuredBy(Unit *);
+
+	void decreaseHP(int num);
 
 	//////升级建筑物的方法
 	////void updateData();
