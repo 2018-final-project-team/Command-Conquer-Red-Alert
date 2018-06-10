@@ -15,6 +15,7 @@ class Panel;     //解决头文件互相包含时带来的问题
 
 class GameScene : public cocos2d::Layer
 {
+	int cnt = 0;
 public:
     Manager * _manager;
     cocos2d::TMXTiledMap* _tileMap;

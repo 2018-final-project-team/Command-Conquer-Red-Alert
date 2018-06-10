@@ -16,6 +16,8 @@ class GameScene;              //解决头文件互相包含时带来的问题
 
 class MoveController;         //解决头文件互相包含时带来的问题
 
+class Panel;
+
 class Manager : public cocos2d::Node
 {
 public:
@@ -24,7 +26,7 @@ public:
 	bool _isWaitToCreateSoldier;
 	bool _isWaitToCreateCar;
 private:
-
+	Panel* _panel;
     GameScene* _gameScene;
     MoveController* _moveController;
 
@@ -61,6 +63,11 @@ public:
     * @return bool
     */
     bool initWithGameScene(GameScene* gameScene);
+
+	/**
+	* @brief 传递panel指针,在GameScene中被调用
+	*/
+	void setPanel(Panel* p);
 
     bool getCanCreateBuilding() { return _canCreateBuilding; }
 

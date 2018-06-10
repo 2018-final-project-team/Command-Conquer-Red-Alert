@@ -143,6 +143,12 @@ void Manager::waitCreateBuilding()
 
 void Manager::waitCreateSoldier()
 {
+	if (_panel == nullptr)
+	{
+		log("xtbl");
+	}
+	
+
     if (_isWaitToCreateSoldier)
     {
         if (clock() - _timeToCreateSoldier > _waitTimeToCreateSoldier)
@@ -190,6 +196,7 @@ void Manager::waitCreateSoldier()
             {
                 _waitTimeToCreateSoldier = unitData::NotEnoughPower::infantryWait;
             }
+			_panel->_infantryIcon->showProgressOfWait(_waitTimeToCreateBuilding / 1000);
             break;
 
         case DOG_TAG:
@@ -206,22 +213,7 @@ void Manager::waitCreateSoldier()
             {
                 _waitTimeToCreateSoldier = unitData::NotEnoughPower::dogWait;
             }
-            break;
-
-        case TANK_TAG:
-            if (_gameScene->getCarFactoryNum() == 0)
-            {
-                return;
-            }
-            _carTag = TANK_TAG;
-            if (_gameScene->getIsPowerEnough())
-            {
-                _waitTimeToCreateCar = unitData::EnoughPower::tankWait;
-            }
-            else
-            {
-                _waitTimeToCreateCar = unitData::NotEnoughPower::tankWait;
-            }
+			_panel->_dogIcon->showProgressOfWait(_waitTimeToCreateSoldier / 1000);
             break;
         }
 
@@ -276,6 +268,7 @@ void Manager::waitCreateCar()
             {
                 _waitTimeToCreateCar = unitData::NotEnoughPower::tankWait;
             }
+			_panel->_tankIcon->showProgressOfWait(_waitTimeToCreateCar / 1000);
             break;
         }
 
@@ -680,4 +673,9 @@ cocos2d::Point Manager::getPutCarPosition()
     }
     //那就别出来了
     return carFactoryPosition;
+}
+
+void Manager::setPanel(Panel* p)
+{
+	_panel = p;
 }

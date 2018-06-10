@@ -236,12 +236,13 @@ bool GameScene::init()
 	this->addChild(menu, 1);
 
 
-
-
 	scheduleUpdate();
 
 
 	_manager = Manager::createWithGameScene(this);
+
+	//由于GameScene中对panel指针的内存管理存在暂时无法解决的问题，所以采用直接向manager传递指针的方式
+	_manager->setPanel(panel);
 
 	_manager->retain();
 	_manager->getMoveController()->retain();
