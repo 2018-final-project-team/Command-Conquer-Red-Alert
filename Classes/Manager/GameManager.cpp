@@ -39,12 +39,11 @@ void Manager::clickCreateBuildingByTag(Tag building_tag, clock_t start_time)
 {
     if (!_isWaitToCreateBuilding)
     {
-        int castMoney, castPower;
+        int costMoney;
         switch (building_tag)
         {
         case POWER_PLANT_TAG:
-            castMoney = buildingData::powerPlantCostMoney;       //  in BuildingData.h
-            castPower = buildingData::powerPlantCostPower;
+            costMoney = buildingData::powerPlantCostMoney;       //  in BuildingData.h
             if (_gameScene->getIsPowerEnough())
             {
                 _waitTimeToCreateBuilding = buildingData::EnoughPower::powerPlantWait;
@@ -55,8 +54,7 @@ void Manager::clickCreateBuildingByTag(Tag building_tag, clock_t start_time)
             }
             break;
         case MINE_TAG:
-            castMoney = buildingData::mineCostMoney;
-            castPower = buildingData::mineCostPower;
+            costMoney = buildingData::mineCostMoney;
             if (_gameScene->getIsPowerEnough())
             {
                 _waitTimeToCreateBuilding = buildingData::EnoughPower::mineWait;
@@ -67,8 +65,7 @@ void Manager::clickCreateBuildingByTag(Tag building_tag, clock_t start_time)
             }
             break;
         case BARRACKS_TAG:
-            castMoney = buildingData::barracksCostMoney;
-            castPower = buildingData::barracksCostPower;
+            costMoney = buildingData::barracksCostMoney;
             if (_gameScene->getIsPowerEnough())
             {
                 _waitTimeToCreateBuilding = buildingData::EnoughPower::barracksWait;
@@ -79,8 +76,7 @@ void Manager::clickCreateBuildingByTag(Tag building_tag, clock_t start_time)
             }
             break;
         case CAR_FACTORY_TAG:
-            castMoney = buildingData::carFactoryCostMoney;
-            castPower = buildingData::carFactoryCostPower;
+            costMoney = buildingData::carFactoryCostMoney;
             if (_gameScene->getIsPowerEnough())
             {
                 _waitTimeToCreateBuilding = buildingData::EnoughPower::carFactoryWait;
@@ -96,8 +92,7 @@ void Manager::clickCreateBuildingByTag(Tag building_tag, clock_t start_time)
         _isWaitToCreateBuilding = true;
         _timeToCreateBuilding = start_time;
         _buildingTag = building_tag;
-        _gameScene->decreaseMoney(castMoney);
-        _gameScene->decreasePower(castPower);
+        _gameScene->decreaseMoney(costMoney);
         
     }
 }
@@ -155,7 +150,6 @@ void Manager::waitCreateSoldier()
             _gameScene->addChild(soldier, 1);
             // 走出兵营
             soldier->setDestination(getPutSoldierPosition());
-            log("get %f %f", getPutCarPosition().x, getPutSoldierPosition().y);
             soldier->setGetDestination(false);
 
             _gameScene->getSoldiers()->pushBack(soldier);
@@ -174,7 +168,7 @@ void Manager::waitCreateSoldier()
             }
         }
     }
-    else if (_soldierQueue.size() > 0)
+    else if (_soldierQueue.size())
     {
         switch (_soldierQueue.front())
         {
@@ -292,6 +286,7 @@ void Manager::createBuilding(cocos2d::Vec2 position)
 {
     if (_canCreateBuilding)
     {
+        int costPower;
         Building* building = Building::create(_buildingTag);
         _gameScene->_gameEventDispatcher->addEventListenerWithSceneGraphPriority
                 (_gameScene->_gameListener->clone(), building);
@@ -300,25 +295,30 @@ void Manager::createBuilding(cocos2d::Vec2 position)
         switch (_buildingTag)
         {
         case POWER_PLANT_TAG:
-            _gameScene->addPowerPlant();            // 电厂数量加一
-            _gameScene->addPower(100);                 // 加100电量       
-            _gameScene->addTotalPower(100);
+            _gameScene->addPowerPlant();            // 电厂数量加一      
+            _gameScene->addTotalPower(1000);
+            _gameScene->addPower(1000);                 // 加100电量 
+            costPower = buildingData::powerPlantCostPower;
             break;
         case MINE_TAG:
             _gameScene->addMine();                  // 矿场数量加一
+            costPower = buildingData::mineCostPower;
             break;
         case BARRACKS_TAG:
             _gameScene->addBarracks();
             _gameScene->setBarracksPosition(building->getPosition());  // 兵营位置
+            costPower = buildingData::barracksCostPower;
             break;
         case CAR_FACTORY_TAG:
             _gameScene->addCarFactory();
             _gameScene->setCarFactoryPosition(building->getPosition());
+            costPower = buildingData::carFactoryCostPower;
             break;
         }
         _gameScene->getBuildings()->pushBack(building);
         _canCreateBuilding = false;
         _isWaitToCreateBuilding = false;
+        _gameScene->decreasePower(costPower);
     }
 }
 
@@ -528,7 +528,7 @@ void Manager::attack()
         switch (selectedBuildingTag)
         {
         case POWER_PLANT_TAG:
-            _gameScene->decreasePowerPlant();            // 电厂数量减一 如果电厂数量为0
+            _gameScene->decreasePowerPlant();            // 电厂数量减一 
             this->resetPower();
             break;
 
@@ -615,7 +615,7 @@ void Manager::resetPower()
     {
         if (building->getBuildingTag() == POWER_PLANT_TAG)
         {
-            totalPower += (50 + 5 * building->getHP() / 10);
+            totalPower += (500 + building->getHP());
         }
         else
         {
@@ -624,6 +624,18 @@ void Manager::resetPower()
     }
     _gameScene->setTotalPower(totalPower);
     _gameScene->setPower(totalPower - castPower);
+    // updata power bar
+    if (_gameScene->getPower() <= 0)
+    {
+        auto progressTo = ProgressTo::create(0.5f, 0);
+        _gameScene->_powerBar->runAction(progressTo);
+    }
+    else
+    {
+        auto progressTo = ProgressTo::create(0.5f, _gameScene->getPower() * 100 
+            / _gameScene->getTotalPower());
+        _gameScene->_powerBar->runAction(progressTo);
+    }
 }
 
 cocos2d::Point Manager::getPutSoldierPosition()
@@ -631,6 +643,8 @@ cocos2d::Point Manager::getPutSoldierPosition()
     Point barracksPosition = _gameScene->getBarracksPosition();
     Point firstPosition = barracksPosition - Vec2(80, 80);
     int soldierSize = 30;
+    //log("getPutSoldier");
+    //log("barracks %f %f", barracksPosition.x, barracksPosition.y);
     // 兵营下方区域
     for (int i = 4; i > 0; --i)
     {
@@ -638,6 +652,8 @@ cocos2d::Point Manager::getPutSoldierPosition()
         {
             if (_moveController->canPut(firstPosition + Vec2(j*soldierSize, -i*soldierSize)))
             {
+                //log("down %f %f", (firstPosition + Vec2(j*soldierSize, -i * soldierSize)).x,
+                    //(firstPosition + Vec2(j*soldierSize, -i * soldierSize)).y);
                 return firstPosition + Vec2(j*soldierSize, -i*soldierSize);
             }
         }

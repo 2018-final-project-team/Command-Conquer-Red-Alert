@@ -148,6 +148,8 @@ void MoveController::moveSoldiers()
             Vec2 direction = destination - nowPosition;
             direction.normalize();
             float distance = destination.distance(nowPosition);
+            log("now position %f %f", nowPosition.x, nowPosition.y);
+            log("deatination %f %f", destination.x, destination.y);
          
             Vec2 move = soldier->getUnitSpeed() * interval * direction;
             // if the distance of this move is longer than destination
@@ -243,7 +245,7 @@ void MoveController::findRroute(Unit *soldier, std::vector<Point> &route)
     float directX[8] = { 0,0,-1 * distance ,distance,0.7*distance ,0.7* distance ,-0.7* distance ,-0.7* distance };
     float directY[8] = { distance,-1 * distance,0 ,0,0.7* distance ,-0.7* distance ,0.7* distance ,-0.7* distance };
     int is_not_find = 1;
-    //what¢ç
+    //whatÓï≤
     if (is_find(nowPosition, nowDestination))
     {
         is_not_find = 0;
@@ -301,10 +303,15 @@ void MoveController::findRroute(Unit *soldier, std::vector<Point> &route)
     }
     route.push_back(nowDestination);
     // delete
-    std::vector<node*>::iterator iter;
-    for (iter = storeNew.end() - 1; iter != storeNew.begin() - 1; iter--)
+    std::vector<node*>::iterator iter = storeNew.end() - 1;
+    size_t i = storeNew.size();
+    for (size_t cnt = 0; cnt < i; cnt++)
     {
         delete *iter;
+        if (cnt < i - 1)
+        {
+            iter--;
+        }
     }
     //vs  
     std::vector<Point>::iterator iter2;
@@ -324,12 +331,12 @@ bool MoveController::canPut(cocos2d::Point position)
     // is there any soldier or building
     for (auto& soldier : *(_gameScene->getSoldiers()))
     {
-        log("%f %f", soldier->getPosition().x, soldier->getPosition().y);
+        //log("soldier position %f %f", soldier->getPosition().x, soldier->getPosition().y);
         Rect rect = Rect(soldier->getPositionX() - soldier->getContentSize().width / 2,
             soldier->getPositionY() - soldier->getContentSize().height / 2,
             soldier->getContentSize().width, soldier->getContentSize().height);
-        log("%f %f %f %f", rect.getMaxX(), rect.getMinY(), rect.size.width, rect.size.height);
-        log("%f %f", position.x, position.y);
+        //log("%f %f %f %f", rect.getMinX(), rect.getMinY(), rect.size.width, rect.size.height);
+        //log("put position %f %f", position.x, position.y);
         if (rect.containsPoint(position))
         {
             return false;

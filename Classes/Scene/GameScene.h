@@ -58,6 +58,10 @@ private:
     bool _isSellMenuExit = false;
 
 public:
+
+    //power bar
+    cocos2d::ProgressTimer* _powerBar;
+
 	cocos2d::EventListenerTouchOneByOne* _gameListener;
 	cocos2d::EventDispatcher* _gameEventDispatcher;
 

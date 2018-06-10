@@ -105,6 +105,11 @@ bool GameScene::init()
             
 			return false;
 		}
+        else if (position.x > visibleSize.width - 224 && 
+            position.y < 444 && position.y > 356)                //click the menus
+        {
+            return false;
+        }
 		else
 		{
 			_touchBegan = position;   // 记录起点
@@ -271,6 +276,7 @@ bool GameScene::init()
 	menu->setPosition(Vec2::ZERO);
 	this->addChild(menu, 4);
 
+//===============================the first show of money and time===========================
     // 显示金钱
     //金币
     Sprite* coin = Sprite::create("Scene/coin.png");
@@ -298,8 +304,23 @@ bool GameScene::init()
 	scheduleUpdate();
     schedule(schedule_selector(GameScene::printTime), 1.0f); // 每隔1s执行一次
 
+//=========================================power bar=======================================
+    Sprite* powerBarBg = Sprite::create("Scene/PowerBg.png");
+    powerBarBg->setPosition(50, 450);
+    addChild(powerBarBg, 3);
+
+    Sprite* powerBar = Sprite::create("Scene/Power.png");
+    _powerBar = ProgressTimer::create(powerBar);
+    _powerBar->setType(ProgressTimerType::BAR);
+    _powerBar->setMidpoint(Point(0, 1));
+    _powerBar->setBarChangeRate(Point(0, 1));
+    _powerBar->setPercentage(0.0);
+    _powerBar->setPosition(50, 450);
+    addChild(_powerBar, 4);
+
 	_manager = Manager::createWithGameScene(this);
 
+//==================================================some retain====================================
 	_manager->retain();
 	_manager->getMoveController()->retain();
 
@@ -420,6 +441,17 @@ void GameScene::addPower(int power)
 	{
 		_isPowerEnough = false;
 	}
+    // updata power bar
+    if (_power <= 0)
+    {
+        auto progressTo = ProgressTo::create(0.5f, 0);
+        _powerBar->runAction(progressTo);
+    }
+    else
+    {
+        auto progressTo = ProgressTo::create(0.5f, _power*100 / _totalPower);
+        _powerBar->runAction(progressTo);
+    }
 }
 
 void GameScene::decreasePower(int power)
@@ -433,6 +465,17 @@ void GameScene::decreasePower(int power)
 	{
 		_isPowerEnough = false;
 	}
+    // updata power bar
+    if (_power <= 0)
+    {
+        auto progressTo = ProgressTo::create(0.5f, 0);
+        _powerBar->runAction(progressTo);
+    }
+    else
+    {
+        auto progressTo = ProgressTo::create(0.5f, _power * 100 / _totalPower);
+        _powerBar->runAction(progressTo);
+    }
 }
 
 void GameScene::addTotalPower(int power)

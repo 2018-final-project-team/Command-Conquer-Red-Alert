@@ -102,6 +102,9 @@ Unit * Unit::create(Tag unitTag)
     
     //设置单位名称
     temp->_UnitName = sunitname[unitTag - 5];
+
+    //clear route
+    temp->_route.clear();
     
     return temp;
 }
