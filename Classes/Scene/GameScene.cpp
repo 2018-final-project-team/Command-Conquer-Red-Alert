@@ -70,7 +70,6 @@ bool GameScene::init()
 	panel->setPosition(visibleSize.width - 112, visibleSize.height - 400);
 	this->addChild(panel, 3);
 
-
 	/*键盘监听 by czd */
 	auto _keyboardListener = EventListenerKeyboard::create();
 	_keyboardListener->onKeyPressed = [=](EventKeyboard::KeyCode keyCode, Event* event) {
@@ -184,6 +183,25 @@ bool GameScene::init()
                 case BARRACKS_TAG:
                     _manager->setBuilding(static_cast<Building*>(target));
                     break;
+				case BASE_CAR_TAG:
+					if (_selectedSoldiers.contains(static_cast<Unit*>(target)))
+					{
+						//基地车展开成基地
+						//移除基地车
+						_selectedSoldiers.clear();
+						_soldiers.eraseObject(static_cast<Unit*>(target), false);
+						Vec2 position = target->getPosition();
+						this->removeChild(target);
+						//创建基地
+						Building* base = Building::create(BASE_TAG);
+						_gameEventDispatcher->addEventListenerWithSceneGraphPriority
+						(_gameListener->clone(), base);
+						base->setPosition(position);
+						this->addChild(base, 2);
+						_isBaseExist = true;
+						_buildings.pushBack(base);
+					}
+
                 default:
                     // 为层注册监听器后层也会响应 所以此处需要判断士兵建筑和空地
                     log("default");
@@ -217,6 +235,19 @@ bool GameScene::init()
 		_cursorPosition = Vec2(pem->getCursorX(), pem->getCursorY());
 	};
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(_mouseOutBoradListener, 1);
+
+
+
+	//===================添加基地车==========================
+	auto baseCar = Unit::create(BASE_CAR_TAG);
+	baseCar->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
+	this->addChild(baseCar, 1);
+	baseCar->setGetDestination(true);
+	_gameEventDispatcher->addEventListenerWithSceneGraphPriority
+	(_gameListener->clone(), baseCar);
+	_soldiers.pushBack(baseCar);
+	log("%f %f", baseCar->getPosition().x, baseCar->getPosition().y);
+
 
 
 	auto backItem = MenuItemImage::create(
@@ -304,7 +335,7 @@ void GameScene::dataInit()
 
 	_carFactoryPosition = _barracksPosition = Vec2::ZERO;
 
-	_isBaseExist = true;   //暂时的
+	_isBaseExist = false;
 }
 
 void GameScene::menuBackCallback(Ref *pSender)
