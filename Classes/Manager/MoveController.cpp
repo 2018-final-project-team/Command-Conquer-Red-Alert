@@ -202,7 +202,7 @@ bool MoveController::is_find(Vec2 position, Vec2 destination)
     //am 
     for (int i = 0; i < 15; ++i)
     {
-        if (!_gameScene->isCollision(_gameScene->
+        if (_gameScene->isCollision(_gameScene->
             _tileMap->convertToWorldSpace(position + i * direction / 20)))
         {
             return false;
@@ -260,7 +260,7 @@ void MoveController::findRroute(Unit *soldier, std::vector<Point> &route)
         for (int i = 0; i < 8; i++)
         {
             //this         
-            if (_gameScene->isCollision(_gameScene->_tileMap->convertToWorldSpace
+            if (!_gameScene->isCollision(_gameScene->_tileMap->convertToWorldSpace
             (Point(cur->whereX + directX[i], cur->whereY + directY[i]))))
             {
                 //fucking           
