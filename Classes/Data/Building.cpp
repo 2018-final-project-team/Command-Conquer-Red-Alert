@@ -41,11 +41,41 @@ Building* Building::create(Tag _buildingTag)
     //拿到当前建筑物的_tag
     temp->_tag = _buildingTag;
     //设置血量
-    temp->_hp = sHP[_buildingTag];
+	temp->_FullHp = sHP[_buildingTag];
+	temp->_hp = temp->_FullHp;
     //根据_tag设置安装各建筑物时需要的金钱
     temp->_value = sValue[_buildingTag];
     //卖掉建筑物时得到的金钱
     temp->_sellValue = temp->_value / 2;
+
+	//血槽
+	temp->_bloodBox = Sprite::create("GameItem/BloodBar/BuildingBloodBox.png");
+	temp->_bloodBox->setScale(temp->getContentSize().width / 200);
+	temp->_bloodBox->setPosition(Vec2(temp->getContentSize().width / 2, temp->getContentSize().height + 10));
+	temp->addChild(temp->_bloodBox);
+
+	//血条
+	temp->_bloodBarPt = ProgressTimer::create(Sprite::create("GameItem/BloodBar/BuildingBloodBar.png"));
+	temp->_bloodBarPt->setScale(temp->getContentSize().width / 200); 
+	temp->_bloodBarPt->setPosition(Vec2(temp->getContentSize().width / 2, temp->getContentSize().height + 10));
+	temp->_bloodBarPt->setType(ProgressTimer::Type::BAR);
+	temp->_bloodBarPt->setMidpoint(Vec2(0, 0.5));
+	temp->_bloodBarPt->setPercentage(100);
+	temp->addChild(temp->_bloodBarPt);
     
     return temp;
+}
+
+
+void Building::getInjuredBy(Unit * enemy)
+{
+	decreaseHP(enemy->getUnitATK());
+}
+
+void Building::decreaseHP(int num)
+{
+	_hp -= num;
+
+	auto progressTo = ProgressTo::create(0.5f, 100 * _hp/_FullHp);
+	_bloodBarPt->runAction(progressTo);
 }

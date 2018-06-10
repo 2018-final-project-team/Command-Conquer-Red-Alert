@@ -12,6 +12,8 @@
 #include "cocos2d.h"
 #include "TagData.h"
 
+class Unit;
+
 namespace buildingData
 {
     const int powerPlantCastMoney = 200; 
@@ -44,6 +46,8 @@ namespace buildingData
 class Building : public cocos2d::Sprite
 {
 public:
+	cocos2d::Sprite* _bloodBox;           //血槽Sprite
+	cocos2d::ProgressTimer* _bloodBarPt;     //血条ProgressTimer
 
 	//建筑物的tag（基地、电厂、矿场、兵营、战车工厂）
 	CC_SYNTHESIZE(Tag, _buildingTag, BuildingTag);
@@ -54,8 +58,10 @@ public:
 	////建筑的级别，1，2，3
 	//int level;
 
-	//建筑物的血量
+	//建筑物的当前血量
 	CC_SYNTHESIZE(int, _hp, HP);
+	//建筑物的满血血量
+	CC_SYNTHESIZE(int, _FullHp, FullHP);
 	//建造建筑物需要的金钱数
 	CC_SYNTHESIZE(int, _value, BuildingValue);
 	////升级建筑物需要的金钱数
@@ -69,6 +75,10 @@ public:
 	//建造建筑物的方法
 	static Building* create(Tag _tag);
 
+
+	void getInjuredBy(Unit *);
+
+	void decreaseHP(int num);
 
 	//////升级建筑物的方法
 	////void updateData();

@@ -58,19 +58,6 @@ Unit * Unit::create(Tag unitTag)
     //初始化攻击区域
     int satklimit[3] = { 20, 5, 30 };
 
-	//血槽
-	temp->_bloodBox = Sprite::create("GameItem/BloodBar/SoldierBloodBox.png");
-	temp->_bloodBox->setPosition(Vec2(16, 40));
-	temp->addChild(temp->_bloodBox);
-
-	//血条
-	temp->_bloodBarPt = ProgressTimer::create(Sprite::create("GameItem/BloodBar/SoldierBloodBar.png"));
-	temp->_bloodBarPt->setPosition(Vec2(16, 40));
-	temp->_bloodBarPt->setType(ProgressTimer::Type::BAR);
-	temp->_bloodBarPt->setMidpoint(Vec2(0, 0.5));
-	temp->_bloodBarPt->setPercentage(100);
-	temp->addChild(temp->_bloodBarPt);
-
     //初始化单位名字
     std::string sunitname[3] = { "infantry","dog","tank" };
     
@@ -87,7 +74,8 @@ Unit * Unit::create(Tag unitTag)
     temp->_isSelected = sisselected[unitTag - 5];
     
     //设置血量
-    temp->_HP = shp[unitTag - 5];
+    temp->_FullHP = shp[unitTag - 5];
+	temp->_HP = temp->_FullHP;
     
     //设置攻击力
     temp->_ATK = satk[unitTag - 5];
@@ -112,6 +100,19 @@ Unit * Unit::create(Tag unitTag)
     
     //设置单位名称
     temp->_UnitName = sunitname[unitTag - 5];
+
+	//血槽
+	temp->_bloodBox = Sprite::create("GameItem/BloodBar/SoldierBloodBox.png");
+	temp->_bloodBox->setPosition(Vec2(temp->getContentSize().width / 2, temp->getContentSize().height + 10));
+	temp->addChild(temp->_bloodBox);
+
+	//血条
+	temp->_bloodBarPt = ProgressTimer::create(Sprite::create("GameItem/BloodBar/SoldierBloodBar.png"));
+	temp->_bloodBarPt->setPosition(Vec2(temp->getContentSize().width / 2, temp->getContentSize().height + 10));
+	temp->_bloodBarPt->setType(ProgressTimer::Type::BAR);
+	temp->_bloodBarPt->setMidpoint(Vec2(0, 0.5));
+	temp->_bloodBarPt->setPercentage(100);
+	temp->addChild(temp->_bloodBarPt);
     
     return temp;
 }
@@ -131,7 +132,7 @@ void Unit::decreaseHP(int num)
 {
 	_HP -= num;
 
-	auto progressTo = ProgressTo::create(0.5f, _HP);
+	auto progressTo = ProgressTo::create(0.5f, 100 * _HP/_FullHP);
 	_bloodBarPt->runAction(progressTo);
 }
 
