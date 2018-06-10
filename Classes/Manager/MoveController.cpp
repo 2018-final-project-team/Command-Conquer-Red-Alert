@@ -104,6 +104,10 @@ void MoveController::setDestination(cocos2d::Vec2 position)
         {
         case TANK_TAG:
             continue;
+        case BASE_CAR_TAG:
+            soldier->setDestination(position);
+            soldier->setGetDestination(false);
+            return;
         default:
             while (!canPut(position + Vec2(col * soldierSize, -row * soldierSize)))
             {

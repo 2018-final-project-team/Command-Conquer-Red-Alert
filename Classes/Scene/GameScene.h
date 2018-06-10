@@ -31,7 +31,7 @@ private:
     bool _keyRight = false;
     bool _keyLeft = false;                 // C++ 11 的初始化方法
 
-	cocos2d::Point _cursorPosition{ 0,0 };  // C++ 11 允许这样初始化
+	cocos2d::Point _cursorPosition;
 	void scrollMap();
 
 	cocos2d::Vector<Unit*> _selectedSoldiers;

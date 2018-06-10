@@ -182,6 +182,7 @@ bool GameScene::init()
                 {                        // you must use {} to contain it
                     //基地车展开成基地
                     //移除基地车
+                    _selectedSoldiers.clear();
                     Vec2 position = target->getPosition();
                     _soldiers.eraseObject(static_cast<Unit*>(target), false);
                     this->removeChild(target);
@@ -300,6 +301,7 @@ bool GameScene::init()
 //===================添加基地车==========================
 	auto baseCar = Unit::create(BASE_CAR_TAG);
 	baseCar->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
+    baseCar->setDestination(Vec2(visibleSize.width / 2, visibleSize.height / 2));
 	baseCar->setGetDestination(true);
 	this->addChild(baseCar, 1);
 	_gameEventDispatcher->addEventListenerWithSceneGraphPriority
@@ -397,7 +399,8 @@ void GameScene::onExit()
 
 void GameScene::dataInit()
 {
-	// To Do: 数据合理
+    _cursorPosition = 0.5 * Director::getInstance()->getVisibleSize();
+
 	_isPowerEnough = false;
 	_money = 2000;
 	_power = 0;
@@ -609,6 +612,10 @@ void GameScene::moveSpritesWithMap(cocos2d::Vec2 direction)
     for (auto& soldier : _soldiers)
     {
         soldier->setPosition(soldier->getPosition() + direction);
+        if (!soldier->getGetDestination())
+        {
+            soldier->setDestination(soldier->getDestination() + direction);
+        }
         std::vector<Point>::iterator iter2;
         for (iter2 = soldier->_route.begin(); iter2 != soldier->_route.end(); iter2++)
         {
@@ -706,6 +713,7 @@ void GameScene::sellBuildingCallBack()
         _gameEventDispatcher->addEventListenerWithSceneGraphPriority
         (_gameListener->clone(), baseCar);
         baseCar->setPosition(position);
+        baseCar->setDestination(position);
         baseCar->setGetDestination(true);
         this->addChild(baseCar, 1);
         _isBaseExist = false;
