@@ -115,7 +115,7 @@ Unit * Unit::create(Tag unitTag)
     int scd[3] = { 10, 10, 30 };
     
     //初始化单位攻击间隔
-    float satkcd[3] = { 0.5,0.5,1 };
+    float satkcd[3] = { 1000, 1000, 2000 };
     
     //初始化锁敌区域
     int slocklimit[3] = { 50, 50, 50 };
@@ -406,7 +406,7 @@ void Unit::changeToAttackRight()
 void Unit::changeToUp()
 {
 	runAction(RepeatForever::create(Animate::create(
-		(AnimationCache::getInstance()->getAnimation(getUnitName()+"_back")))));
+		(AnimationCache::getInstance()->getAnimation(getUnitName() + "_back")))));
 }
 
 void Unit::changeToLeft()

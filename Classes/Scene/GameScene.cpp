@@ -152,6 +152,13 @@ bool GameScene::init()
                 case INFANTRY_TAG:
                 case DOG_TAG:
                 case TANK_TAG:
+                    if (_soldiers.contains(static_cast<Unit*>(target)))
+                    {
+                        _selectedSoldiers.clear();
+                        _selectedSoldiers.pushBack((static_cast<Unit*>(target)));
+                        break;
+                    }
+                    // if click enemy
                     _manager->setEnemy(static_cast<Unit*>(target));
                     break;
                 case POWER_PLANT_TAG:
@@ -278,6 +285,39 @@ bool GameScene::init()
 		EventMouse* pem = static_cast<EventMouse*>(event);
 		_cursorPosition = Vec2(pem->getCursorX(), pem->getCursorY());
 	};
+    //right button down
+    _mouseOutBoradListener->onMouseDown = [&](Event* event) {
+        EventMouse* eventMouse = static_cast<EventMouse*>(event);
+        auto position = eventMouse->getLocationInView();
+        auto mouseButton = eventMouse->getMouseButton();
+        if (static_cast<int>(mouseButton))     // mouse right button = 1
+        {
+            for (auto& soldier : _soldiers)
+            {
+                Rect rect = Rect(soldier->getPositionX() - soldier->getContentSize().width / 2,
+                    soldier->getPositionY() - soldier->getContentSize().height / 2,
+                    soldier->getContentSize().width, soldier->getContentSize().height);
+                log("%f %f %f %f", rect.getMinX(), rect.getMinY(), rect.size.width, rect.size.height);
+                log("position %f %f", position.x, position.y);
+                if (rect.containsPoint(position))
+                {
+                    _manager->setEnemy(soldier);
+                    return;
+                }
+            }
+            for (auto& building : _buildings)
+            {
+                Rect rect = Rect(building->getPositionX() - building->getContentSize().width / 2,
+                    building->getPositionY() - building->getContentSize().height / 2,
+                    building->getContentSize().width, building->getContentSize().height);
+                if (rect.containsPoint(position))
+                {
+                    return;
+                }
+            }
+            _selectedSoldiers.clear();
+        }
+    };
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(_mouseOutBoradListener, 1);
 
 //================================back menu============================================
@@ -672,11 +712,10 @@ bool GameScene::isCollision(cocos2d::Vec2 position)
     {
         return true;
     }
-    position.x = static_cast<int>(position.x / tileSize.width);
-    position.y = mapSize.height - static_cast<int>(position.y / tileSize.width) - 1;
+    position.x = static_cast<int>(mapPosition.x / tileSize.width);
+    position.y = mapSize.height - static_cast<int>(mapPosition.y / tileSize.width) - 1;
     // get the GID of tile
     int tileGID = _barrier->getTileGIDAt(position);
-
     if (!tileGID) 
     {
         return false;
