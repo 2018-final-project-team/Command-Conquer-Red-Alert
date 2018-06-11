@@ -75,7 +75,7 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 		Vec2 locationInNode = _selectedButton->convertToNodeSpace(touch->getLocation());
 		Size s = _selectedButton->getContentSize();
 		Rect rect = Rect(0, 0, s.width, s.height);
-		log("listner1 %d %d", s.width, s.height);
+		//log("listner1 %d %d", s.width, s.height);
 		//点击范围判断检测
 		if (rect.containsPoint(locationInNode))
 		{
@@ -83,15 +83,15 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 			{
 			//================三个标签按钮的点击处理==================
 			case BUILDING_BUTTON:
-				log("select building button, the tag is:%d", _selectedButton->getTag());
+				//log("select building button, the tag is:%d", _selectedButton->getTag());
 				setCurButton(BUILDING_BUTTON);
 				break;
 			case SOLDIER_BUTTON:
-				log("select soldier button");
+				//log("select soldier button");
 				setCurButton(SOLDIER_BUTTON);
 				break;
 			case CAR_BUTTON:
-				log("select car button");
+				//log("select car button");
 				setCurButton(CAR_BUTTON);
 				break;
 				//=======================================================
@@ -114,11 +114,11 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 		Vec2 locationInNode = _selectedButton->convertToNodeSpace(touch->getLocation());
 		Size s2 = _selectedButton->_iconFrame->getContentSize();
 		Rect rect2 = Rect(-s2.width/2, -s2.height/2, s2.width, s2.height);
-		log("listner2 %d %d",s2.width,s2.height);
+		//log("listner2 %d %d",s2.width,s2.height);
 		//点击范围判断检测
 		if (rect2.containsPoint(locationInNode))
 		{
-			log("touch icon");
+			//log("touch icon");
 			switch (_selectedButton->getIconTag())
 			{
 			//==================建筑类图标的点击处理===================
@@ -209,7 +209,7 @@ void Panel::setCurButton(Tag tag)
 
 	checkIcon(tag);
 	showIcon(tag);
-	log("the size of _curList is: %d", _curList->size());
+	//log("the size of _curList is: %d", _curList->size());
 
 }
 

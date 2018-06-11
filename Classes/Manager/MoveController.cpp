@@ -74,27 +74,29 @@ void MoveController::setDestination(cocos2d::Vec2 position)
         {
             while (!canPut(position + Vec2(col * soldierSize, -row * soldierSize)))
             {
-                col -= 2;              // temporarily think car is double size than infantry
+                col -= 2;              
                 if (col < -4)
                 {
                     col = 4;
-                    row += 2;          // temporarily think car is double size than infantry
+                    row += 1;          
                 }
+                log("%d %d", col, row);
             }
             car->setDestination(position + Vec2(col * soldierSize, -row * soldierSize));
+            log("%d %d car %f %f", col, row, car->getDestination().x, car->getDestination().y);
             // find the best way
             findRroute(car, car->_route);
             // the first position in the way          
             car->setDestination(car->_route.front());
             (car->_route).erase((car->_route).begin());
             car->setGetDestination(false);
-        }
 
-        col -= 2;             // temporarily think car is double size than infantry
-        if (col < -4)
-        {
-            col = 4;
-            row += 2;          // temporarily think car is double size than infantry
+            col -= 2;             // temporarily think car is double size than infantry
+            if (col < -4)
+            {
+                col = 4;
+                row += 1;          // temporarily think car is double size than infantry
+            }
         }
     }
     // then put the soldiers   
@@ -117,22 +119,25 @@ void MoveController::setDestination(cocos2d::Vec2 position)
                     col = 3;
                     ++row;
                 }
+                log("%d %d", col, row);
             }
             soldier->setDestination(position + Vec2(col * soldierSize, -row * soldierSize));
-            break;
-        }
-        // find the best way
-        findRroute(soldier, soldier->_route);
-        // the first position at the way       
-        soldier->setDestination(soldier->_route.front());
-        (soldier->_route).erase( (soldier->_route).begin() );
-        soldier->setGetDestination(false);
+            log("%d %d soldier %f %f",col, row, soldier->getDestination().x, soldier->getDestination().y);
+            // find the best way
+            findRroute(soldier, soldier->_route);
+            // the first position at the way       
+            soldier->setDestination(soldier->_route.front());
+            (soldier->_route).erase((soldier->_route).begin());
+            soldier->setGetDestination(false);
 
-        --col;
-        if (col == -3)
-        {
-            col = 3;
-            ++row;
+            --col;
+            if (col < -3)
+            {
+                col = 3;
+                ++row;
+            }
+
+            break;
         }
     }
 }

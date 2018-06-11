@@ -669,7 +669,6 @@ bool GameScene::isCollision(cocos2d::Vec2 position)
     position.y = mapSize.height - static_cast<int>(position.y / tileSize.width) - 1;
     // get the GID of tile
     int tileGID = _barrier->getTileGIDAt(position);
-
     if (!tileGID) 
     {
         return false;
