@@ -295,6 +295,8 @@ public:
     */
     void sellBuildingCallBack();
 
+	void onMouseDown(cocos2d::Event *event);
+
 };
 
 #endif // __Welcome_SCENE_H__

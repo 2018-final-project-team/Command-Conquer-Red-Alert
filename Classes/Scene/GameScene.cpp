@@ -211,6 +211,13 @@ bool GameScene::init()
                     {
                         log("can put");
                         _manager->getMoveController()->setDestination(_touchEnd);
+
+
+						////测试移动动画
+						//for (auto& soldier : _selectedSoldiers)
+						//{
+						//	soldier->switchState(stateWalkLeft);
+						//}
                     }
                     break;
 
