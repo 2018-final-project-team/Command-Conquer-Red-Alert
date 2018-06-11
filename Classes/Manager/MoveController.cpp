@@ -71,12 +71,26 @@ void MoveController::selectSoldiersWithTag(Tag tag)
 void MoveController::setDestination(cocos2d::Vec2 position)
 {
  //===========laji duixin===================
-    int col;                     // column of duixin
+    int col = 4;                     // column of duixin
     int row = 0;                     // row of duixin
     int soldierSize = 30;            // To Do
     int carNum = 0;
     // put the cars first   
-    col = 4;
+    for (auto& car : *_selectedSoldiers)
+    {
+        if (car->getUnitTag() == TANK_TAG)
+        {
+            carNum++;
+        }
+    }
+    if (carNum == 2)
+    {
+        col = 2;
+    }
+    else if (carNum == 1)
+    {
+        col = 0;
+    }
     for (auto& car : *_selectedSoldiers)
     {
         if (car->getUnitTag() == TANK_TAG)
@@ -95,10 +109,6 @@ void MoveController::setDestination(cocos2d::Vec2 position)
             //log("%d %d car %f %f", col, row, car->getDestination().x, car->getDestination().y);
             // find the best way
             findRroute(car, car->_route);
-            // the first position in the way          
-            car->setDestination(car->_route.front());
-            (car->_route).erase((car->_route).begin());
-            car->setGetDestination(false);
 
             col -= 2;             // temporarily think car is double size than infantry
             if (col < -4)
@@ -141,10 +151,6 @@ void MoveController::setDestination(cocos2d::Vec2 position)
             //log("%d %d soldier %f %f",col, row, soldier->getDestination().x, soldier->getDestination().y);
             // find the best way
             findRroute(soldier, soldier->_route);
-            // the first position at the way       
-            soldier->setDestination(soldier->_route.front());
-            (soldier->_route).erase((soldier->_route).begin());
-            soldier->setGetDestination(false);
 
             --col;
             if (col < -maxCol)
@@ -174,9 +180,26 @@ void MoveController::moveSoldiers()
             direction.normalize();
             float distance = destination.distance(nowPosition);
             //log("now position %f %f", nowPosition.x, nowPosition.y);
-            //log("deatination %f %f", destination.x, destination.y);
+            //log("destination %f %f", destination.x, destination.y);
          
             Vec2 move = soldier->getUnitSpeed() * interval * direction;
+            // if the distance of this move is longer than destination
+            if (move.length() > distance)
+            {
+                soldier->moveTo(destination);
+                soldier->setGetDestination(true);
+                soldier->switchState(stateNone);
+                continue;
+            }
+            soldier->moveTo(move + nowPosition);
+        }
+        else if (soldier->_route.size())
+        {
+            //log("route size %d", soldier->_route.size());
+            soldier->setDestination(soldier->_route.front());
+            (soldier->_route).erase((soldier->_route).begin());
+            soldier->setGetDestination(false);
+            Vec2 direction= (soldier->getDestination() - soldier->getPosition());
             //change state of unit
             if (fabs(direction.x) < fabs(direction.y))
             {
@@ -202,22 +225,6 @@ void MoveController::moveSoldiers()
                     soldier->switchState(stateWalkRight);
                 }
             }
-            // if the distance of this move is longer than destination
-            if (move.length() > distance)
-            {
-                soldier->moveTo(destination);
-                soldier->setGetDestination(true);
-                soldier->switchState(stateNone);
-                continue;
-            }
-            soldier->moveTo(move + nowPosition);
-        }
-        else if (soldier->_route.size())
-        {
-            //log("route size %d", soldier->_route.size());
-            soldier->setDestination(soldier->_route.front());
-            (soldier->_route).erase((soldier->_route).begin());
-            soldier->setGetDestination(false);
         }
     }
 }

@@ -127,7 +127,7 @@ Unit * Unit::create(Tag unitTag)
     int slocklimit[3] = { 50, 50, 50 };
     
     //初始化攻击区域
-    int satklimit[3] = { 100, 5, 100 };
+    int satklimit[3] = { 120, 45, 180 };
 
     //初始化单位名字
     std::string sunitname[3] = { "infantry","dog","tank" };
@@ -409,8 +409,8 @@ void Unit::changeToAttackRight()
 	else
 	{
 		stopAllActions();
-		runAction(RepeatForever::create(Animate::create(
-			(AnimationCache::getInstance()->getAnimation(getUnitName() + "_attackRight")))));
+		runAction(Animate::create(
+			(AnimationCache::getInstance()->getAnimation(getUnitName() + "_attackRight"))));
 	}
 }
 

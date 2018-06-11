@@ -157,6 +157,32 @@ void Manager::waitCreateSoldier()
             // 走出兵营
             soldier->setDestination(getPutSoldierPosition());
             soldier->setGetDestination(false);
+            Vec2 direction = (soldier->getDestination() - soldier->getPosition());
+            //change state of unit
+            if (fabs(direction.x) < fabs(direction.y))
+            {
+                if (direction.y > 0)           //up
+                {
+                    soldier->switchState(stateWalkUp);
+                }
+                else                          //down
+                {
+                    soldier->switchState(stateWalkDown);
+                }
+            }
+            else
+            {
+                //left
+                if (direction.x < 0)
+                {
+                    soldier->switchState(stateWalkLeft);
+                }
+                //right
+                else
+                {
+                    soldier->switchState(stateWalkRight);
+                }
+            }
 
             _gameScene->getSoldiers()->pushBack(soldier);
             _soldierQueue.pop();
@@ -235,6 +261,32 @@ void Manager::waitCreateCar()
             // 开出车厂
             car->setDestination(getPutCarPosition());
             car->setGetDestination(false);
+            Vec2 direction = (car->getDestination() - car->getPosition());
+            //change state of unit
+            if (fabs(direction.x) < fabs(direction.y))
+            {
+                if (direction.y > 0)           //up
+                {
+                    car->switchState(stateWalkUp);
+                }
+                else                          //down
+                {
+                    car->switchState(stateWalkDown);
+                }
+            }
+            else
+            {
+                //left
+                if (direction.x < 0)
+                {
+                    car->switchState(stateWalkLeft);
+                }
+                //right
+                else
+                {
+                    car->switchState(stateWalkRight);
+                }
+            }
 
             _gameScene->getSoldiers()->pushBack(car);
             _carQueue.pop();
@@ -366,7 +418,6 @@ void Manager::attack()
                         soldier->switchState(stateAttackLeft);
                     }
                     soldier->attack(_selectedEnemy);
-                    soldier->switchState(stateNone);
 
                     if (_selectedEnemy->getUnitHP() <= 0)
                     {
@@ -398,7 +449,6 @@ void Manager::attack()
                         soldier->switchState(stateAttackLeft);
                     }
                     soldier->attack(_selectedEnemy);
-                    soldier->switchState(stateNone);
 
                     if (_selectedEnemy->getUnitHP() <= 0)
                     {
@@ -430,7 +480,6 @@ void Manager::attack()
                         soldier->switchState(stateAttackLeft);
                     }
                     soldier->attack(_selectedEnemy);
-                    soldier->switchState(stateNone);
 
                     if (_selectedEnemy->getUnitHP() <= 0)
                     {
@@ -473,7 +522,6 @@ void Manager::attack()
                         soldier->switchState(stateAttackLeft);
                     }
                     soldier->attack(_selectedBuilding);
-                    soldier->switchState(stateNone);
 
                     if (_selectedBuilding->getHP() <= 0)
                     {
@@ -500,7 +548,6 @@ void Manager::attack()
                         soldier->switchState(stateAttackLeft);
                     }
                     soldier->attack(_selectedBuilding);
-                    soldier->switchState(stateNone);
 
                     if (_selectedBuilding->getHP() <= 0)
                     {
@@ -528,7 +575,6 @@ void Manager::attack()
                         soldier->switchState(stateAttackLeft);
                     }
                     soldier->attack(_selectedBuilding);
-                    soldier->switchState(stateNone);
 
                     if (_selectedBuilding->getHP() <= 0)
                     {
@@ -569,7 +615,6 @@ void Manager::attack()
                             soldier->switchState(stateAttackLeft);
                         }
                         soldier->attack(enemy);
-                        soldier->switchState(stateNone);
 
                         if (enemy->getUnitHP() <= 0)
                         {
@@ -592,7 +637,6 @@ void Manager::attack()
                             soldier->switchState(stateAttackLeft);
                         }
                         soldier->attack(enemy);
-                        soldier->switchState(stateNone);
 
                         if (enemy->getUnitHP() <= 0)
                         {
@@ -615,7 +659,6 @@ void Manager::attack()
                             soldier->switchState(stateAttackLeft);
                         }
                         soldier->attack(enemy);
-                        soldier->switchState(stateNone);
 
                         if (enemy->getUnitHP() <= 0)
                         {
