@@ -87,6 +87,12 @@ Unit * Unit::create(Tag unitTag)
 		temp->_bloodBarPt->setPercentage(100);
 		temp->addChild(temp->_bloodBarPt);
 
+		temp->_ring = Sprite::create("GameItem/ring/ring.png");
+		temp->_ring->setScale(temp->getContentSize().width / 30);
+		temp->_ring->setPosition(Vec2(temp->getContentSize().width / 2, 3));
+		temp->_ring->setVisible(false);
+		temp->addChild(temp->_ring, -1);
+
 		return temp;
 	}
 
@@ -184,6 +190,12 @@ Unit * Unit::create(Tag unitTag)
     temp->_bloodBarPt->setMidpoint(Vec2(0, 0.5));
     temp->_bloodBarPt->setPercentage(100);
     temp->addChild(temp->_bloodBarPt);
+
+	temp->_ring = Sprite::create("GameItem/ring/ring.png");
+	temp->_ring->setScale(temp->getContentSize().width / 30);
+	temp->_ring->setPosition(Vec2(temp->getContentSize().width / 2, 1));
+	temp->_ring->setVisible(false);
+	temp->addChild(temp->_ring, -1);
 
 	//temp->runAction(RepeatForever::create(Animate::create((AnimationCache::getInstance()->getAnimation("infantry_right")))));
     
@@ -382,8 +394,8 @@ void Unit::changeToAttackLeft()
 	else
 	{
 		stopAllActions();
-		runAction(RepeatForever::create(Animate::create(
-			(AnimationCache::getInstance()->getAnimation(getUnitName() + "_attackLeft")))));
+		runAction(Animate::create(
+			(AnimationCache::getInstance()->getAnimation(getUnitName() + "_attackLeft"))));
 	}
 }
 
@@ -440,5 +452,24 @@ void Unit::changeToDead()
 		stopAllActions();
 		runAction(Animate::create(
 			(AnimationCache::getInstance()->getAnimation(getUnitName() + "_die"))));
+	}
+}
+
+bool Unit::getIsSelected()
+{
+	return _isSelected;
+}
+
+
+void Unit::setIsSelected(bool b)
+{
+	_isSelected = b;
+	if (b)
+	{
+		_ring->setVisible(true);
+	}
+	else
+	{
+		_ring->setVisible(false);
 	}
 }

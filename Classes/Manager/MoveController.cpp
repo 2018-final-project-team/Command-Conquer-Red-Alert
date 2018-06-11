@@ -33,6 +33,10 @@ bool MoveController::initWithGameScene(GameScene* gameScene)
 
 void MoveController::selectSoldiersWithMouse(cocos2d::Vec2 mouseDownPoint, cocos2d::Vec2 mouseUpPoint)
 {
+	for (Unit* unit : *_selectedSoldiers)
+	{
+		unit->setIsSelected(false);
+	}
     _selectedSoldiers->clear();
     float rect_width = fabs(mouseUpPoint.x - mouseDownPoint.x);
     float rect_height = fabs(mouseUpPoint.y - mouseDownPoint.y);
@@ -49,6 +53,10 @@ void MoveController::selectSoldiersWithMouse(cocos2d::Vec2 mouseDownPoint, cocos
 
 void MoveController::selectSoldiersWithTag(Tag tag)
 {
+	for (Unit* unit : *_selectedSoldiers)
+	{
+		unit->setIsSelected(false);
+	}
     _selectedSoldiers->clear();
     for (auto& soldier : *(_gameScene->getSoldiers()))
     {

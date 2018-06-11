@@ -71,14 +71,18 @@ class Building;
 class Unit : public cocos2d::Sprite{
 
 public:
-	cocos2d::Sprite* _bloodBox;           //血槽Sprite
+	cocos2d::Sprite* _bloodBox;              //血槽Sprite
 	cocos2d::ProgressTimer* _bloodBarPt;     //血条ProgressTimer
+	cocos2d::Sprite* _ring;                  //被选中时脚下的光环
 
 	//最后一次动作状态，用于更新默认状态的静态图片
 	CC_SYNTHESIZE(UnitState, _lastTurn, LastTurn);
    
     //是否被选中
-    CC_SYNTHESIZE(bool, _isSelected, IsSelected)
+	//CC_SYNTHESIZE(bool, _isSelected, IsSelected);
+	bool _isSelected;
+	bool getIsSelected();
+	void setIsSelected(bool b);
     
     //单位tag（步兵，狗，矿车，坦克）
     CC_SYNTHESIZE(Tag, _unitTag, UnitTag);

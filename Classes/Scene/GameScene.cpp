@@ -154,6 +154,10 @@ bool GameScene::init()
                 case TANK_TAG:
                     if (_soldiers.contains(static_cast<Unit*>(target)))
                     {
+						for (Unit* unit : _selectedSoldiers)
+						{
+							unit->setIsSelected(false);
+						}
                         _selectedSoldiers.clear();
                         _selectedSoldiers.pushBack((static_cast<Unit*>(target)));
                         break;
@@ -189,6 +193,10 @@ bool GameScene::init()
                 {                        // you must use {} to contain it
                     //基地车展开成基地
                     //移除基地车
+					for (Unit* unit : _selectedSoldiers)
+					{
+						unit->setIsSelected(false);
+					}
                     _selectedSoldiers.clear();
                     Vec2 position = target->getPosition();
                     _soldiers.eraseObject(static_cast<Unit*>(target), false);
@@ -315,6 +323,10 @@ bool GameScene::init()
                     return;
                 }
             }
+			for (Unit* unit : _selectedSoldiers)
+			{
+				unit->setIsSelected(false);
+			}
             _selectedSoldiers.clear();
         }
     };
