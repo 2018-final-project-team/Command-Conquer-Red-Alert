@@ -28,6 +28,8 @@ Unit * Unit::create(Tag unitTag)
     
     temp -> setPhysicsBody(body);
 
+	temp->setLastTurn(stateWalkRight);
+
 	//=======================如果创建的是基地车===========================
 	if (unitTag == BASE_CAR_TAG)
 	{
@@ -52,7 +54,7 @@ Unit * Unit::create(Tag unitTag)
 		temp->_ATK = 0;
 
 		//设置速度
-		temp->_Speed = 15;
+		temp->_Speed = 0.15;
 
 		//设置金钱消耗
 		temp->_Value = 0;
@@ -113,7 +115,7 @@ Unit * Unit::create(Tag unitTag)
     int satk[3] = { 30, 50, 100 };
     
     //初始化单位速度
-    float sspeed[3] = { 0.5, 1, 1.5 };
+    float sspeed[3] = { 0.08, 0.12, 0.15 };
     
     //初始化单位准备时间
     int scd[3] = { 10, 10, 30 };
@@ -188,13 +190,15 @@ Unit * Unit::create(Tag unitTag)
     temp->_bloodBarPt->setMidpoint(Vec2(0, 0.5));
     temp->_bloodBarPt->setPercentage(100);
     temp->addChild(temp->_bloodBarPt);
+
+	//temp->runAction(RepeatForever::create(Animate::create((AnimationCache::getInstance()->getAnimation("infantry_right")))));
     
     return temp;
 }
 
 void Unit::moveTo(Vec2 destination)
 {
-    setPosition(destination);
+	setPosition(destination);
 }
 
 void Unit::getInjuredBy(Unit * enemy)
@@ -233,4 +237,165 @@ bool Unit::canAttack(Vec2 position)
     {
         return false;
     }
+}
+
+
+void Unit::switchState(UnitState state)
+{
+	setUnitState(state);
+	switch (state)
+	{
+	case stateNone:
+		changeToDefault();
+		break;
+	case stateWalkRight:
+		setLastTurn(state);
+		changeToRight();
+		break;
+	case stateWalkLeft:
+		setLastTurn(state);
+		changeToLeft();
+		break;
+	case stateWalkUp:
+		setLastTurn(state);
+		changeToUp();
+		break;
+	case stateWalkDown:
+		setLastTurn(state);
+		changeToDown();
+		break;
+	case stateAttackLeft:
+		setLastTurn(state);
+		changeToAttackLeft();
+		break;
+	case stateAttackRight:
+		setLastTurn(state);
+		changeToAttackRight();
+		break;
+	case stateDeath:
+		changeToDead();
+		break;
+
+	}
+}
+
+
+//改变状态为默认状态
+void Unit::changeToDefault()
+{
+	switch (getLastTurn())
+	{
+	case stateAttackRight:
+	case stateWalkRight:
+		switch (getUnitTag())
+		{
+		case INFANTRY_TAG:
+			stopAllActions();
+			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("Unit1-attackRight (1).png"));
+			break;
+		case DOG_TAG:
+			break;
+		case TANK_TAG:
+			break;
+		case BASE_CAR_TAG:
+			break;
+		}
+		break;
+	case stateAttackLeft:
+	case stateWalkLeft:
+		switch (getUnitTag())
+		{
+		case INFANTRY_TAG:
+			stopAllActions();
+			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("Unit1-attackLeft (1).png"));
+			break;
+		case DOG_TAG:
+			break;
+		case TANK_TAG:
+			break;
+		case BASE_CAR_TAG:
+			break;
+		}
+		break;
+	case stateWalkUp:
+		switch (getUnitTag())
+		{
+		case INFANTRY_TAG:
+			stopAllActions();
+			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("Unit1-back (1).png"));
+			break;
+		case DOG_TAG:
+			break;
+		case TANK_TAG:
+			break;
+		case BASE_CAR_TAG:
+			break;
+		}
+		break;
+	case stateWalkDown:
+		switch (getUnitTag())
+		{
+		case INFANTRY_TAG:
+			stopAllActions();
+			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("Unit1-forward (1).png"));
+			break;
+		case DOG_TAG:
+			break;
+		case TANK_TAG:
+			break;
+		case BASE_CAR_TAG:
+			break;
+		}
+		break;
+	
+	default:
+		break;
+	}
+}
+
+//改变状态为攻击状态
+void Unit::changeToAttackLeft()
+{
+	runAction(RepeatForever::create(Animate::create(
+		(AnimationCache::getInstance()->getAnimation(getUnitName() + "__attackLeft")))));
+}
+
+void Unit::changeToAttackRight()
+{
+	runAction(RepeatForever::create(Animate::create(
+		(AnimationCache::getInstance()->getAnimation(getUnitName() + "__attackRight")))));
+}
+
+//改变朝向
+void Unit::changeToUp()
+{
+	runAction(RepeatForever::create(Animate::create(
+		(AnimationCache::getInstance()->getAnimation(getUnitName()+"_back")))));
+}
+
+void Unit::changeToLeft()
+{
+	runAction(RepeatForever::create(Animate::create(
+		(AnimationCache::getInstance()->getAnimation(getUnitName() + "_left")))));
+}
+
+void Unit::changeToDown()
+{
+	runAction(RepeatForever::create(Animate::create(
+		(AnimationCache::getInstance()->getAnimation(getUnitName() + "_forward")))));
+}
+
+void Unit::changeToRight()
+{
+	runAction(RepeatForever::create(Animate::create(
+		(AnimationCache::getInstance()->getAnimation(getUnitName() + "_right")))));
+}
+
+
+//改变状态为死亡(播放死亡过程的动画)
+//TODO:士兵死亡的更多处理
+void Unit::changeToDead()
+{
+	runAction(RepeatForever::create(Animate::create(
+		(AnimationCache::getInstance()->getAnimation(getUnitName() + "_die")))));
 }

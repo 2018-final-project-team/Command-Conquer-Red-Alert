@@ -37,6 +37,17 @@ namespace unitData
     }
 }
 
+typedef enum {
+	stateNone = 0, //无状态
+	stateWalkRight, //向右走
+	stateWalkLeft, //向左走
+	stateWalkUp, //向上走
+	stateWalkDown, //向下走
+	stateAttackLeft, //向左攻击
+	stateAttackRight, //向右攻击
+	stateDeath,//死亡
+}UnitState;
+
 
 ////单位状态
 //typedef enum
@@ -62,6 +73,9 @@ class Unit : public cocos2d::Sprite{
 public:
 	cocos2d::Sprite* _bloodBox;           //血槽Sprite
 	cocos2d::ProgressTimer* _bloodBarPt;     //血条ProgressTimer
+
+	//最后一次动作状态，用于更新默认状态的静态图片
+	CC_SYNTHESIZE(UnitState, _lastTurn, LastTurn);
    
     //是否被选中
     CC_SYNTHESIZE(bool, _isSelected, IsSelected)
@@ -102,14 +116,11 @@ public:
     //是否抵达目的地
     CC_SYNTHESIZE(bool, _getDestination, GetDestination);
     
-//    //动画名字
-//    CC_SYNTHESIZE(std::string, _AnimationName, UnitAnimationName);
-//
-//    //动画路径
-//    CC_SYNTHESIZE(std::string, _AdressName, _AdressName);
-    
     //单位名字
-    CC_SYNTHESIZE(std::string, _UnitName, _UnitName);
+    CC_SYNTHESIZE(std::string, _UnitName, UnitName);
+
+	//单位状态
+	CC_SYNTHESIZE(UnitState, _UnitState, UnitState );
     
     //生成单位的方法
     static Unit * create(Tag unitTag);
@@ -145,14 +156,17 @@ public:
     //状态管理
 
 public:
-    //预留接口
-    void switchState(int dir);
+    //改变状态的接口
+    void switchState(UnitState state);
     
     //改变状态为默认状态
     void changeToDefault();
     
-    //改变状态为攻击状态
-    void changeToAttack();
+    //改变状态为攻击状态-向左
+    void changeToAttackLeft();
+
+	//改变状态为攻击状态-向右
+	void changeToAttackRight();
     
     //改变朝向
     void changeToUp();

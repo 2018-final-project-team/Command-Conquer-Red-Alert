@@ -4,783 +4,1113 @@
     <dict>
         <key>frames</key>
         <dict>
-            <key>Unit1-attack01.png</key>
+            <key>Unit1-attackLeft (1).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{31,29}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{31,29}</string>
                 <key>textureRect</key>
-                <string>{{0,0},{64,44}}</string>
+                <string>{{741,0},{31,29}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-attack02.png</key>
+            <key>Unit1-attackLeft (10).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{29,28}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{29,28}</string>
                 <key>textureRect</key>
-                <string>{{64,0},{64,44}}</string>
+                <string>{{440,0},{29,28}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-attack03.png</key>
+            <key>Unit1-attackLeft (2).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{31,29}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{31,29}</string>
                 <key>textureRect</key>
-                <string>{{0,44},{64,44}}</string>
+                <string>{{772,0},{31,29}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-attack04.png</key>
+            <key>Unit1-attackLeft (3).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{27,30}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{27,30}</string>
                 <key>textureRect</key>
-                <string>{{64,44},{64,44}}</string>
+                <string>{{74,30},{27,30}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-attack05.png</key>
+            <key>Unit1-attackLeft (4).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{27,31}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{27,31}</string>
                 <key>textureRect</key>
-                <string>{{0,88},{64,44}}</string>
+                <string>{{462,30},{27,31}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-attack06.png</key>
+            <key>Unit1-attackLeft (5).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{28,31}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{28,31}</string>
                 <key>textureRect</key>
-                <string>{{64,88},{64,44}}</string>
+                <string>{{159,30},{28,31}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-attack07.png</key>
+            <key>Unit1-attackLeft (6).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{27,31}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{27,31}</string>
                 <key>textureRect</key>
-                <string>{{0,132},{64,44}}</string>
+                <string>{{187,30},{27,31}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-attack08.png</key>
+            <key>Unit1-attackLeft (7).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{28,30}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{28,30}</string>
                 <key>textureRect</key>
-                <string>{{64,132},{64,44}}</string>
+                <string>{{0,30},{28,30}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-attack09.png</key>
+            <key>Unit1-attackLeft (8).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{28,26}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{28,26}</string>
                 <key>textureRect</key>
-                <string>{{0,176},{64,44}}</string>
+                <string>{{87,0},{28,26}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-attack10.png</key>
+            <key>Unit1-attackLeft (9).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{29,28}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{29,28}</string>
                 <key>textureRect</key>
-                <string>{{64,176},{64,44}}</string>
+                <string>{{469,0},{29,28}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-back01.png</key>
+            <key>Unit1-attackRight (1).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{31,29}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{31,29}</string>
                 <key>textureRect</key>
-                <string>{{0,220},{64,44}}</string>
+                <string>{{834,0},{31,29}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-back02.png</key>
+            <key>Unit1-attackRight (10).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{31,29}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{31,29}</string>
                 <key>textureRect</key>
-                <string>{{64,220},{64,44}}</string>
+                <string>{{803,0},{31,29}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-back03.png</key>
+            <key>Unit1-attackRight (2).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{27,30}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{27,30}</string>
                 <key>textureRect</key>
-                <string>{{0,264},{64,44}}</string>
+                <string>{{976,0},{27,30}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-back04.png</key>
+            <key>Unit1-attackRight (3).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{27,31}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{27,31}</string>
                 <key>textureRect</key>
-                <string>{{64,264},{64,44}}</string>
+                <string>{{870,30},{27,31}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-back05.png</key>
+            <key>Unit1-attackRight (4).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{28,31}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{28,31}</string>
                 <key>textureRect</key>
-                <string>{{0,308},{64,44}}</string>
+                <string>{{605,30},{28,31}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-back06.png</key>
+            <key>Unit1-attackRight (5).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{27,31}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{27,31}</string>
                 <key>textureRect</key>
-                <string>{{64,308},{64,44}}</string>
+                <string>{{738,30},{27,31}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-back07.png</key>
+            <key>Unit1-attackRight (6).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{28,30}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{28,30}</string>
                 <key>textureRect</key>
-                <string>{{0,352},{64,44}}</string>
+                <string>{{101,30},{28,30}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-back08.png</key>
+            <key>Unit1-attackRight (7).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{28,26}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{28,26}</string>
                 <key>textureRect</key>
-                <string>{{64,352},{64,44}}</string>
+                <string>{{115,0},{28,26}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-back09.png</key>
+            <key>Unit1-attackRight (8).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{29,28}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{29,28}</string>
                 <key>textureRect</key>
-                <string>{{0,396},{64,44}}</string>
+                <string>{{359,0},{29,28}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-back10.png</key>
+            <key>Unit1-attackRight (9).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{29,28}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{29,28}</string>
                 <key>textureRect</key>
-                <string>{{64,396},{64,44}}</string>
+                <string>{{411,0},{29,28}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-back11.png</key>
+            <key>Unit1-back (1).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{23,28}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{23,28}</string>
                 <key>textureRect</key>
-                <string>{{0,440},{64,44}}</string>
+                <string>{{388,0},{23,28}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-back12.png</key>
+            <key>Unit1-back (10).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{23,31}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{23,31}</string>
                 <key>textureRect</key>
-                <string>{{64,440},{64,44}}</string>
+                <string>{{765,30},{23,31}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-die01.png</key>
+            <key>Unit1-back (11).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{23,30}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{23,30}</string>
                 <key>textureRect</key>
-                <string>{{0,484},{64,44}}</string>
+                <string>{{28,30},{23,30}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-die02.png</key>
+            <key>Unit1-back (12).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{22,27}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{22,27}</string>
                 <key>textureRect</key>
-                <string>{{64,484},{64,44}}</string>
+                <string>{{219,0},{22,27}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-die03.png</key>
+            <key>Unit1-back (2).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{23,30}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{23,30}</string>
                 <key>textureRect</key>
-                <string>{{0,528},{64,44}}</string>
+                <string>{{51,30},{23,30}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-die04.png</key>
+            <key>Unit1-back (3).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{22,31}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{22,31}</string>
                 <key>textureRect</key>
-                <string>{{64,528},{64,44}}</string>
+                <string>{{965,30},{22,31}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-die05.png</key>
+            <key>Unit1-back (4).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{23,31}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{23,31}</string>
                 <key>textureRect</key>
-                <string>{{0,572},{64,44}}</string>
+                <string>{{920,30},{23,31}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-die06.png</key>
+            <key>Unit1-back (5).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{22,29}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{22,29}</string>
                 <key>textureRect</key>
-                <string>{{64,572},{64,44}}</string>
+                <string>{{865,0},{22,29}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-forward01.png</key>
+            <key>Unit1-back (6).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{22,26}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{22,26}</string>
                 <key>textureRect</key>
-                <string>{{0,616},{64,44}}</string>
+                <string>{{143,0},{22,26}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-forward02.png</key>
+            <key>Unit1-back (7).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{22,28}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{22,28}</string>
                 <key>textureRect</key>
-                <string>{{64,616},{64,44}}</string>
+                <string>{{498,0},{22,28}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-forward03.png</key>
+            <key>Unit1-back (8).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{23,31}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{23,31}</string>
                 <key>textureRect</key>
-                <string>{{0,660},{64,44}}</string>
+                <string>{{897,30},{23,31}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-forward04.png</key>
+            <key>Unit1-back (9).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{23,31}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{23,31}</string>
                 <key>textureRect</key>
-                <string>{{64,660},{64,44}}</string>
+                <string>{{715,30},{23,31}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-forward05.png</key>
+            <key>Unit1-die (1).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{27,29}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{27,29}</string>
                 <key>textureRect</key>
-                <string>{{0,704},{64,44}}</string>
+                <string>{{570,0},{27,29}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-forward06.png</key>
+            <key>Unit1-die (2).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{27,29}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{27,29}</string>
                 <key>textureRect</key>
-                <string>{{64,704},{64,44}}</string>
+                <string>{{543,0},{27,29}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-forward07.png</key>
+            <key>Unit1-die (3).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{28,27}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{28,27}</string>
                 <key>textureRect</key>
-                <string>{{0,748},{64,44}}</string>
+                <string>{{241,0},{28,27}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-forward08.png</key>
+            <key>Unit1-die (4).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{29,22}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{29,22}</string>
                 <key>textureRect</key>
-                <string>{{64,748},{64,44}}</string>
+                <string>{{29,0},{29,22}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-forward09.png</key>
+            <key>Unit1-die (5).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{29,19}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{29,19}</string>
                 <key>textureRect</key>
-                <string>{{0,792},{64,44}}</string>
+                <string>{{0,0},{29,19}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-forward10.png</key>
+            <key>Unit1-die (6).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{29,22}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{29,22}</string>
                 <key>textureRect</key>
-                <string>{{64,792},{64,44}}</string>
+                <string>{{58,0},{29,22}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-forward11.png</key>
+            <key>Unit1-forward (1).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{22,30}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{22,30}</string>
                 <key>textureRect</key>
-                <string>{{0,836},{64,44}}</string>
+                <string>{{887,0},{22,30}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-forward12.png</key>
+            <key>Unit1-forward (10).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{23,31}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{23,31}</string>
                 <key>textureRect</key>
-                <string>{{64,836},{64,44}}</string>
+                <string>{{662,30},{23,31}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-right01.png</key>
+            <key>Unit1-forward (11).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{23,30}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{23,30}</string>
                 <key>textureRect</key>
-                <string>{{0,880},{64,44}}</string>
+                <string>{{909,0},{23,30}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-right02.png</key>
+            <key>Unit1-forward (12).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{23,28}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{23,28}</string>
                 <key>textureRect</key>
-                <string>{{64,880},{64,44}}</string>
+                <string>{{520,0},{23,28}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-right03.png</key>
+            <key>Unit1-forward (2).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{22,30}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{22,30}</string>
                 <key>textureRect</key>
-                <string>{{0,924},{64,44}}</string>
+                <string>{{954,0},{22,30}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-right04.png</key>
+            <key>Unit1-forward (3).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{23,31}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{23,31}</string>
                 <key>textureRect</key>
-                <string>{{64,924},{64,44}}</string>
+                <string>{{582,30},{23,31}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-right05.png</key>
+            <key>Unit1-forward (4).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{22,31}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{22,31}</string>
                 <key>textureRect</key>
-                <string>{{0,968},{64,44}}</string>
+                <string>{{788,30},{22,31}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-right06.png</key>
+            <key>Unit1-forward (5).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{22,30}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{22,30}</string>
                 <key>textureRect</key>
-                <string>{{64,968},{64,44}}</string>
+                <string>{{932,0},{22,30}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-right07.png</key>
+            <key>Unit1-forward (6).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{22,27}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{22,27}</string>
                 <key>textureRect</key>
-                <string>{{0,1012},{64,44}}</string>
+                <string>{{197,0},{22,27}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-right08.png</key>
+            <key>Unit1-forward (7).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{22,29}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{22,29}</string>
                 <key>textureRect</key>
-                <string>{{64,1012},{64,44}}</string>
+                <string>{{690,0},{22,29}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-right09.png</key>
+            <key>Unit1-forward (8).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{22,31}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{22,31}</string>
                 <key>textureRect</key>
-                <string>{{0,1056},{64,44}}</string>
+                <string>{{943,30},{22,31}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-right10.png</key>
+            <key>Unit1-forward (9).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{22,31}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{22,31}</string>
                 <key>textureRect</key>
-                <string>{{64,1056},{64,44}}</string>
+                <string>{{987,30},{22,31}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-right11.png</key>
+            <key>Unit1-left (1).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{29,29}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{29,29}</string>
                 <key>textureRect</key>
-                <string>{{0,1100},{64,44}}</string>
+                <string>{{712,0},{29,29}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Unit1-right12.png</key>
+            <key>Unit1-left (10).png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{64,44}</string>
+                <string>{32,29}</string>
                 <key>spriteSourceSize</key>
-                <string>{64,44}</string>
+                <string>{32,29}</string>
                 <key>textureRect</key>
-                <string>{{64,1100},{64,44}}</string>
+                <string>{{658,0},{32,29}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>Unit1-left (11).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{32,31}</string>
+                <key>spriteSourceSize</key>
+                <string>{32,31}</string>
+                <key>textureRect</key>
+                <string>{{550,30},{32,31}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>Unit1-left (12).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{30,31}</string>
+                <key>spriteSourceSize</key>
+                <string>{30,31}</string>
+                <key>textureRect</key>
+                <string>{{840,30},{30,31}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>Unit1-left (2).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{30,31}</string>
+                <key>spriteSourceSize</key>
+                <string>{30,31}</string>
+                <key>textureRect</key>
+                <string>{{810,30},{30,31}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>Unit1-left (3).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{29,31}</string>
+                <key>spriteSourceSize</key>
+                <string>{29,31}</string>
+                <key>textureRect</key>
+                <string>{{633,30},{29,31}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>Unit1-left (4).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{29,27}</string>
+                <key>spriteSourceSize</key>
+                <string>{29,27}</string>
+                <key>textureRect</key>
+                <string>{{330,0},{29,27}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>Unit1-left (5).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{30,31}</string>
+                <key>spriteSourceSize</key>
+                <string>{30,31}</string>
+                <key>textureRect</key>
+                <string>{{214,30},{30,31}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>Unit1-left (6).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{30,31}</string>
+                <key>spriteSourceSize</key>
+                <string>{30,31}</string>
+                <key>textureRect</key>
+                <string>{{129,30},{30,31}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>Unit1-left (7).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{32,31}</string>
+                <key>spriteSourceSize</key>
+                <string>{32,31}</string>
+                <key>textureRect</key>
+                <string>{{244,30},{32,31}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>Unit1-left (8).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{32,31}</string>
+                <key>spriteSourceSize</key>
+                <string>{32,31}</string>
+                <key>textureRect</key>
+                <string>{{276,30},{32,31}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>Unit1-left (9).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{32,27}</string>
+                <key>spriteSourceSize</key>
+                <string>{32,27}</string>
+                <key>textureRect</key>
+                <string>{{269,0},{32,27}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>Unit1-right (1).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{29,29}</string>
+                <key>spriteSourceSize</key>
+                <string>{29,29}</string>
+                <key>textureRect</key>
+                <string>{{629,0},{29,29}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>Unit1-right (10).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{30,31}</string>
+                <key>spriteSourceSize</key>
+                <string>{30,31}</string>
+                <key>textureRect</key>
+                <string>{{402,30},{30,31}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>Unit1-right (11).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{29,31}</string>
+                <key>spriteSourceSize</key>
+                <string>{29,31}</string>
+                <key>textureRect</key>
+                <string>{{489,30},{29,31}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>Unit1-right (12).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{29,27}</string>
+                <key>spriteSourceSize</key>
+                <string>{29,27}</string>
+                <key>textureRect</key>
+                <string>{{301,0},{29,27}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>Unit1-right (2).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{30,31}</string>
+                <key>spriteSourceSize</key>
+                <string>{30,31}</string>
+                <key>textureRect</key>
+                <string>{{308,30},{30,31}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>Unit1-right (3).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{30,31}</string>
+                <key>spriteSourceSize</key>
+                <string>{30,31}</string>
+                <key>textureRect</key>
+                <string>{{432,30},{30,31}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>Unit1-right (4).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{32,31}</string>
+                <key>spriteSourceSize</key>
+                <string>{32,31}</string>
+                <key>textureRect</key>
+                <string>{{370,30},{32,31}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>Unit1-right (5).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{32,31}</string>
+                <key>spriteSourceSize</key>
+                <string>{32,31}</string>
+                <key>textureRect</key>
+                <string>{{338,30},{32,31}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>Unit1-right (6).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{32,27}</string>
+                <key>spriteSourceSize</key>
+                <string>{32,27}</string>
+                <key>textureRect</key>
+                <string>{{165,0},{32,27}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>Unit1-right (7).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{32,29}</string>
+                <key>spriteSourceSize</key>
+                <string>{32,29}</string>
+                <key>textureRect</key>
+                <string>{{597,0},{32,29}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>Unit1-right (8).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{32,31}</string>
+                <key>spriteSourceSize</key>
+                <string>{32,31}</string>
+                <key>textureRect</key>
+                <string>{{518,30},{32,31}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>Unit1-right (9).png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{30,31}</string>
+                <key>spriteSourceSize</key>
+                <string>{30,31}</string>
+                <key>textureRect</key>
+                <string>{{685,30},{30,31}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -796,9 +1126,9 @@
             <key>realTextureFileName</key>
             <string>unit1.png</string>
             <key>size</key>
-            <string>{128,1144}</string>
+            <string>{1009,61}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:6c5337e3e2f55248649a87f6f9842a54:220241e89f348a2c1fd9b155905549c7:bf7e3f496bb51a6b1b7053834cd8529d$</string>
+            <string>$TexturePacker:SmartUpdate:c6156b29d266b086b08e75e5e5c00bb7:6d8a5216fed5cdcfc8792111465e95ac:bf7e3f496bb51a6b1b7053834cd8529d$</string>
             <key>textureFileName</key>
             <string>unit1.png</string>
         </dict>
