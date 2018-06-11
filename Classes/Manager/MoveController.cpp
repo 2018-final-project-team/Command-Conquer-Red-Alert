@@ -66,6 +66,7 @@ void MoveController::setDestination(cocos2d::Vec2 position)
     int col;                     // column of duixin
     int row = 0;                     // row of duixin
     int soldierSize = 30;            // To Do
+    int carNum = 0;
     // put the cars first   
     col = 4;
     for (auto& car : *_selectedSoldiers)
@@ -97,9 +98,16 @@ void MoveController::setDestination(cocos2d::Vec2 position)
                 col = 4;
                 row += 1;          // temporarily think car is double size than infantry
             }
+            carNum++;
         }
     }
     // then put the soldiers   
+    int maxCol = 3;
+    if (!carNum && _selectedSoldiers->size() <= 3)
+    {
+        col = 1;
+        maxCol = 1;
+    }
     for (auto& soldier : *_selectedSoldiers)
     {
         switch (soldier->getUnitTag())
@@ -114,9 +122,9 @@ void MoveController::setDestination(cocos2d::Vec2 position)
             while (!canPut(position + Vec2(col * soldierSize, -row * soldierSize)))
             {
                 --col;
-                if (col < -3)
+                if (col < -maxCol)
                 {
-                    col = 3;
+                    col = maxCol;
                     ++row;
                 }
                 //log("%d %d", col, row);
@@ -131,9 +139,9 @@ void MoveController::setDestination(cocos2d::Vec2 position)
             soldier->setGetDestination(false);
 
             --col;
-            if (col < -3)
+            if (col < -maxCol)
             {
-                col = 3;
+                col = maxCol;
                 ++row;
             }
 
