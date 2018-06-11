@@ -80,10 +80,10 @@ void MoveController::setDestination(cocos2d::Vec2 position)
                     col = 4;
                     row += 1;          
                 }
-                log("%d %d", col, row);
+                //log("%d %d", col, row);
             }
             car->setDestination(position + Vec2(col * soldierSize, -row * soldierSize));
-            log("%d %d car %f %f", col, row, car->getDestination().x, car->getDestination().y);
+            //log("%d %d car %f %f", col, row, car->getDestination().x, car->getDestination().y);
             // find the best way
             findRroute(car, car->_route);
             // the first position in the way          
@@ -119,10 +119,10 @@ void MoveController::setDestination(cocos2d::Vec2 position)
                     col = 3;
                     ++row;
                 }
-                log("%d %d", col, row);
+                //log("%d %d", col, row);
             }
             soldier->setDestination(position + Vec2(col * soldierSize, -row * soldierSize));
-            log("%d %d soldier %f %f",col, row, soldier->getDestination().x, soldier->getDestination().y);
+            //log("%d %d soldier %f %f",col, row, soldier->getDestination().x, soldier->getDestination().y);
             // find the best way
             findRroute(soldier, soldier->_route);
             // the first position at the way       
