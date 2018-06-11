@@ -686,13 +686,14 @@ cocos2d::Point Manager::getPutSoldierPosition()
         }
     }
     //兵营右方区域
+    firstPosition += Vec2(160, 160);
     for (int i = 4; i > 0; --i)
     {
         for (int j = 4; j > 0; --j)
         {
-            if (_moveController->canPut(firstPosition + Vec2(j * soldierSize, i*soldierSize)))
+            if (_moveController->canPut(firstPosition + Vec2(j*soldierSize, i*soldierSize)))
             {
-                return firstPosition + Vec2(j * soldierSize, i*soldierSize);
+                return firstPosition + Vec2(j*soldierSize, i*soldierSize);
             }
         }
     }
@@ -703,27 +704,29 @@ cocos2d::Point Manager::getPutSoldierPosition()
 cocos2d::Point Manager::getPutCarPosition()
 {
     Point carFactoryPosition = _gameScene->getCarFactoryPosition();
-    Point firstPosition = carFactoryPosition + Vec2(270, 220);
-    int carSize = 80;
-    // 车厂右方区域
-    for (int i = 5; i > 0; --i)
+    Point firstPosition = carFactoryPosition - Vec2(100, 100);
+    int carSize = 50;
+    //车厂下方区域
+    for (int i = 3; i > 0; --i)
     {
-        for (int j = 3; j > 0; --j)
+        for (int j = 5; j > 0; --j)
+        {
+            log("car down");
+            if (_moveController->canPut(firstPosition + Vec2(j * carSize, -i*carSize)))
+            {
+                return firstPosition + Vec2(j * carSize, -i*carSize);
+            }
+        }
+    }
+    // 车厂右方区域
+    firstPosition += Vec2(200, 200);
+    for (int i = 4; i > 0; --i)
+    {
+        for (int j = 4; j > 0; --j)
         {
             if (_moveController->canPut(firstPosition + Vec2(j*carSize, i*carSize)))
             {
                 return firstPosition + Vec2(j*carSize, i*carSize);
-            }
-        }
-    }
-    //车厂上方区域
-    for (int i = 5; i > 3; --i)
-    {
-        for (int j = 2; j > 0; --j)
-        {
-            if (_moveController->canPut(firstPosition + Vec2(-j * carSize, i*carSize)))
-            {
-                return firstPosition + Vec2(-j * carSize, i*carSize);
             }
         }
     }
