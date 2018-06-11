@@ -116,7 +116,9 @@ public:
 
     // 用于寻路
     std::vector<cocos2d::Point> _route;
-    
+	bool isFindRoad;
+	int waitTime = 0;
+
 public:
     /*
      */
