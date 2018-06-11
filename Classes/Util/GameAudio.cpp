@@ -21,8 +21,8 @@ GameAudio::GameAudio()
 
 GameAudio * GameAudio::getInstance()
 {
-	static GameAudio INSTANCE;
-	return &INSTANCE;
+    static GameAudio INSTANCE;
+    return &INSTANCE;
 }
 
 void GameAudio::preloadBgm(const char * pszFilePath)
@@ -38,71 +38,71 @@ void GameAudio::preloadEffect(const char * pszFilePath)
 
 void GameAudio::playEffect(const char * name)
 {
-	if (isEffectOn)
-	{
-		audioEngine->playEffect(name);
-	}
+    if (isEffectOn)
+    {
+        audioEngine->playEffect(name);
+    }
 }
 
 void GameAudio::stopEffect()
 {
-	audioEngine->stopAllEffects();
+    audioEngine->stopAllEffects();
 }
 
 void GameAudio::setEffectOn(bool val)
 {
-	isEffectOn = val;
-	SET_KEY("isEffectOn", val);
-	if (val)
-	{
-		audioEngine->resumeAllEffects();
-	}
-	else
-	{
-		stopEffect();
-	}
+    isEffectOn = val;
+    SET_KEY("isEffectOn", val);
+    if (val)
+    {
+        audioEngine->resumeAllEffects();
+    }
+    else
+    {
+        stopEffect();
+    }
 }
 
 bool GameAudio::getEffectOn()
 {
-	return isEffectOn;
+    return isEffectOn;
 }
 
 void GameAudio::playBgm(const char * name)
 {
-	if (currentBgm != name)
-	{
-		currentBgm = name;
-		audioEngine->playBackgroundMusic(name, true);
-	}
-	if (!isBgmOn)
-	{
-		stopBgm();
-	}
+    if (currentBgm != name)
+    {
+        currentBgm = name;
+        audioEngine->playBackgroundMusic(name, true);
+    }
+    if (!isBgmOn)
+    {
+        stopBgm();
+    }
 }
 
 void GameAudio::stopBgm()
 {
-	audioEngine->stopBackgroundMusic();
+    audioEngine->stopBackgroundMusic();
 }
 
 void GameAudio::setBgmOn(bool val)
 {
-	isBgmOn = val;
-	SET_KEY("isBgmOn", val);
-	if (val)
-	{
-		audioEngine->resumeBackgroundMusic();
-	}
-	else
-	{
+    isBgmOn = val;
+    SET_KEY("isBgmOn", val);
+    if (val)
+    {
+        audioEngine->resumeBackgroundMusic();
+    }
+    else
+    {
 		audioEngine->pauseBackgroundMusic();
-	}
+    }
 }
 
 bool GameAudio::getBgmOn()
 {
-	return isBgmOn;
+    return isBgmOn;
 }
 
 

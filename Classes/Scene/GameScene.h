@@ -15,22 +15,23 @@ class Panel;     //解决头文件互相包含时带来的问题
 
 class GameScene : public cocos2d::Layer
 {
+	int cnt = 0;
 public:
-	Manager * _manager;
-	cocos2d::TMXTiledMap* _tileMap;
-	Panel * panel;
+    Manager * _manager;
+    cocos2d::TMXTiledMap* _tileMap;
+    Panel * panel;
 
 private:
 	cocos2d::TMXLayer* _barrier;
-	int MAPX;
-	int MAPY;
+    int MAPX;
+    int MAPY;
 
-	bool _keyUp = false;
-	bool _keyDown = false;
-	bool _keyLeft = false;
-	bool _keyRight = false;
+    bool _keyUp = false;
+    bool _keyDown = false;
+    bool _keyRight = false;
+    bool _keyLeft = false;                 // C++ 11 的初始化方法
 
-	cocos2d::Point _cursorPosition{ 0,0 };  // C++ 11 允许这样初始化
+	cocos2d::Point _cursorPosition;
 	void scrollMap();
 
 	cocos2d::Vector<Unit*> _selectedSoldiers;
@@ -38,19 +39,37 @@ private:
 	cocos2d::Vector<Unit*> _enemySoldiers;
 	cocos2d::Vector<Unit*> _soldiers;
 	cocos2d::Vector<Building*> _buildings;
-	cocos2d::Vector<Building*> _enemyBuildings;
+    cocos2d::Vector<Building*> _enemyBuildings;
 
 	cocos2d::Point _touchBegan;
 	cocos2d::Point _touchEnd;
 
+    //显示金币
+    char _moneyStr[8];
+    char _timeStr[10];
+    cocos2d::Label* _moneyCount;
+    cocos2d::Label* _timeCount;
+
+    //时间
+    long _time = 0;
+
+    //sell building
+    cocos2d::Menu* _sellBuildingMenu;
+    Building* _sellBuilding = nullptr;
+    bool _isSellMenuExit = false;
+
 public:
+
+    //power bar
+    cocos2d::ProgressTimer* _powerBar;
+
 	cocos2d::EventListenerTouchOneByOne* _gameListener;
 	cocos2d::EventDispatcher* _gameEventDispatcher;
 
 public:
 
-
-
+	
+	
 	CC_SYNTHESIZE(int, _money, Money);
 
 	// 总电力
@@ -73,12 +92,12 @@ public:
 
 	CC_SYNTHESIZE(int, _carFactoryNum, CarFactoryNum);
 
-	// 待造坦克数
-	CC_SYNTHESIZE(int, _tankNum, TankNum);
-	// 待造狗数
-	CC_SYNTHESIZE(int, _dogNum, DogNum);
-	// 待造步兵数
-	CC_SYNTHESIZE(int, _infantryNum, InfantryNum);
+    // 待造坦克数
+    CC_SYNTHESIZE(int, _tankNum, TankNum);
+    // 待造狗数
+    CC_SYNTHESIZE(int, _dogNum, DogNum);
+    // 待造步兵数
+    CC_SYNTHESIZE(int, _infantryNum, InfantryNum);
 
 	CC_SYNTHESIZE(cocos2d::Vec2, _carFactoryPosition, CarFactoryPosition);
 
@@ -88,8 +107,7 @@ public:
 
 	virtual bool init();
 
-	//物理碰撞监听
-	virtual void onEnter();
+    virtual void onEnter();
 
 	virtual void onExit();
 
@@ -115,11 +133,11 @@ public:
 	*/
 	cocos2d::Vector<Unit*>* getSoldiers();
 
-	/*
-	* @brief getEnemySoldiers
-	* @return the address of enemy_soldiers
-	*/
-	cocos2d::Vector<Unit*> * getEnemySoldiers() { return &_enemySoldiers; }
+    /*
+    * @brief getEnemySoldiers
+    * @return the address of enemy_soldiers
+    */
+    cocos2d::Vector<Unit*> * getEnemySoldiers() { return &_enemySoldiers; }
 
 	/**
 	* @brief getBuildings
@@ -127,11 +145,11 @@ public:
 	*/
 	cocos2d::Vector<Building*>* getBuildings();
 
-	/*
-	* @brief getEnemyBuildings
-	* @return the address of enemy_soldiers
-	*/
-	cocos2d::Vector<Building*> * getEnemyBuildings() { return &_enemyBuildings; }
+    /*
+    * @brief getEnemyBuildings
+    * @return the address of enemy_soldiers
+    */
+    cocos2d::Vector<Building*> * getEnemyBuildings() { return &_enemyBuildings; }
 
 	/**
 	* @brief addMoney
@@ -219,35 +237,35 @@ public:
 	*/
 	void decreaseMine() { _mineNum--; }
 
-	/*
-	* @brief 待造狗加一
-	*/
-	void addDog() { _dogNum++; }
+    /*
+    * @brief 待造狗加一
+    */
+    void addDog() { _dogNum++; }
 
-	/*
-	* @brief 待造兵加一
-	*/
-	void addInfantry() { _infantryNum++; }
+    /*
+    * @brief 待造兵加一
+    */
+    void addInfantry() { _infantryNum++; }
 
-	/*
-	* @brief 待造坦克加一
-	*/
-	void addTank() { _tankNum++; }
+    /*
+    * @brief 待造坦克加一
+    */
+    void addTank() { _tankNum++; }
 
-	/*
-	* @brief 待造狗减一
-	*/
-	void decreaseDog() { _dogNum--; }
+    /*
+    * @brief 待造狗减一
+    */
+    void decreaseDog() { _dogNum--; }
 
-	/*
-	* @brief 待造兵减一
-	*/
-	void decreaseInfantry() { _infantryNum--; }
+    /*
+    * @brief 待造兵减一
+    */
+    void decreaseInfantry() { _infantryNum--; }
 
-	/*
-	* @brief 待造坦克减一
-	*/
-	void decreaseTank() { _tankNum--; }
+    /*
+    * @brief 待造坦克减一
+    */
+    void decreaseTank() { _tankNum--; }
 
 	/*
 	* @brief isCollision
@@ -262,10 +280,20 @@ public:
 	*/
 	float getTileSize();
 
-	/*
-	*@brief 移动所有士兵建筑 包括目的地
-	*/
-	void moveSpritesWithMap(cocos2d::Vec2 direction);
+    /*
+    *@brief 移动所有士兵建筑 包括目的地
+    */
+    void moveSpritesWithMap(cocos2d::Vec2 direction);
+
+    /*
+    * @brief print time every second
+    */
+    void printTime(float dt);
+
+    /*
+    *@brief sell building call back function
+    */
+    void sellBuildingCallBack();
 
 };
 

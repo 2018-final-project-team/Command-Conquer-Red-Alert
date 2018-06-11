@@ -25,6 +25,6 @@ public:
 
 	CREATE_FUNC(WelcomeScene);
 
-};
+	};
 
 #endif // __Welcome_SCENE_H__

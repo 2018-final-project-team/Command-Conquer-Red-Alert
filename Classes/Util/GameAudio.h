@@ -22,27 +22,27 @@ private:
 
 public:
 
-	static GameAudio * getInstance();
+    static GameAudio * getInstance();
 
 	void preloadBgm(const char * pszFilePath);
 
 	void preloadEffect(const char * pszFilePath);
 
-	void playEffect(const char * name);
+    void playEffect(const char * name);
 
-	void stopEffect();
+    void stopEffect();
 
-	void setEffectOn(bool val);
+    void setEffectOn(bool val);
 
-	bool getEffectOn();
+    bool getEffectOn();
 
-	void playBgm(const char * name);
+    void playBgm(const char * name);
 
-	void stopBgm();
+    void stopBgm();
 
-	void setBgmOn(bool val);
+    void setBgmOn(bool val);
 
-	bool getBgmOn();
+    bool getBgmOn();
 private:
 	//构造函数
 	GameAudio();

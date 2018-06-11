@@ -14,7 +14,9 @@ typedef enum
     NONE = 8,
 	BUILDING_BUTTON = 9,
 	SOLDIER_BUTTON = 10,
-	CAR_BUTTON = 11
+	CAR_BUTTON = 11,
+
+    BASE_CAR_TAG = 12
 }Tag;
 
 #endif // TagData.h

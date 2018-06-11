@@ -1,4 +1,4 @@
-/*
+﻿/*
 *  @file     LoadingScene.cpp
 *  @brief    加载场景类，显示的第一个场景，完成资源预加载并显示加载进度
 *  @author   王亮
@@ -14,18 +14,18 @@ USING_NS_CC;
 
 Scene* LoadingScene::createScene()
 {
-	auto scene = Scene::create();
+    auto scene = Scene::create();
 
-	auto layer = LoadingScene::create();
+    auto layer = LoadingScene::create();
 
-	scene->addChild(layer);
+    scene->addChild(layer);
 
-	return scene;
+    return scene;
 }
 
 void LoadingScene::endLoading(float dt) {
-	const auto transition = TransitionFade::create(1, LoginScene::createScene());
-	Director::getInstance()->replaceScene(transition);
+    const auto transition = TransitionFade::create(1, LoginScene::createScene());
+    Director::getInstance()->replaceScene(transition);
 }
 
 void LoadingScene::loading()
@@ -64,40 +64,40 @@ void LoadingScene::loadSound()
 }
 
 void LoadingScene::loadImage() {
-	//undefined
+    //undefined
 }
 
 void LoadingScene::loadSpriteFrame()
 {
-	auto spriteframecache = SpriteFrameCache::getInstance();
+    auto spriteframecache = SpriteFrameCache::getInstance();
 
 	//c++11 基于范围的for循环
-	for (auto plist : Preload::plists)
-	{
-		spriteframecache->addSpriteFramesWithFile(plist);
-	}
+    for (auto plist : Preload::plists)
+    {
+        spriteframecache->addSpriteFramesWithFile(plist);
+    }
 }
 
 
 bool LoadingScene::init()
 {
-	if (!Layer::init())
-	{
-		return false;
-	}
+    if (!Layer::init())
+    {
+        return false;
+    }
 
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-	const auto visibleSize = Director::getInstance()->getVisibleSize();
-	const auto baseY = visibleSize.height * 0.35f;
+    const auto visibleSize = Director::getInstance()->getVisibleSize();
+    const auto baseY = visibleSize.height * 0.35f;
 
 	initBackground(origin, visibleSize);
 	loadingBar = createLoadingBar();
-	addChild(loadingBar);
+    addChild(loadingBar);
 
 	loading();
-
-	scheduleOnce(CC_SCHEDULE_SELECTOR(LoadingScene::endLoading), 0.5);  //0.5s后执行endLoading()
-	return true;
+    
+    scheduleOnce(CC_SCHEDULE_SELECTOR(LoadingScene::endLoading), 0.5);  //0.5s后执行endLoading()
+    return true;
 }
 
 void LoadingScene::initBackground(Vec2 origin, Size visibleSize)
@@ -119,20 +119,20 @@ void LoadingScene::initBackground(Vec2 origin, Size visibleSize)
 	}
 }
 
-cocos2d::ui::LoadingBar* LoadingScene::createLoadingBar() {
-	const auto visibleSize = Director::getInstance()->getVisibleSize();
-	const auto baseY = visibleSize.height * 0.3f;
+cocos2d::ui::LoadingBar* LoadingScene::createLoadingBar(){
+    const auto visibleSize = Director::getInstance()->getVisibleSize();
+    const auto baseY = visibleSize.height * 0.3f;
 
 	//进度条的框
 	auto bg = Sprite::create("LoadingScene/loadbarBg.png");
 	bg->setPosition(Vec2(visibleSize.width / 2, baseY));
 	this->addChild(bg);
 
-	auto loadingBar = ui::LoadingBar::create("LoadingScene/loadbar.png");
-	loadingBar->setPosition(Vec2(visibleSize.width / 2, baseY));
-	loadingBar->setScale(1);
-	loadingBar->setDirection(ui::LoadingBar::Direction::LEFT);
+    auto loadingBar = ui::LoadingBar::create("LoadingScene/loadbar.png");
+    loadingBar->setPosition(Vec2(visibleSize.width / 2, baseY));
+    loadingBar->setScale(1);
+    loadingBar->setDirection(ui::LoadingBar::Direction::LEFT);
 
-	return loadingBar;
+    return loadingBar;
 }
 

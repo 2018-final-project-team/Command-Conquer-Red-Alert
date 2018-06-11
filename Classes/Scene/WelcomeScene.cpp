@@ -110,7 +110,7 @@ bool WelcomeScene::init()
 	else
 	{
 		float x = origin.x + visibleSize.width - settingItem->getContentSize().width / 2;
-		float y = origin.y + visibleSize.height - settingItem->getContentSize().height / 2 - 180;
+		float y = origin.y + visibleSize.height - settingItem->getContentSize().height / 2-180;
 		settingItem->setPosition(Vec2(x, y));
 	}
 
@@ -134,7 +134,7 @@ bool WelcomeScene::init()
 	else
 	{
 		float x = origin.x + visibleSize.width - helpItem->getContentSize().width / 2;
-		float y = origin.y + visibleSize.height - helpItem->getContentSize().height / 2 - 300;
+		float y = origin.y + visibleSize.height - helpItem->getContentSize().height / 2 -300;
 		helpItem->setPosition(Vec2(x, y));
 	}
 
