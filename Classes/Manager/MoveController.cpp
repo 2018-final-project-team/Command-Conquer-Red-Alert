@@ -74,27 +74,29 @@ void MoveController::setDestination(cocos2d::Vec2 position)
         {
             while (!canPut(position + Vec2(col * soldierSize, -row * soldierSize)))
             {
-                col -= 2;              // temporarily think car is double size than infantry
+                col -= 2;              
                 if (col < -4)
                 {
                     col = 4;
-                    row += 2;          // temporarily think car is double size than infantry
+                    row += 1;          
                 }
+                //log("%d %d", col, row);
             }
             car->setDestination(position + Vec2(col * soldierSize, -row * soldierSize));
+            //log("%d %d car %f %f", col, row, car->getDestination().x, car->getDestination().y);
             // find the best way
             findRroute(car, car->_route);
             // the first position in the way          
             car->setDestination(car->_route.front());
             (car->_route).erase((car->_route).begin());
             car->setGetDestination(false);
-        }
 
-        col -= 2;             // temporarily think car is double size than infantry
-        if (col < -4)
-        {
-            col = 4;
-            row += 2;          // temporarily think car is double size than infantry
+            col -= 2;             // temporarily think car is double size than infantry
+            if (col < -4)
+            {
+                col = 4;
+                row += 1;          // temporarily think car is double size than infantry
+            }
         }
     }
     // then put the soldiers   
@@ -117,22 +119,25 @@ void MoveController::setDestination(cocos2d::Vec2 position)
                     col = 3;
                     ++row;
                 }
+                //log("%d %d", col, row);
             }
             soldier->setDestination(position + Vec2(col * soldierSize, -row * soldierSize));
-            break;
-        }
-        // find the best way
-        findRroute(soldier, soldier->_route);
-        // the first position at the way       
-        soldier->setDestination(soldier->_route.front());
-        (soldier->_route).erase( (soldier->_route).begin() );
-        soldier->setGetDestination(false);
+            //log("%d %d soldier %f %f",col, row, soldier->getDestination().x, soldier->getDestination().y);
+            // find the best way
+            findRroute(soldier, soldier->_route);
+            // the first position at the way       
+            soldier->setDestination(soldier->_route.front());
+            (soldier->_route).erase((soldier->_route).begin());
+            soldier->setGetDestination(false);
 
-        --col;
-        if (col == -3)
-        {
-            col = 3;
-            ++row;
+            --col;
+            if (col < -3)
+            {
+                col = 3;
+                ++row;
+            }
+
+            break;
         }
     }
 }
@@ -142,38 +147,46 @@ void MoveController::moveSoldiers()
     static clock_t preT = clock();
     clock_t nowT = clock();
     float interval = nowT - preT;
-    preT = nowT;
+	preT = nowT;
     for (auto& soldier : *(_gameScene->getSoldiers()))
     {
         if (!soldier->getGetDestination())
         {
-            Vec2 nowPosition = soldier->getPosition();
-            Vec2 destination = soldier->getDestination();
-            Vec2 direction = destination - nowPosition;
-            direction.normalize();
-            float distance = destination.distance(nowPosition);
-            //log("now position %f %f", nowPosition.x, nowPosition.y);
-            //log("deatination %f %f", destination.x, destination.y);
-         
-            Vec2 move = soldier->getUnitSpeed() * interval * direction;
-            // if the distance of this move is longer than destination
-            if (move.length() > distance)
-            {
-                soldier->moveTo(destination);
-                soldier->setGetDestination(true);
-                continue;
-            }
-            soldier->moveTo(move + nowPosition);
-        }
-        else if (soldier->_route.size())
-        {
-            //log("route size %d", soldier->_route.size());
-            soldier->setDestination(soldier->_route.front());
-            (soldier->_route).erase((soldier->_route).begin());
-            soldier->setGetDestination(false);
-        }
-    }
-}
+			float speed = soldier->getUnitSpeed() * interval;
+				//如果没找过路，就去找路
+			if (!soldier->isFindRoad) {
+					findRroute(soldier, soldier->_route);
+					soldier->isFindRoad = true;
+			}
+			if(soldier->_route.size()){
+				//这一帧移动的方向
+				Vec2 moveDirection = soldier->_route.front() - soldier->getPosition();
+				//这一寻路节点还能否使用
+				float moveDistance = moveDirection.length();
+				if (moveDistance < speed) {
+					(soldier->_route).erase((soldier->_route).begin());
+				}
+				else {
+					moveDirection = soldier->_route.front() - soldier->getPosition();
+					moveDistance = moveDirection.length();
+				}
+				moveDirection.normalize();
+				//还有要走的路
+				if (soldier->_route.size()) {
+					soldier->moveTo(moveDirection*soldier->getUnitSpeed() * interval+ soldier->getPosition());
+				}
+				else {
+					soldier->setGetDestination(true);
+				}
+				}
+			}
+			}
+			
+            
+  }
+
+   
+
 
 //i forget what is this
 //what's
@@ -207,7 +220,7 @@ bool MoveController::is_find(Vec2 position, Vec2 destination)
     for (int i = 0; i < 15; ++i)
     {
         if (_gameScene->isCollision(_gameScene->
-            _tileMap->convertToWorldSpace(position + i * direction / 20)))
+            _tileMap->convertToWorldSpace(position + i * direction / 15)))
         {
             return false;
         }
@@ -226,17 +239,14 @@ and this function is written by czd
 */
 void MoveController::findRroute(Unit *soldier, std::vector<Point> &route)
 {
+	int mapNode[50][50];
+	memset(mapNode, 0, sizeof(mapNode));
     Vec2 screenNowPosition = soldier->getPosition();
     Vec2 screenDestination = soldier->getDestination();
     //so  
     Vec2 nowPosition = _gameScene->_tileMap->convertToNodeSpace(screenNowPosition);
     Vec2 nowDestination = _gameScene->_tileMap->convertToNodeSpace(screenDestination);
-    //i
-    //struct cmp {
-    //	bool operator()(node *a, node *b) {
-    //		return a->cost >= b->cost;
-    //	}
-    //};
+
     std::queue<node*> open;
     std::vector<node*> storeNew;
     //std::priority_queue<node*, std::vector<node*>, cmp> close;
@@ -244,7 +254,7 @@ void MoveController::findRroute(Unit *soldier, std::vector<Point> &route)
     storeNew.push_back(head);
     node *myend = head;
     open.push(head);
-    int distance = 240;
+    int distance = 80;
     //don't    
     //know
     float directX[8] = { 0,0,-1 * distance ,distance,0.7*distance ,0.7* distance ,-0.7* distance ,-0.7* distance };
@@ -265,14 +275,16 @@ void MoveController::findRroute(Unit *soldier, std::vector<Point> &route)
         {
             //this         
             if (!_gameScene->isCollision(_gameScene->_tileMap->convertToWorldSpace
+				//cur->whereX是地图坐标
             (Point(cur->whereX + directX[i], cur->whereY + directY[i]))))
             {
+				int nodeX = (cur->whereX + directX[i]) / distance;
+				int nodeY = (cur->whereY + directY[i]) / distance;
                 //fucking           
-                if (Vec2(nowDestination.x - (cur->whereX), nowDestination.y - (cur->whereY)).length() >
-                    Vec2(nowDestination.x - (cur->whereX) - directX[i], nowDestination.y - (cur->whereY) - directY[i]).length()
-                    - 0.7*distance)
+                if (mapNode[nodeX][nodeY]!=1)
                 {
                     node *n = new node(cur->whereX + directX[i], cur->whereY + directY[i], distance, cur);
+					mapNode[nodeX][nodeY] = 1;
                     storeNew.push_back(n);
                     if (is_find(Point(n->whereX, n->whereY), nowDestination))
                     {
