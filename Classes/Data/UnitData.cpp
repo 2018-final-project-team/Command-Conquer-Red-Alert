@@ -34,7 +34,7 @@ Unit * Unit::create(Tag unitTag)
 	if (unitTag == BASE_CAR_TAG)
 	{
 		//初始化精灵对象
-		temp->initWithFile("GameItem/Unit/BaseCar.png");
+		temp->initWithFile("GameItem/Unit/BaseCar-normal.png");
 
 		//autorelease
 		temp->autorelease();
@@ -293,9 +293,11 @@ void Unit::changeToDefault()
 			break;
 		case TANK_TAG:
 			stopAllActions();
-			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("Unit2-right (3).png"));
+			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("Unit3-right (3).png"));
 			break;
 		case BASE_CAR_TAG:
+			stopAllActions();
+			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("BaseCar-right (1).png"));
 			break;
 		}
 		break;
@@ -313,9 +315,11 @@ void Unit::changeToDefault()
 			break;
 		case TANK_TAG:
 			stopAllActions();
-			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("Unit2-left (3).png"));
+			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("Unit3-left (3).png"));
 			break;
 		case BASE_CAR_TAG:
+			stopAllActions();
+			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("BaseCar-left (1).png"));
 			break;
 		}
 		break;
@@ -332,9 +336,11 @@ void Unit::changeToDefault()
 			break;
 		case TANK_TAG:
 			stopAllActions();
-			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("Unit1-back (1).png"));
+			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("Unit3-back (1).png"));
 			break;
 		case BASE_CAR_TAG:
+			stopAllActions();
+			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("BaseCar-back (1).png"));
 			break;
 		}
 		break;
@@ -351,9 +357,11 @@ void Unit::changeToDefault()
 			break;
 		case TANK_TAG:
 			stopAllActions();
-			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("Unit2-forward (1).png"));
+			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("Unit3-forward (1).png"));
 			break;
 		case BASE_CAR_TAG:
+			stopAllActions();
+			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("BaseCar-forward (1).png"));
 			break;
 		}
 		break;
@@ -366,16 +374,32 @@ void Unit::changeToDefault()
 //改变状态为攻击状态
 void Unit::changeToAttackLeft()
 {
-	stopAllActions();
-	runAction(RepeatForever::create(Animate::create(
-		(AnimationCache::getInstance()->getAnimation(getUnitName() + "_attackLeft")))));
+	if (getUnitTag() == BASE_CAR_TAG)   //基地车没有攻击状态
+	{
+		stopAllActions();
+		setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("BaseCar-left (1).png"));
+	}
+	else
+	{
+		stopAllActions();
+		runAction(RepeatForever::create(Animate::create(
+			(AnimationCache::getInstance()->getAnimation(getUnitName() + "_attackLeft")))));
+	}
 }
 
 void Unit::changeToAttackRight()
 {
-	stopAllActions();
-	runAction(RepeatForever::create(Animate::create(
-		(AnimationCache::getInstance()->getAnimation(getUnitName() + "_attackRight")))));
+	if (getUnitTag() == BASE_CAR_TAG)   //基地车没有攻击状态
+	{
+		stopAllActions();
+		setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("BaseCar-right (1).png"));
+	}
+	else
+	{
+		stopAllActions();
+		runAction(RepeatForever::create(Animate::create(
+			(AnimationCache::getInstance()->getAnimation(getUnitName() + "_attackRight")))));
+	}
 }
 
 //改变朝向
@@ -411,7 +435,10 @@ void Unit::changeToRight()
 //TODO:士兵死亡的更多处理
 void Unit::changeToDead()
 {
-	stopAllActions();
-	runAction(Animate::create(
-		(AnimationCache::getInstance()->getAnimation(getUnitName() + "_die"))));
+	if (getUnitTag() != BASE_CAR_TAG)   //基地车暂时没有死亡动画
+	{
+		stopAllActions();
+		runAction(Animate::create(
+			(AnimationCache::getInstance()->getAnimation(getUnitName() + "_die"))));
+	}
 }

@@ -80,5 +80,8 @@ void GameAnimation::initTank()
 
 void GameAnimation::initBaseCar()
 {
-
+	AnimationCache::getInstance()->addAnimation(createAnimation("BaseCar-forward (%d).png", 1, 2, 0.1f), "BaseCar_forward");
+	AnimationCache::getInstance()->addAnimation(createAnimation("BaseCar-back (%d).png", 1, 2, 0.1f), "BaseCar_back");
+	AnimationCache::getInstance()->addAnimation(createAnimation("BaseCar-left (%d).png", 1, 2, 0.1f), "BaseCar_left");
+	AnimationCache::getInstance()->addAnimation(createAnimation("BaseCar-right (%d).png", 1, 2, 0.1f), "BaseCar_right");
 }
