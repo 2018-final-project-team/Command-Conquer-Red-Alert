@@ -346,16 +346,28 @@ void Manager::attack()
 
     for (auto& soldier : *(_gameScene->getSoldiers()))
     {
+        bool isSoldierAttack = false;
+
         if (_selectedEnemy && soldier->canAttack(_selectedEnemy->getPosition())
-            && _selectedEnemy != soldier)    // 如果选中了敌方士兵  & cannot attak itself
+            && _selectedEnemy != soldier && !isSoldierAttack)    // 如果选中了敌方士兵  & cannot attak itself
         {
-            log("attack");
+            //log("attack");
             switch (soldier->getUnitTag())
             {
             case INFANTRY_TAG:
                 if (nowT - infantryPreT >= soldier->getUnitATKCD())
                 {
+                    if (_selectedEnemy->getPositionX() - soldier->getPositionX() > 0)
+                    {
+                        soldier->switchState(stateAttackRight);
+                    }
+                    else
+                    {
+                        soldier->switchState(stateAttackLeft);
+                    }
                     soldier->attack(_selectedEnemy);
+                    soldier->switchState(stateNone);
+
                     if (_selectedEnemy->getUnitHP() <= 0)
                     {
                         _selectedEnemy->setDeath();
@@ -371,13 +383,23 @@ void Manager::attack()
                         }
                         _selectedEnemy = nullptr;
                     }
-                    isInfantryAttack = true;
+                    isInfantryAttack = isSoldierAttack = true;
                 }
                 break;
             case DOG_TAG:
                 if (nowT - dogPreT >= soldier->getUnitATKCD())
                 {
+                    if (_selectedEnemy->getPositionX() - soldier->getPositionX() > 0)
+                    {
+                        soldier->switchState(stateAttackRight);
+                    }
+                    else
+                    {
+                        soldier->switchState(stateAttackLeft);
+                    }
                     soldier->attack(_selectedEnemy);
+                    soldier->switchState(stateNone);
+
                     if (_selectedEnemy->getUnitHP() <= 0)
                     {
                         _selectedEnemy->setDeath(); 
@@ -393,13 +415,23 @@ void Manager::attack()
                         }
                         _selectedEnemy = nullptr;
                     }
-                    isDogAttack = true;
+                    isDogAttack = isSoldierAttack = true;
                 }
                 break;
             case TANK_TAG:
                 if (nowT - tankPreT >= soldier->getUnitATKCD())
                 {
+                    if (_selectedEnemy->getPositionX() - soldier->getPositionX() > 0)
+                    {
+                        soldier->switchState(stateAttackRight);
+                    }
+                    else
+                    {
+                        soldier->switchState(stateAttackLeft);
+                    }
                     soldier->attack(_selectedEnemy);
+                    soldier->switchState(stateNone);
+
                     if (_selectedEnemy->getUnitHP() <= 0)
                     {
                         _selectedEnemy->setDeath();
@@ -415,14 +447,14 @@ void Manager::attack()
                         }
                         _selectedEnemy = nullptr;
                     }
-                    isTankAttack = true;
+                    isTankAttack = isSoldierAttack = true;
                 }
                 break;
             }
 
             continue;
         }
-        else if (_selectedBuilding && soldier->canAttack(_selectedBuilding->getPosition()))  // 如果选中了敌方建筑
+        else if (_selectedBuilding && soldier->canAttack(_selectedBuilding->getPosition()) && !isSoldierAttack)  // 如果选中了敌方建筑
         {
             selectedBuildingTag = _selectedBuilding->getBuildingTag();
             switch (soldier->getUnitTag())
@@ -431,7 +463,18 @@ void Manager::attack()
                 if (nowT - infantryPreT >= soldier->getUnitATKCD())
                 {
                     isBuildingHurt = true;
+
+                    if (_selectedBuilding->getPositionX() - soldier->getPositionX() > 0)
+                    {
+                        soldier->switchState(stateAttackRight);
+                    }
+                    else
+                    {
+                        soldier->switchState(stateAttackLeft);
+                    }
                     soldier->attack(_selectedBuilding);
+                    soldier->switchState(stateNone);
+
                     if (_selectedBuilding->getHP() <= 0)
                     {
                         _selectedBuilding->setDeath();
@@ -440,14 +483,25 @@ void Manager::attack()
                         _gameScene->removeChild(_selectedBuilding);
                         _selectedBuilding = nullptr;
                     }
-                    isInfantryAttack = true;
+                    isInfantryAttack = isSoldierAttack = true;
                 }
                 break;
             case DOG_TAG:
                 if (nowT - dogPreT >= soldier->getUnitATKCD())
                 {
                     isBuildingHurt = true;
+
+                    if (_selectedBuilding->getPositionX() - soldier->getPositionX() > 0)
+                    {
+                        soldier->switchState(stateAttackRight);
+                    }
+                    else
+                    {
+                        soldier->switchState(stateAttackLeft);
+                    }
                     soldier->attack(_selectedBuilding);
+                    soldier->switchState(stateNone);
+
                     if (_selectedBuilding->getHP() <= 0)
                     {
                         _selectedBuilding->setDeath();
@@ -457,14 +511,25 @@ void Manager::attack()
                         _selectedBuilding = nullptr;
                         isBuildingDied = true;
                     }
-                    isDogAttack = true;
+                    isDogAttack = isSoldierAttack = true;
                 }
                 break;
             case TANK_TAG:
                 if (nowT - tankPreT >= soldier->getUnitATKCD())
                 {
                     isBuildingHurt = true;
+
+                    if (_selectedBuilding->getPositionX() - soldier->getPositionX() > 0)
+                    {
+                        soldier->switchState(stateAttackRight);
+                    }
+                    else
+                    {
+                        soldier->switchState(stateAttackLeft);
+                    }
                     soldier->attack(_selectedBuilding);
+                    soldier->switchState(stateNone);
+
                     if (_selectedBuilding->getHP() <= 0)
                     {
                         _selectedBuilding->setDeath();
@@ -474,7 +539,7 @@ void Manager::attack()
                         _selectedBuilding = nullptr;
                         isBuildingDied = true;
                     }
-                    isTankAttack = true;
+                    isTankAttack = isSoldierAttack = true;
                 }
             }
 
@@ -483,6 +548,11 @@ void Manager::attack()
 
         for (auto& enemy : *(enemySoldiers))
         {
+            if (isSoldierAttack)
+            {
+                break;
+            }
+
             if (soldier->canAttack(enemy->getPosition()))
             {
                 switch (soldier->getUnitTag())
@@ -490,40 +560,70 @@ void Manager::attack()
                 case INFANTRY_TAG:
                     if (nowT - infantryPreT >= soldier->getUnitATKCD())
                     {
+                        if (enemy->getPositionX() - soldier->getPositionX() > 0)
+                        {
+                            soldier->switchState(stateAttackRight);
+                        }
+                        else
+                        {
+                            soldier->switchState(stateAttackLeft);
+                        }
                         soldier->attack(enemy);
+                        soldier->switchState(stateNone);
+
                         if (enemy->getUnitHP() <= 0)
                         {
                             enemy->setDeath();
                             enemySoldiers->eraseObject(enemy);
                             _gameScene->removeChild(enemy);
                         }
-                        isInfantryAttack = true;
+                        isInfantryAttack = isSoldierAttack = true;
                     }
                     break;
                 case DOG_TAG:
                     if (nowT - dogPreT >= soldier->getUnitATKCD())
                     {
+                        if (enemy->getPositionX() - soldier->getPositionX() > 0)
+                        {
+                            soldier->switchState(stateAttackRight);
+                        }
+                        else
+                        {
+                            soldier->switchState(stateAttackLeft);
+                        }
                         soldier->attack(enemy);
+                        soldier->switchState(stateNone);
+
                         if (enemy->getUnitHP() <= 0)
                         {
                             enemy->setDeath();
                             enemySoldiers->eraseObject(enemy);
                             _gameScene->removeChild(enemy);
                         }
-                        isDogAttack = true;
+                        isDogAttack = isSoldierAttack = true;
                     }
                     break;
                 case TANK_TAG:
                     if (nowT - tankPreT >= soldier->getUnitATKCD())
                     {
+                        if (enemy->getPositionX() - soldier->getPositionX() > 0)
+                        {
+                            soldier->switchState(stateAttackRight);
+                        }
+                        else
+                        {
+                            soldier->switchState(stateAttackLeft);
+                        }
                         soldier->attack(enemy);
+                        soldier->switchState(stateNone);
+
                         if (enemy->getUnitHP() <= 0)
                         {
                             enemy->setDeath();
                             enemySoldiers->eraseObject(enemy);
                             _gameScene->removeChild(enemy);
                         }
-                        isTankAttack = true;
+                        isTankAttack = isSoldierAttack = true;
                     }
                     break;
                 }

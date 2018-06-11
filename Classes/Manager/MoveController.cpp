@@ -161,11 +161,37 @@ void MoveController::moveSoldiers()
             //log("deatination %f %f", destination.x, destination.y);
          
             Vec2 move = soldier->getUnitSpeed() * interval * direction;
+            //change state of unit
+            if (fabs(direction.x) < fabs(direction.y))
+            {
+                if (direction.y > 0)           //up
+                {
+                    soldier->switchState(stateWalkUp);
+                }
+                else                          //down
+                {
+                    soldier->switchState(stateWalkDown);
+                }
+            }
+            else
+            {
+                //left
+                if (direction.x < 0)
+                {
+                    soldier->switchState(stateWalkLeft);
+                }
+                //right
+                else
+                {
+                    soldier->switchState(stateWalkRight);
+                }
+            }
             // if the distance of this move is longer than destination
             if (move.length() > distance)
             {
                 soldier->moveTo(destination);
                 soldier->setGetDestination(true);
+                soldier->switchState(stateNone);
                 continue;
             }
             soldier->moveTo(move + nowPosition);
