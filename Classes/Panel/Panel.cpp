@@ -191,7 +191,7 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 			for (auto &building : *(_gameScene->getBuildings())) {
 				auto X = touch->getLocation().x - building->getPositionX();
 				auto Y = touch->getLocation().y - building->getPositionY();
-				if (_canToBuild&&X>-2*VOLUMEOFBUILDING&&X<2*VOLUMEOFBUILDING&&Y>-1.5*VOLUMEOFBUILDING&& Y<1.5*VOLUMEOFBUILDING)
+				if (_canToBuild&&X>-3*VOLUMEOFBUILDING&&X<3*VOLUMEOFBUILDING&&Y>-2*VOLUMEOFBUILDING&& Y<2*VOLUMEOFBUILDING)
 				{
 					_nearOurBuilding = 1;
 					break;

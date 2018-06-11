@@ -709,9 +709,9 @@ bool GameScene::isCollision(cocos2d::Vec2 position)
         return true;
     }
 	for (auto &building : *(this -> getBuildings())) {
-		auto X = position.x - building->getPositionX();
+		auto X = position.x - building->getPositionX()+100;
 		auto Y = position.y - building->getPositionY();
-		if (X>-100&&X<100&&Y>-50&&Y<50)
+		if (Y>-0.5*X && Y<0.5*X && 0.5*X - 100<Y && Y<100 - 0.5*X)
 		{
 			return true;
 		}

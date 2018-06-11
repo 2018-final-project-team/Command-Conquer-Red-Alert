@@ -217,10 +217,10 @@ bool MoveController::is_find(Vec2 position, Vec2 destination)
     Vec2 direction = destination - position;
     //i
     //am 
-    for (int i = 0; i < 15; ++i)
+    for (int i = 0; i < 25; ++i)
     {
         if (_gameScene->isCollision(_gameScene->
-            _tileMap->convertToWorldSpace(position + i * direction / 15)))
+            _tileMap->convertToWorldSpace(position + i * direction / 25)))
         {
             return false;
         }
@@ -239,7 +239,7 @@ and this function is written by czd
 */
 void MoveController::findRroute(Unit *soldier, std::vector<Point> &route)
 {
-	int mapNode[50][50];
+	int mapNode[200][200];
 	memset(mapNode, 0, sizeof(mapNode));
     Vec2 screenNowPosition = soldier->getPosition();
     Vec2 screenDestination = soldier->getDestination();
@@ -254,11 +254,11 @@ void MoveController::findRroute(Unit *soldier, std::vector<Point> &route)
     storeNew.push_back(head);
     node *myend = head;
     open.push(head);
-    int distance = 80;
+    int distance = 100;
     //don't    
     //know
-    float directX[8] = { 0,0,-1 * distance ,distance,0.7*distance ,0.7* distance ,-0.7* distance ,-0.7* distance };
-    float directY[8] = { distance,-1 * distance,0 ,0,0.7* distance ,-0.7* distance ,0.7* distance ,-0.7* distance };
+    float directX[8] = { 0.7*distance ,0.7* distance ,-0.7* distance ,-0.7* distance ,0,0,-1 * distance ,distance };
+    float directY[8] = { 0.7* distance ,-0.7* distance ,0.7* distance ,-0.7* distance,distance,-1 * distance,0 ,0 };
     int is_not_find = 1;
     //what
     if (is_find(nowPosition, nowDestination))
@@ -278,8 +278,8 @@ void MoveController::findRroute(Unit *soldier, std::vector<Point> &route)
 				//cur->whereX是地图坐标
             (Point(cur->whereX + directX[i], cur->whereY + directY[i]))))
             {
-				int nodeX = (cur->whereX + directX[i]) / distance;
-				int nodeY = (cur->whereY + directY[i]) / distance;
+				int nodeX = (cur->whereX + directX[i])*3.5 / distance;
+				int nodeY = (cur->whereY + directY[i])*3.5 / distance;
                 //fucking           
                 if (mapNode[nodeX][nodeY]!=1)
                 {
