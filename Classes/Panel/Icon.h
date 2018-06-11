@@ -1,3 +1,4 @@
+
 /*
 *  @file     Icon.h
 *  @brief    控制图标类，控制栏中显示的图标
@@ -17,8 +18,8 @@
 //Unit类使用4种：6~8
 enum IconsStatus
 {
-	invalidForMoney, 
-	invalidForOtherTask, 
+	invalidForMoney,
+	invalidForOtherTask,
 	eIconPre,
 	eIconOn,
 	eIconOK,
@@ -34,8 +35,8 @@ class GameScene;
 class Icon : public cocos2d::Sprite
 {
 public:
-	bool initIcon(Tag tag,int money, GameScene* gameScene);
-	static Icon* createIcon(Tag tag,int money, GameScene* gameScene);
+	bool initIcon(Tag tag, int money, GameScene* gameScene);
+	static Icon* createIcon(Tag tag, int money, GameScene* gameScene);
 
 	/**
 	* @brief 修改图标的status和显示效果
@@ -57,13 +58,13 @@ private:
 	GameScene* _gameScene;
 
 	CC_SYNTHESIZE(bool, _isAble, IsAble);   //是否可通过点击增加任务
-	CC_SYNTHESIZE(Tag, _iconTag, IconTag);         //图标的Tag
-    CC_SYNTHESIZE(int, money, Money);    //执行建造or训练or制造计划需要的金钱数
+	CC_SYNTHESIZE(Tag, tag, tag);         //图标的Tag
+	CC_SYNTHESIZE(int, money, Money);    //执行建造or训练or制造计划需要的金钱数
 
 	cocos2d::ProgressTimer* progressTimer1;
 	cocos2d::ProgressTimer* progressTimer2;
 
-    
+
 	cocos2d::Sprite* _icon;           //内层显示的图标
 	cocos2d::Sprite* _iconFrame;       //最外层框图
 	cocos2d::Sprite* _priceIcon;      //价格图标
@@ -76,4 +77,4 @@ private:
 
 };
 
-#endif
+#endif  

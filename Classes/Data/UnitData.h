@@ -1,8 +1,5 @@
 //
 //  UnitData.hpp
-//  CCRA
-//
-//  Created by 王星洲 on 2018/5/23.
 //
 
 #ifndef UnitData_hpp

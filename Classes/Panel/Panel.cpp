@@ -1,3 +1,4 @@
+
 /*
 *  @file     Panel.cpp
 *  @brief    控制栏类，使用控制栏进行建造建筑、训练士兵、制造战车
@@ -9,14 +10,17 @@
 #include "Panel/Icon.h"
 #include "Scene/GameScene.h"
 #include <time.h>
-
+#define VOLUMEOFBUILDING 100
+#define HEIGHTOFBUILDING 30
+#define PANELX 912
+#define PANELY 368
 //#include "Manager/GameManager.h"
 
 USING_NS_CC;
 
 Panel* Panel::createWithGameScene(GameScene* gameScene)
 {
-	
+
 	Panel* panel = new Panel();
 	if (panel->initWithGameScene(gameScene))
 	{
@@ -35,7 +39,8 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 	{
 		return false;
 	}
-
+	DrawNode* drawNode = DrawNode::create();
+	this->addChild(drawNode);
 
 	_clickToPlaceBuilding = false;
 
@@ -81,7 +86,7 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 		{
 			switch (_selectedButton->getTag())
 			{
-			//================三个标签按钮的点击处理==================
+				//================三个标签按钮的点击处理==================
 			case BUILDING_BUTTON:
 				//log("select building button, the tag is:%d", _selectedButton->getTag());
 				setCurButton(BUILDING_BUTTON);
@@ -101,10 +106,11 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 			return false;
 		}
 	};
+	_mainButtonListener->setSwallowTouches(true);   //吞没触摸事件，不向下传递
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(_mainButtonListener, _buildingButton);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(_mainButtonListener->clone(), _soldierButton);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(_mainButtonListener->clone(), _carButton);
-	_mainButtonListener->setSwallowTouches(true);   //吞没触摸事件，不向下传递
+
 
 
 	//===============图标按钮触摸事件监听===================
@@ -113,23 +119,23 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 		Icon* _selectedButton = static_cast<Icon*>(event->getCurrentTarget());
 		Vec2 locationInNode = _selectedButton->convertToNodeSpace(touch->getLocation());
 		Size s2 = _selectedButton->_iconFrame->getContentSize();
-		Rect rect2 = Rect(-s2.width/2, -s2.height/2, s2.width, s2.height);
-		//log("listner2 %d %d",s2.width,s2.height);
+		Rect rect2 = Rect(-s2.width / 2, -s2.height / 2, s2.width, s2.height);
+		//log("listner2 %d %d", s2.width, s2.height);
 		//点击范围判断检测
 		if (rect2.containsPoint(locationInNode))
 		{
 			//log("touch icon");
-			switch (_selectedButton->getIconTag())
+			switch (_selectedButton->getTag())
 			{
-			//==================建筑类图标的点击处理===================
+				//==================建筑类图标的点击处理===================
 			case POWER_PLANT_TAG:
 			case MINE_TAG:
 			case BARRACKS_TAG:
 			case CAR_FACTORY_TAG:
 				if (_selectedButton->getIsAble())
 				{
-					_gameScene->_manager->clickCreateBuildingByTag(static_cast<Tag>(_selectedButton->getIconTag()), clock());
-					_selectedButton->showProgressOfWait((_gameScene->_manager->getWaitTimeToCreateBuilding())/1000);  //单位转化为秒
+					_gameScene->_manager->clickCreateBuildingByTag(static_cast<Tag>(_selectedButton->getTag()), clock());
+					_selectedButton->showProgressOfWait((_gameScene->_manager->getWaitTimeToCreateBuilding()) / 1000);  //单位转化为秒
 				}
 				else if (_selectedButton->getStatus() == eIconOK)
 				{
@@ -138,39 +144,113 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 					return true;
 				}
 				break;
-			//=======================================================
+				//=======================================================
 
 
-			//=================士兵类图标的点击处理====================
+				//=================士兵类图标的点击处理====================
 			case INFANTRY_TAG:
 			case DOG_TAG:
 				if (_selectedButton->getIsAble())
 				{
-					_gameScene->_manager->clickCreateSoldierByTag(static_cast<Tag>(_selectedButton->getIconTag()));
+					_gameScene->_manager->clickCreateSoldierByTag(static_cast<Tag>(_selectedButton->getTag()));
 				}
 				break;
-			//=======================================================
+				//=======================================================
 
-			//=================战车类图标的点击处理====================
+				//=================战车类图标的点击处理====================
 			case TANK_TAG:
 				if (_selectedButton->getIsAble())
 				{
-					_gameScene->_manager->clickCreateSoldierByTag(static_cast<Tag>(_selectedButton->getIconTag()));
+					_gameScene->_manager->clickCreateSoldierByTag(static_cast<Tag>(_selectedButton->getTag()));
 				}
 				break;
-			//=======================================================
+				//=======================================================
 			}
 			return true;
 		}
 		return false;
 	};
+	//画出菱形
+	_iconButtonListener->onTouchMoved = [=](Touch* touch, Event* event) {
+		if (_clickToPlaceBuilding) {
+			//判断是否可以建造
+			_canToBuild = 1;
+			_nearOurBuilding = 0;
+			//和别的建筑碰撞
+			int directX[4] = { 0,0, -1 * VOLUMEOFBUILDING, VOLUMEOFBUILDING };
+			int directY[4] = { VOLUMEOFBUILDING*0.5,-0.5* VOLUMEOFBUILDING,0,0 };
+			for (int i = 0; i < 4; i++) {
+				if (canBuild(Vec2(touch->getLocation().x + directX[i], touch->getLocation().y + directY[i]), _gameScene)) {
+				}
+				else {
+					_canToBuild = 0;
+					break;
+				}
+			}
+			//周围要有同类建筑，才能建造
+			for (auto &building : *(_gameScene->getBuildings())) {
+				auto X = touch->getLocation().x - building->getPositionX();
+				auto Y = touch->getLocation().y - building->getPositionY();
+				if (_canToBuild&&X>-3*VOLUMEOFBUILDING&&X<3*VOLUMEOFBUILDING&&Y>-2*VOLUMEOFBUILDING&& Y<2*VOLUMEOFBUILDING)
+				{
+					_nearOurBuilding = 1;
+					break;
+				}
+			}
 
-	_iconButtonListener->onTouchEnded = [this](Touch* touch, Event* event) {
+			//周围有障碍
+			if (_gameScene->isCollision(touch->getLocation()) || _gameScene->isCollision(touch->getLocation() + Point(VOLUMEOFBUILDING, VOLUMEOFBUILDING)) ||
+				_gameScene->isCollision(touch->getLocation() + Point(VOLUMEOFBUILDING, -1 * VOLUMEOFBUILDING)) ||
+				_gameScene->isCollision(touch->getLocation() + Point(-1 * VOLUMEOFBUILDING, VOLUMEOFBUILDING)) ||
+				_gameScene->isCollision(touch->getLocation() + Point(-1 * VOLUMEOFBUILDING, -1 * VOLUMEOFBUILDING))
+				) {
+				_canToBuild = 0;
+
+			}
+			//周围有兵
+			for (auto &soldier : *(_gameScene->getSoldiers())) {
+				if (touch->getLocation().x > soldier->getPositionX() - VOLUMEOFBUILDING && touch->getLocation().x<soldier->getPositionX() + VOLUMEOFBUILDING &&
+					touch->getLocation().y>soldier->getPositionY() - VOLUMEOFBUILDING && touch->getLocation().y < soldier->getPositionY() + VOLUMEOFBUILDING) {
+					_canToBuild = 0;
+					break;
+				}
+			}
+
+			if (_canToBuild&&_nearOurBuilding) {
+				drawNode->clear();
+				Vec2 point1[4];
+				point1[0] = Vec2(-1 * VOLUMEOFBUILDING + touch->getLocation().x - PANELX, touch->getLocation().y - PANELY - HEIGHTOFBUILDING);
+				point1[1] = Vec2(touch->getLocation().x - PANELX, 0.5*VOLUMEOFBUILDING + touch->getLocation().y - PANELY - HEIGHTOFBUILDING);
+				point1[2] = Vec2(VOLUMEOFBUILDING + touch->getLocation().x - PANELX, touch->getLocation().y - PANELY - HEIGHTOFBUILDING);
+				point1[3] = Vec2(touch->getLocation().x - PANELX, touch->getLocation().y - 0.5*VOLUMEOFBUILDING - PANELY - HEIGHTOFBUILDING);
+				drawNode->drawPolygon(point1, 4, Color4F(0, 1, 0, 1), 1, Color4F(0, 1, 0, 1));
+			}
+			else {
+				drawNode->clear();
+				Vec2 point1[4];
+				point1[0] = Vec2(-1 * VOLUMEOFBUILDING + touch->getLocation().x - PANELX, touch->getLocation().y - PANELY - HEIGHTOFBUILDING);
+				point1[1] = Vec2(touch->getLocation().x - PANELX, 0.5*VOLUMEOFBUILDING + touch->getLocation().y - PANELY - HEIGHTOFBUILDING);
+				point1[2] = Vec2(VOLUMEOFBUILDING + touch->getLocation().x - PANELX, touch->getLocation().y - PANELY - HEIGHTOFBUILDING);
+				point1[3] = Vec2(touch->getLocation().x - PANELX, touch->getLocation().y - 0.5*VOLUMEOFBUILDING - PANELY - HEIGHTOFBUILDING);
+				drawNode->drawPolygon(point1, 4, Color4F(1, 0, 0, 1), 1, Color4F(1, 0, 0, 1));
+			}
+		}
+	};
+	_iconButtonListener->onTouchEnded = [this, drawNode](Touch* touch, Event* event) {
+		drawNode->clear();
 		if (_clickToPlaceBuilding)
 		{
-			_gameScene->_manager->createBuilding(touch->getLocation());
-			setCurButton(_curCategoryTag);
+			if (_canToBuild) {
+				_gameScene->_manager->createBuilding(touch->getLocation());
+				setCurButton(_curCategoryTag);
+			}
+			else {
+				Size size = Director::getInstance()->getVisibleSize();
+				//_labelTTF->setPosition(size.width/2,size.height/2);
+			}
+
 		}
+
 	};
 	_iconButtonListener->setSwallowTouches(true);   //吞没触摸事件，不向下传递
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(_iconButtonListener, _powerPlantIcon);
@@ -186,7 +266,6 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 	_buildingList = Vector<Icon*>();
 	_soldierList = Vector<Icon*>();
 	_carList = Vector<Icon*>();
-
 
 	scheduleUpdate();
 
@@ -217,7 +296,7 @@ void Panel::checkIcon(Tag tag)
 {
 	removeAllIcon();     //不再显示原来的图标
 
-	//=======_curList指针指向新的要显示的列表，并删除原有元素===========
+						 //=======_curList指针指向新的要显示的列表，并删除原有元素===========
 	switch (tag)
 	{
 	case BUILDING_BUTTON:
@@ -270,12 +349,12 @@ void Panel::checkIcon(Tag tag)
 void Panel::showIcon(Tag tag)
 {
 	ssize_t _needToShow = _curList->size();
-	
+
 	//================设置图标的坐标==================
-	for (int i=0;i<_needToShow;i++)
+	for (int i = 0; i<_needToShow; i++)
 	{
 		float x = 0;
-		float y = 0 - (i+1) * 80;
+		float y = 0 - (i + 1) * 80;
 		_curList->at(i)->setPosition(Vec2(x, y));
 		this->addChild(_curList->at(i));
 	}
@@ -294,14 +373,13 @@ void Panel::removeAllIcon()
 
 void Panel::addIcons()
 {
-	_powerPlantIcon = Icon::createIcon(POWER_PLANT_TAG, sValue[POWER_PLANT_TAG -1], _gameScene);
+	_powerPlantIcon = Icon::createIcon(POWER_PLANT_TAG, sValue[POWER_PLANT_TAG - 1], _gameScene);
 	_mineIcon = Icon::createIcon(MINE_TAG, sValue[MINE_TAG - 1], _gameScene);
 	_barracksIcon = Icon::createIcon(BARRACKS_TAG, sValue[BARRACKS_TAG - 1], _gameScene);
 	_carFactoryIcon = Icon::createIcon(CAR_FACTORY_TAG, sValue[CAR_FACTORY_TAG - 1], _gameScene);
 	_infantryIcon = Icon::createIcon(INFANTRY_TAG, sValue[INFANTRY_TAG - 1], _gameScene);
 	_dogIcon = Icon::createIcon(DOG_TAG, sValue[DOG_TAG - 1], _gameScene);
 	_tankIcon = Icon::createIcon(TANK_TAG, sValue[TANK_TAG - 1], _gameScene);
-
 }
 
 
@@ -311,7 +389,7 @@ void Panel::update(float dt)
 	{
 		for (Icon* i : *_curList)
 		{
-			auto tag = i->getIconTag();
+			auto tag = i->getTag();
 			//图标状态的处理，建筑与Unit方式不同
 			switch (tag)
 			{
@@ -324,7 +402,7 @@ void Panel::update(float dt)
 					i->setStatus(eIconOK);
 				}
 				else if ((_gameScene->_manager->_isWaitToCreateBuilding || _gameScene->_manager->_canCreateBuilding)
-							&& tag != _gameScene->_manager->getBuildingTag())
+					&& tag != _gameScene->_manager->getBuildingTag())
 				{
 					i->setStatus(invalidForOtherTask);
 				}
@@ -363,13 +441,13 @@ void Panel::update(float dt)
 					{
 						i->setStatus(eIconPreForUnit);
 					}
-					
+
 				}
 				else
 				{
 					i->setStatus(eIconPreForUnit);
 				}
-				break;
+
 
 			case TANK_TAG:
 				//===========TO DO:与gamescene中的变量名保持一致===========
@@ -399,5 +477,20 @@ void Panel::update(float dt)
 			}
 		}
 	}
-	
+
 }
+bool Panel::canBuild(cocos2d::Vec2 v, GameScene *_gameScene) {
+	for (auto &building : *(_gameScene->getBuildings())) {
+		//周围有建筑
+		auto X = v.x - building->getPositionX() + VOLUMEOFBUILDING;
+		auto Y = v.y - building->getPositionY();
+		if (Y>-0.5*X && Y<0.5*X && 0.5*X - VOLUMEOFBUILDING<Y && Y<VOLUMEOFBUILDING - 0.5*X)
+		{
+			return false;
+		}
+	}
+	return true;
+};
+
+
+
