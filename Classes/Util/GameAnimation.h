@@ -19,6 +19,7 @@ public:
 	void initInfantry();
 	void initDog();
 	void initTank();
+	void initBaseCar();
 
 	cocos2d::Animation* createAnimation(const char* prefixName, int start, int end, float delay);
 

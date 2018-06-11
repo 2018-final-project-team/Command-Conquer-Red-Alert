@@ -16,6 +16,7 @@ void GameAnimation::init()
 	initInfantry();
 	initDog();
 	initTank();
+	initBaseCar();
 }
 
 Animation* GameAnimation::createAnimation(const char* prefixName, int start, int end, float delay)
@@ -57,10 +58,21 @@ void GameAnimation::initInfantry()
 
 void GameAnimation::initDog()
 {
-
+	AnimationCache::getInstance()->addAnimation(createAnimation("Unit2-forward (%d).png", 1, 5, 0.1f), "dog_forward");
+	AnimationCache::getInstance()->addAnimation(createAnimation("Unit2-back (%d).png", 1, 5, 0.1f), "dog_back");
+	AnimationCache::getInstance()->addAnimation(createAnimation("Unit2-left (%d).png", 1, 9, 0.2f), "dog_left");
+	AnimationCache::getInstance()->addAnimation(createAnimation("Unit2-right (%d).png", 1, 9, 0.2f), "dog_right");
+	AnimationCache::getInstance()->addAnimation(createAnimation("Unit2-attackLeft (%d).png", 1, 10, 0.2f), "dog_attackLeft");
+	AnimationCache::getInstance()->addAnimation(createAnimation("Unit2-attackRight (%d).png", 1, 10, 0.2f), "dog_attackRight");
+	AnimationCache::getInstance()->addAnimation(createAnimation("Unit2-die (%d).png", 1, 9, 0.2f), "dog_die");
 }
 
 void GameAnimation::initTank()
+{
+
+}
+
+void GameAnimation::initBaseCar()
 {
 
 }

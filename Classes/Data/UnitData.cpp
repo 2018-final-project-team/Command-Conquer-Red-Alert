@@ -294,6 +294,8 @@ void Unit::changeToDefault()
 			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("Unit1-attackRight (1).png"));
 			break;
 		case DOG_TAG:
+			stopAllActions();
+			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("Unit2-attackRight (2).png"));
 			break;
 		case TANK_TAG:
 			break;
@@ -310,6 +312,8 @@ void Unit::changeToDefault()
 			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("Unit1-attackLeft (1).png"));
 			break;
 		case DOG_TAG:
+			stopAllActions();
+			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("Unit2-attackLeft (2).png"));
 			break;
 		case TANK_TAG:
 			break;
@@ -325,6 +329,8 @@ void Unit::changeToDefault()
 			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("Unit1-back (1).png"));
 			break;
 		case DOG_TAG:
+			stopAllActions();
+			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("Unit2-back (1).png"));
 			break;
 		case TANK_TAG:
 			break;
@@ -340,6 +346,8 @@ void Unit::changeToDefault()
 			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("Unit1-forward (1).png"));
 			break;
 		case DOG_TAG:
+			stopAllActions();
+			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("Unit2-forward (1).png"));
 			break;
 		case TANK_TAG:
 			break;
