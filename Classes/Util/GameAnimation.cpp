@@ -69,7 +69,13 @@ void GameAnimation::initDog()
 
 void GameAnimation::initTank()
 {
-
+	AnimationCache::getInstance()->addAnimation(createAnimation("Unit3-forward (%d).png", 1, 9, 0.1f), "tank_forward");
+	AnimationCache::getInstance()->addAnimation(createAnimation("Unit3-back (%d).png", 1, 9, 0.1f), "tank_back");
+	AnimationCache::getInstance()->addAnimation(createAnimation("Unit3-left (%d).png", 1, 9, 0.2f), "tank_left");
+	AnimationCache::getInstance()->addAnimation(createAnimation("Unit3-right (%d).png", 1, 9, 0.2f), "tank_right");
+	AnimationCache::getInstance()->addAnimation(createAnimation("Unit3-attackLeft (%d).png", 1, 9, 0.2f), "tank_attackLeft");
+	AnimationCache::getInstance()->addAnimation(createAnimation("Unit3-attackRight (%d).png", 1, 9, 0.2f), "tank_attackRight");
+	AnimationCache::getInstance()->addAnimation(createAnimation("Unit3-die (%d).png", 1, 9, 0.2f), "tank_die");
 }
 
 void GameAnimation::initBaseCar()

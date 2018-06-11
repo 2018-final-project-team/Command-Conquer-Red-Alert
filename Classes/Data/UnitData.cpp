@@ -92,12 +92,6 @@ Unit * Unit::create(Tag unitTag)
 
 
 
-
-
-
-
-
-
     
     //单位图片
     std::string (picture[3]) = { "GameItem/Unit/Unit1-normal.png","GameItem/Unit/Unit2-normal.png","GameItem/Unit/Unit3-normal.png" };
@@ -298,6 +292,8 @@ void Unit::changeToDefault()
 			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("Unit2-attackRight (2).png"));
 			break;
 		case TANK_TAG:
+			stopAllActions();
+			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("Unit2-right (3).png"));
 			break;
 		case BASE_CAR_TAG:
 			break;
@@ -316,6 +312,8 @@ void Unit::changeToDefault()
 			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("Unit2-attackLeft (2).png"));
 			break;
 		case TANK_TAG:
+			stopAllActions();
+			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("Unit2-left (3).png"));
 			break;
 		case BASE_CAR_TAG:
 			break;
@@ -333,6 +331,8 @@ void Unit::changeToDefault()
 			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("Unit2-back (1).png"));
 			break;
 		case TANK_TAG:
+			stopAllActions();
+			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("Unit1-back (1).png"));
 			break;
 		case BASE_CAR_TAG:
 			break;
@@ -350,6 +350,8 @@ void Unit::changeToDefault()
 			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("Unit2-forward (1).png"));
 			break;
 		case TANK_TAG:
+			stopAllActions();
+			setDisplayFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("Unit2-forward (1).png"));
 			break;
 		case BASE_CAR_TAG:
 			break;
@@ -364,14 +366,16 @@ void Unit::changeToDefault()
 //改变状态为攻击状态
 void Unit::changeToAttackLeft()
 {
+	stopAllActions();
 	runAction(RepeatForever::create(Animate::create(
-		(AnimationCache::getInstance()->getAnimation(getUnitName() + "__attackLeft")))));
+		(AnimationCache::getInstance()->getAnimation(getUnitName() + "_attackLeft")))));
 }
 
 void Unit::changeToAttackRight()
 {
+	stopAllActions();
 	runAction(RepeatForever::create(Animate::create(
-		(AnimationCache::getInstance()->getAnimation(getUnitName() + "__attackRight")))));
+		(AnimationCache::getInstance()->getAnimation(getUnitName() + "_attackRight")))));
 }
 
 //改变朝向
@@ -383,18 +387,21 @@ void Unit::changeToUp()
 
 void Unit::changeToLeft()
 {
+	stopAllActions();
 	runAction(RepeatForever::create(Animate::create(
 		(AnimationCache::getInstance()->getAnimation(getUnitName() + "_left")))));
 }
 
 void Unit::changeToDown()
 {
+	stopAllActions();
 	runAction(RepeatForever::create(Animate::create(
 		(AnimationCache::getInstance()->getAnimation(getUnitName() + "_forward")))));
 }
 
 void Unit::changeToRight()
 {
+	stopAllActions();
 	runAction(RepeatForever::create(Animate::create(
 		(AnimationCache::getInstance()->getAnimation(getUnitName() + "_right")))));
 }
@@ -404,6 +411,7 @@ void Unit::changeToRight()
 //TODO:士兵死亡的更多处理
 void Unit::changeToDead()
 {
-	runAction(RepeatForever::create(Animate::create(
-		(AnimationCache::getInstance()->getAnimation(getUnitName() + "_die")))));
+	stopAllActions();
+	runAction(Animate::create(
+		(AnimationCache::getInstance()->getAnimation(getUnitName() + "_die"))));
 }
