@@ -1,7 +1,7 @@
 /*
 *  @file     EndingScene.cpp
-*  @brief    ½áÊø³¡¾°
-*  @author   ÍõĞÇÖŞ
+*  @brief    ç»“æŸåœºæ™¯
+*  @author   ç‹æ˜Ÿæ´²
 */
 #include "Scene/EndingScene.h"
 #include "Scene/WelcomeScene.h"
@@ -37,7 +37,7 @@ bool EndingScene::init()
 
 	//Back to home
 	auto homeItem = MenuItemImage::create(
-		"Home1.jpg","Home2.jpg",
+		"EndingScene/HomeNormal.png","EndingScene/HomeSelected.png",
 		CC_CALLBACK_1(EndingScene::menuWelcomeCallback, this));
 
 	if (homeItem == nullptr ||
@@ -82,7 +82,7 @@ bool EndingScene::init()
 	closeMenu->setPosition(Vec2::ZERO);
 	this->addChild(closeMenu, 1);
 
-	//=====================label£º"Win or Lose"============================
+	//=====================labelï¼š"Win or Lose"============================
 	// Todo:judge for win/lose
 	auto label = Label::createWithTTF("Judge is not done", "fonts/Marker Felt.ttf", 40);
 	
@@ -107,7 +107,7 @@ bool EndingScene::init()
 		this->addChild(label, 1);
 	}
 
-	//=====================label£º"Game Time"============================
+	//=====================labelï¼š"Game Time"============================
 	auto timeLabel = Label::createWithTTF("GameTime:", "fonts/Marker Felt.ttf", 40);
 	timeLabel->setTextColor(Color4B::BLACK);
 	if (timeLabel == nullptr)
@@ -121,7 +121,7 @@ bool EndingScene::init()
 
 		this->addChild(timeLabel, 1);
 	}
-	//=====================label£º"Score"============================
+	//=====================labelï¼š"Score"============================
 	// Todo:judge for win/lose
 	auto scoreLabel = Label::createWithTTF("GameScore:", "fonts/Marker Felt.ttf", 40);
 	scoreLabel->setTextColor(Color4B::BLACK);
@@ -137,8 +137,8 @@ bool EndingScene::init()
 		this->addChild(scoreLabel, 1);
 	}
 
-	//=====================±³¾°Í¼Æ¬============================
-	auto background = Sprite::create("bg.jpg");
+	//=====================èƒŒæ™¯å›¾ç‰‡============================
+	auto background = Sprite::create("EndingScene/endingSceneBg.png");
 	if (background == nullptr)
 	{
 		CCLOG("background picture loading error");
@@ -150,6 +150,8 @@ bool EndingScene::init()
 
 		this->addChild(background, 0);
 	}
+
+	return true;
 }
 
 
