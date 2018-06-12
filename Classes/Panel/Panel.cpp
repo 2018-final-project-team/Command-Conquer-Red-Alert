@@ -243,6 +243,7 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 			if (_canToBuild && _nearOurBuilding) {
 				_gameScene->_manager->createBuilding(touch->getLocation());
 				setCurButton(_curCategoryTag);
+				_clickToPlaceBuilding = false;
 			}
 			else {
 				Size size = Director::getInstance()->getVisibleSize();

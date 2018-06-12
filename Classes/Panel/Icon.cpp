@@ -32,6 +32,8 @@ bool Icon::initIcon(Tag tag, int money, GameScene* gameScene)
 	}
 	_gameScene = gameScene;
 
+	_clickToPlaceBuilding = false;
+
 	_status = eIconPre;
 	_isAble = false;
 
