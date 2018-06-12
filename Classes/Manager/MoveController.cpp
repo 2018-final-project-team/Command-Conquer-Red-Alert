@@ -109,6 +109,9 @@ void MoveController::setDestination(cocos2d::Vec2 position)
             //log("%d %d car %f %f", col, row, car->getDestination().x, car->getDestination().y);
             // find the best way
             findRroute(car, car->_route);
+            car->setDestination(car->_route.front());
+            //just for change direction halfway
+            car->setGetDestination(true);
 
             col -= 2;             // temporarily think car is double size than infantry
             if (col < -4)
@@ -179,6 +182,9 @@ void MoveController::setDestination(cocos2d::Vec2 position)
             //log("%d %d soldier %f %f",col, row, soldier->getDestination().x, soldier->getDestination().y);
             // find the best way
             findRroute(soldier, soldier->_route);
+            soldier->setDestination(soldier->_route.front());
+            //just for change direction halfway
+            soldier->setGetDestination(true);
 
             --col;
             if (col < -maxCol)
@@ -228,6 +234,7 @@ void MoveController::moveSoldiers()
             (soldier->_route).erase((soldier->_route).begin());
             soldier->setGetDestination(false);
             Vec2 direction= (soldier->getDestination() - soldier->getPosition());
+            log("destination %f %f", soldier->getDestination().x, soldier->getDestination().y);
             //change state of unit
             if (fabs(direction.x) < fabs(direction.y))
             {
@@ -310,6 +317,7 @@ void MoveController::findRroute(Unit *soldier, std::vector<Point> &route)
 {
     int mapNode[200][200];
 	memset(mapNode, 0, sizeof(mapNode));
+    route.clear();
     Vec2 screenNowPosition = soldier->getPosition();
     Vec2 screenDestination = soldier->getDestination();
     //so  
