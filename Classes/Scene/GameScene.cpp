@@ -657,7 +657,8 @@ void GameScene::scrollMap()
             moveSpritesWithMap(Vec2(-MAPX + visibleSize.width - mapPosition.x, 0));
         }
     }
-
+    // re get the map position
+    mapPosition = _tileMap->getPosition();
 	if (Y < MINLENTH || _keyDown) 
     {
 		if (_tileMap->getPositionY() + SPEED < 0) 
