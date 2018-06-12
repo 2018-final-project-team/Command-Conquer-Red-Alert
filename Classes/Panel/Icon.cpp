@@ -138,6 +138,14 @@ void Icon::setStatus(IconsStatus iconSta)
 		break;
 
 	case eIconPreForUnit:
+		if (progressTimer1 != nullptr)
+		{
+			this->removeChild(progressTimer1, true);
+		}
+		if (progressTimer2)
+		{
+			this->removeChild(progressTimer2, true);
+		}
 		_statusLabel->setVisible(false);
 		_invalidIcon->setVisible(false);
 		if (getMoney() > _gameScene->getMoney())
@@ -180,6 +188,14 @@ void Icon::setStatus(IconsStatus iconSta)
 		}
 		break;
 	case eIconQueuingForUnit:
+		if (progressTimer1 != nullptr)
+		{
+			this->removeChild(progressTimer1, true);
+		}
+		if (progressTimer2)
+		{
+			this->removeChild(progressTimer2, true);
+		}
 		if (_iconTag == INFANTRY_TAG)
 		{
 			_statusLabel->setString(std::to_string(_gameScene->getInfantryNum()));

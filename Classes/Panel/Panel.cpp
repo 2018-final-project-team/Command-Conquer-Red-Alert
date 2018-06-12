@@ -426,7 +426,6 @@ void Panel::update(float dt)
 
 			case INFANTRY_TAG:
 			case DOG_TAG:
-				//===========TO DO:与gamescene中的变量名保持一致===========
 				if (_gameScene->_manager->_isWaitToCreateSoldier && tag == _gameScene->_manager->getSoldierTag())
 				{
 					i->setStatus(eIconOnForUnit);

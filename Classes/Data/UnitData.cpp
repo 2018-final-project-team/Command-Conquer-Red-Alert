@@ -417,6 +417,7 @@ void Unit::changeToAttackRight()
 //改变朝向
 void Unit::changeToUp()
 {
+	stopAllActions();
 	runAction(RepeatForever::create(Animate::create(
 		(AnimationCache::getInstance()->getAnimation(getUnitName() + "_back")))));
 }
