@@ -160,6 +160,7 @@ bool GameScene::init()
 						}
                         _selectedSoldiers.clear();
                         _selectedSoldiers.pushBack((static_cast<Unit*>(target)));
+						(static_cast<Unit*>(target))->setIsSelected(true);
                         break;
                     }
                     // if click enemy
@@ -191,25 +192,39 @@ bool GameScene::init()
                     return;
 				case BASE_CAR_TAG:       //if there is any definition in the case
                 {                        // you must use {} to contain it
-                    //基地车展开成基地
-                    //移除基地车
-					for (Unit* unit : _selectedSoldiers)
+					if (!static_cast<Unit*>(target)->getIsSelected())    //第一次单击选中基地车，第二次单击展开
 					{
-						unit->setIsSelected(false);
+						for (Unit* unit : _selectedSoldiers)
+						{
+							unit->setIsSelected(false);
+						}
+						_selectedSoldiers.clear();
+						_selectedSoldiers.pushBack((static_cast<Unit*>(target)));
+						(static_cast<Unit*>(target))->setIsSelected(true);
+						break;
 					}
-                    _selectedSoldiers.clear();
-                    Vec2 position = target->getPosition();
-                    _soldiers.eraseObject(static_cast<Unit*>(target), false);
-                    this->removeChild(target);
-                    //创建基地
-                    Building* base = Building::create(BASE_TAG);
-                    _gameEventDispatcher->addEventListenerWithSceneGraphPriority
-                    (_gameListener->clone(), base);
-                    base->setPosition(position);
-                    this->addChild(base, 2);
-                    _isBaseExist = true;
-                    _buildings.pushBack(base);
-                    break;
+					else
+					{
+						//基地车展开成基地
+						//移除基地车
+						for (Unit* unit : _selectedSoldiers)
+						{
+							unit->setIsSelected(false);
+						}
+						_selectedSoldiers.clear();
+						Vec2 position = target->getPosition();
+						_soldiers.eraseObject(static_cast<Unit*>(target), false);
+						this->removeChild(target);
+						//创建基地
+						Building* base = Building::create(BASE_TAG);
+						_gameEventDispatcher->addEventListenerWithSceneGraphPriority
+						(_gameListener->clone(), base);
+						base->setPosition(position);
+						this->addChild(base, 2);
+						_isBaseExist = true;
+						_buildings.pushBack(base);
+						break;
+					}
                 }
 
                 default:
