@@ -39,12 +39,11 @@ void Manager::clickCreateBuildingByTag(Tag building_tag, clock_t start_time)
 {
     if (!_isWaitToCreateBuilding)
     {
-        int castMoney, castPower;
+        int costMoney;
         switch (building_tag)
         {
         case POWER_PLANT_TAG:
-            castMoney = buildingData::powerPlantCastMoney;       //  in BuildingData.h
-            castPower = buildingData::powerPlantCastPower;
+            costMoney = buildingData::powerPlantCostMoney;       //  in BuildingData.h
             if (_gameScene->getIsPowerEnough())
             {
                 _waitTimeToCreateBuilding = buildingData::EnoughPower::powerPlantWait;
@@ -55,8 +54,7 @@ void Manager::clickCreateBuildingByTag(Tag building_tag, clock_t start_time)
             }
             break;
         case MINE_TAG:
-            castMoney = buildingData::mineCastMoney;
-            castPower = buildingData::mineCastPower;
+            costMoney = buildingData::mineCostMoney;
             if (_gameScene->getIsPowerEnough())
             {
                 _waitTimeToCreateBuilding = buildingData::EnoughPower::mineWait;
@@ -67,8 +65,7 @@ void Manager::clickCreateBuildingByTag(Tag building_tag, clock_t start_time)
             }
             break;
         case BARRACKS_TAG:
-            castMoney = buildingData::barracksCastMoney;
-            castPower = buildingData::barracksCastPower;
+            costMoney = buildingData::barracksCostMoney;
             if (_gameScene->getIsPowerEnough())
             {
                 _waitTimeToCreateBuilding = buildingData::EnoughPower::barracksWait;
@@ -79,8 +76,7 @@ void Manager::clickCreateBuildingByTag(Tag building_tag, clock_t start_time)
             }
             break;
         case CAR_FACTORY_TAG:
-            castMoney = buildingData::carFactoryCastMoney;
-            castPower = buildingData::carFactoryCastPower;
+            costMoney = buildingData::carFactoryCostMoney;
             if (_gameScene->getIsPowerEnough())
             {
                 _waitTimeToCreateBuilding = buildingData::EnoughPower::carFactoryWait;
@@ -96,8 +92,7 @@ void Manager::clickCreateBuildingByTag(Tag building_tag, clock_t start_time)
         _isWaitToCreateBuilding = true;
         _timeToCreateBuilding = start_time;
         _buildingTag = building_tag;
-        _gameScene->decreaseMoney(castMoney);
-        _gameScene->decreasePower(castPower);
+        _gameScene->decreaseMoney(costMoney);
         
     }
 }
@@ -108,19 +103,19 @@ void Manager::clickCreateSoldierByTag(Tag soldier_tag)
     switch (soldier_tag)
     {
     case INFANTRY_TAG:
-        castMoney = unitData::infantryCastMoney;
+        castMoney = unitData::infantryCostMoney;
         _gameScene->addInfantry();
         _soldierQueue.push(soldier_tag);
         break;
 
     case DOG_TAG:
-        castMoney = unitData::dogCastMoney;
+        castMoney = unitData::dogCostMoney;
         _gameScene->addDog();
         _soldierQueue.push(soldier_tag);
         break;
 
     case TANK_TAG:
-        castMoney = unitData::tankCastMoney;
+        castMoney = unitData::tankCostMoney;
         _gameScene->addTank();
         _carQueue.push(soldier_tag);
         break;
@@ -143,6 +138,12 @@ void Manager::waitCreateBuilding()
 
 void Manager::waitCreateSoldier()
 {
+	if (_panel == nullptr)
+	{
+		log("xtbl");
+	}
+	
+
     if (_isWaitToCreateSoldier)
     {
         if (clock() - _timeToCreateSoldier > _waitTimeToCreateSoldier)
@@ -155,6 +156,33 @@ void Manager::waitCreateSoldier()
             _gameScene->addChild(soldier, 1);
             // 走出兵营
             soldier->setDestination(getPutSoldierPosition());
+            soldier->setGetDestination(false);
+            Vec2 direction = (soldier->getDestination() - soldier->getPosition());
+            //change state of unit
+            if (fabs(direction.x) < fabs(direction.y))
+            {
+                if (direction.y > 0)           //up
+                {
+                    soldier->switchState(stateWalkUp);
+                }
+                else                          //down
+                {
+                    soldier->switchState(stateWalkDown);
+                }
+            }
+            else
+            {
+                //left
+                if (direction.x < 0)
+                {
+                    soldier->switchState(stateWalkLeft);
+                }
+                //right
+                else
+                {
+                    soldier->switchState(stateWalkRight);
+                }
+            }
 
             _gameScene->getSoldiers()->pushBack(soldier);
             _soldierQueue.pop();
@@ -170,9 +198,10 @@ void Manager::waitCreateSoldier()
                 _gameScene->decreaseDog();
                 break;
             }
+
         }
     }
-    else if (_soldierQueue.size() > 0)
+    else if (_soldierQueue.size())
     {
         switch (_soldierQueue.front())
         {
@@ -190,6 +219,7 @@ void Manager::waitCreateSoldier()
             {
                 _waitTimeToCreateSoldier = unitData::NotEnoughPower::infantryWait;
             }
+			_panel->_infantryIcon->showProgressOfWait(_waitTimeToCreateSoldier / 1000);
             break;
 
         case DOG_TAG:
@@ -206,22 +236,7 @@ void Manager::waitCreateSoldier()
             {
                 _waitTimeToCreateSoldier = unitData::NotEnoughPower::dogWait;
             }
-            break;
-
-        case TANK_TAG:
-            if (_gameScene->getCarFactoryNum() == 0)
-            {
-                return;
-            }
-            _carTag = TANK_TAG;
-            if (_gameScene->getIsPowerEnough())
-            {
-                _waitTimeToCreateCar = unitData::EnoughPower::tankWait;
-            }
-            else
-            {
-                _waitTimeToCreateCar = unitData::NotEnoughPower::tankWait;
-            }
+			_panel->_dogIcon->showProgressOfWait(_waitTimeToCreateSoldier / 1000);
             break;
         }
 
@@ -245,6 +260,33 @@ void Manager::waitCreateCar()
             _gameScene->addChild(car, 1);
             // 开出车厂
             car->setDestination(getPutCarPosition());
+            car->setGetDestination(false);
+            Vec2 direction = (car->getDestination() - car->getPosition());
+            //change state of unit
+            if (fabs(direction.x) < fabs(direction.y))
+            {
+                if (direction.y > 0)           //up
+                {
+                    car->switchState(stateWalkUp);
+                }
+                else                          //down
+                {
+                    car->switchState(stateWalkDown);
+                }
+            }
+            else
+            {
+                //left
+                if (direction.x < 0)
+                {
+                    car->switchState(stateWalkLeft);
+                }
+                //right
+                else
+                {
+                    car->switchState(stateWalkRight);
+                }
+            }
 
             _gameScene->getSoldiers()->pushBack(car);
             _carQueue.pop();
@@ -276,6 +318,7 @@ void Manager::waitCreateCar()
             {
                 _waitTimeToCreateCar = unitData::NotEnoughPower::tankWait;
             }
+			_panel->_tankIcon->showProgressOfWait(_waitTimeToCreateCar / 1000);
             break;
         }
 
@@ -289,6 +332,7 @@ void Manager::createBuilding(cocos2d::Vec2 position)
 {
     if (_canCreateBuilding)
     {
+        int costPower;
         Building* building = Building::create(_buildingTag);
         _gameScene->_gameEventDispatcher->addEventListenerWithSceneGraphPriority
                 (_gameScene->_gameListener->clone(), building);
@@ -297,25 +341,30 @@ void Manager::createBuilding(cocos2d::Vec2 position)
         switch (_buildingTag)
         {
         case POWER_PLANT_TAG:
-            _gameScene->addPowerPlant();            // 电厂数量加一
-            _gameScene->addPower(100);                 // 加100电量       
-            _gameScene->addTotalPower(100);
+            _gameScene->addPowerPlant();            // 电厂数量加一      
+            _gameScene->addTotalPower(1000);
+            _gameScene->addPower(1000);                 // 加100电量 
+            costPower = buildingData::powerPlantCostPower;
             break;
         case MINE_TAG:
             _gameScene->addMine();                  // 矿场数量加一
+            costPower = buildingData::mineCostPower;
             break;
         case BARRACKS_TAG:
             _gameScene->addBarracks();
             _gameScene->setBarracksPosition(building->getPosition());  // 兵营位置
+            costPower = buildingData::barracksCostPower;
             break;
         case CAR_FACTORY_TAG:
             _gameScene->addCarFactory();
             _gameScene->setCarFactoryPosition(building->getPosition());
+            costPower = buildingData::carFactoryCostPower;
             break;
         }
         _gameScene->getBuildings()->pushBack(building);
         _canCreateBuilding = false;
         _isWaitToCreateBuilding = false;
+        _gameScene->decreasePower(costPower);
     }
 }
 
@@ -341,63 +390,120 @@ void Manager::attack()
     bool isTankAttack = false;
     bool isBuildingDied = false;
     bool isBuildingHurt = false;
+    bool isMySoldierDied = false;
+    Unit* myDiedSoldier = nullptr;
     Tag selectedBuildingTag = NONE;
     Vector<Unit*>* enemySoldiers = _gameScene->getEnemySoldiers();
     clock_t nowT = clock();
 
     for (auto& soldier : *(_gameScene->getSoldiers()))
     {
-        if (_selectedEnemy && soldier->canAttack(_selectedEnemy->getPosition()))    // 如果选中了敌方士兵
+        bool isSoldierAttack = false;
+
+        if (_selectedEnemy && soldier->canAttack(_selectedEnemy->getPosition())
+            && _selectedEnemy != soldier && !isSoldierAttack)    // 如果选中了敌方士兵  & cannot attak itself
         {
+            //log("attack");
             switch (soldier->getUnitTag())
             {
             case INFANTRY_TAG:
                 if (nowT - infantryPreT >= soldier->getUnitATKCD())
                 {
+                    if (_selectedEnemy->getPositionX() - soldier->getPositionX() > 0)
+                    {
+                        soldier->switchState(stateAttackRight);
+                    }
+                    else
+                    {
+                        soldier->switchState(stateAttackLeft);
+                    }
                     soldier->attack(_selectedEnemy);
+
                     if (_selectedEnemy->getUnitHP() <= 0)
                     {
-                        _selectedEnemy->setDeath();
-                        enemySoldiers->eraseObject(_selectedEnemy);
-                        _gameScene->removeChild(_selectedEnemy);
+                        _selectedEnemy->switchState(stateDeath);
+                        if (_gameScene->getSoldiers()->contains(_selectedEnemy))
+                        {
+                            isMySoldierDied = true;
+                            myDiedSoldier = _selectedEnemy;
+                        }
+                        else
+                        {
+                            enemySoldiers->eraseObject(_selectedEnemy);
+                            _gameScene->removeChild(_selectedEnemy);
+                        }
                         _selectedEnemy = nullptr;
                     }
-                    isInfantryAttack = true;
+                    isInfantryAttack = isSoldierAttack = true;
                 }
                 break;
             case DOG_TAG:
                 if (nowT - dogPreT >= soldier->getUnitATKCD())
                 {
+                    if (_selectedEnemy->getPositionX() - soldier->getPositionX() > 0)
+                    {
+                        soldier->switchState(stateAttackRight);
+                    }
+                    else
+                    {
+                        soldier->switchState(stateAttackLeft);
+                    }
                     soldier->attack(_selectedEnemy);
+
                     if (_selectedEnemy->getUnitHP() <= 0)
                     {
-                        _selectedEnemy->setDeath();
-                        enemySoldiers->eraseObject(_selectedEnemy);
-                        _gameScene->removeChild(_selectedEnemy);
+                        _selectedEnemy->switchState(stateDeath);
+                        if (_gameScene->getSoldiers()->contains(_selectedEnemy))
+                        {
+                            isMySoldierDied = true;
+                            myDiedSoldier = _selectedEnemy;
+                        }
+                        else
+                        {
+                            enemySoldiers->eraseObject(_selectedEnemy);
+                            _gameScene->removeChild(_selectedEnemy);
+                        }
                         _selectedEnemy = nullptr;
                     }
-                    isDogAttack = true;
+                    isDogAttack = isSoldierAttack = true;
                 }
                 break;
             case TANK_TAG:
                 if (nowT - tankPreT >= soldier->getUnitATKCD())
                 {
+                    if (_selectedEnemy->getPositionX() - soldier->getPositionX() > 0)
+                    {
+                        soldier->switchState(stateAttackRight);
+                    }
+                    else
+                    {
+                        soldier->switchState(stateAttackLeft);
+                    }
                     soldier->attack(_selectedEnemy);
+
                     if (_selectedEnemy->getUnitHP() <= 0)
                     {
-                        _selectedEnemy->setDeath();
-                        enemySoldiers->eraseObject(_selectedEnemy);
-                        _gameScene->removeChild(_selectedEnemy);
+                        _selectedEnemy->switchState(stateDeath);
+                        if (_gameScene->getSoldiers()->contains(_selectedEnemy))
+                        {
+                            isMySoldierDied = true;
+                            myDiedSoldier = _selectedEnemy;
+                        }
+                        else
+                        {
+                            enemySoldiers->eraseObject(_selectedEnemy);
+                            _gameScene->removeChild(_selectedEnemy);
+                        }
                         _selectedEnemy = nullptr;
                     }
-                    isTankAttack = true;
+                    isTankAttack = isSoldierAttack = true;
                 }
                 break;
             }
 
             continue;
         }
-        else if (_selectedBuilding && soldier->canAttack(_selectedBuilding->getPosition()))  // 如果选中了敌方建筑
+        else if (_selectedBuilding && soldier->canAttack(_selectedBuilding->getPosition()) && !isSoldierAttack)  // 如果选中了敌方建筑
         {
             selectedBuildingTag = _selectedBuilding->getBuildingTag();
             switch (soldier->getUnitTag())
@@ -406,50 +512,80 @@ void Manager::attack()
                 if (nowT - infantryPreT >= soldier->getUnitATKCD())
                 {
                     isBuildingHurt = true;
+
+                    if (_selectedBuilding->getPositionX() - soldier->getPositionX() > 0)
+                    {
+                        soldier->switchState(stateAttackRight);
+                    }
+                    else
+                    {
+                        soldier->switchState(stateAttackLeft);
+                    }
                     soldier->attack(_selectedBuilding);
+
                     if (_selectedBuilding->getHP() <= 0)
                     {
                         _selectedBuilding->setDeath();
                         isBuildingDied = true;
-                        _gameScene->getBuildings()->eraseObject(_selectedBuilding);
+                        _gameScene->getEnemyBuildings()->eraseObject(_selectedBuilding);
                         _gameScene->removeChild(_selectedBuilding);
                         _selectedBuilding = nullptr;
                     }
-                    isInfantryAttack = true;
+                    isInfantryAttack = isSoldierAttack = true;
                 }
                 break;
             case DOG_TAG:
                 if (nowT - dogPreT >= soldier->getUnitATKCD())
                 {
                     isBuildingHurt = true;
+
+                    if (_selectedBuilding->getPositionX() - soldier->getPositionX() > 0)
+                    {
+                        soldier->switchState(stateAttackRight);
+                    }
+                    else
+                    {
+                        soldier->switchState(stateAttackLeft);
+                    }
                     soldier->attack(_selectedBuilding);
+
                     if (_selectedBuilding->getHP() <= 0)
                     {
                         _selectedBuilding->setDeath();
                         isBuildingDied = true;
-                        _gameScene->getBuildings()->eraseObject(_selectedBuilding);
+                        _gameScene->getEnemyBuildings()->eraseObject(_selectedBuilding);
                         _gameScene->removeChild(_selectedBuilding);
                         _selectedBuilding = nullptr;
                         isBuildingDied = true;
                     }
-                    isDogAttack = true;
+                    isDogAttack = isSoldierAttack = true;
                 }
                 break;
             case TANK_TAG:
                 if (nowT - tankPreT >= soldier->getUnitATKCD())
                 {
                     isBuildingHurt = true;
+
+                    if (_selectedBuilding->getPositionX() - soldier->getPositionX() > 0)
+                    {
+                        soldier->switchState(stateAttackRight);
+                    }
+                    else
+                    {
+                        soldier->switchState(stateAttackLeft);
+                    }
                     soldier->attack(_selectedBuilding);
+
                     if (_selectedBuilding->getHP() <= 0)
                     {
                         _selectedBuilding->setDeath();
                         isBuildingDied = true;
-                        _gameScene->getBuildings()->eraseObject(_selectedBuilding);
+                        _gameScene->getEnemyBuildings()->eraseObject(_selectedBuilding);
                         _gameScene->removeChild(_selectedBuilding);
                         _selectedBuilding = nullptr;
                         isBuildingDied = true;
                     }
-                    isTankAttack = true;
+                    isTankAttack = isSoldierAttack = true;
                 }
             }
 
@@ -458,6 +594,11 @@ void Manager::attack()
 
         for (auto& enemy : *(enemySoldiers))
         {
+            if (isSoldierAttack)
+            {
+                break;
+            }
+
             if (soldier->canAttack(enemy->getPosition()))
             {
                 switch (soldier->getUnitTag())
@@ -465,46 +606,78 @@ void Manager::attack()
                 case INFANTRY_TAG:
                     if (nowT - infantryPreT >= soldier->getUnitATKCD())
                     {
+                        if (enemy->getPositionX() - soldier->getPositionX() > 0)
+                        {
+                            soldier->switchState(stateAttackRight);
+                        }
+                        else
+                        {
+                            soldier->switchState(stateAttackLeft);
+                        }
                         soldier->attack(enemy);
+
                         if (enemy->getUnitHP() <= 0)
                         {
-                            enemy->setDeath();
+                            enemy->switchState(stateDeath);
                             enemySoldiers->eraseObject(enemy);
                             _gameScene->removeChild(enemy);
                         }
-                        isInfantryAttack = true;
+                        isInfantryAttack = isSoldierAttack = true;
                     }
                     break;
                 case DOG_TAG:
                     if (nowT - dogPreT >= soldier->getUnitATKCD())
                     {
+                        if (enemy->getPositionX() - soldier->getPositionX() > 0)
+                        {
+                            soldier->switchState(stateAttackRight);
+                        }
+                        else
+                        {
+                            soldier->switchState(stateAttackLeft);
+                        }
                         soldier->attack(enemy);
+
                         if (enemy->getUnitHP() <= 0)
                         {
-                            enemy->setDeath();
+                            enemy->switchState(stateDeath);
                             enemySoldiers->eraseObject(enemy);
                             _gameScene->removeChild(enemy);
                         }
-                        isDogAttack = true;
+                        isDogAttack = isSoldierAttack = true;
                     }
                     break;
                 case TANK_TAG:
                     if (nowT - tankPreT >= soldier->getUnitATKCD())
                     {
+                        if (enemy->getPositionX() - soldier->getPositionX() > 0)
+                        {
+                            soldier->switchState(stateAttackRight);
+                        }
+                        else
+                        {
+                            soldier->switchState(stateAttackLeft);
+                        }
                         soldier->attack(enemy);
+
                         if (enemy->getUnitHP() <= 0)
                         {
-                            enemy->setDeath();
+                            enemy->switchState(stateDeath);
                             enemySoldiers->eraseObject(enemy);
                             _gameScene->removeChild(enemy);
                         }
-                        isTankAttack = true;
+                        isTankAttack = isSoldierAttack = true;
                     }
                     break;
                 }
                 break;
             }
         }
+    }
+    if (isMySoldierDied)
+    {
+        _gameScene->getSoldiers()->eraseObject(myDiedSoldier);
+        _gameScene->removeChild(myDiedSoldier);
     }
 
     if (isInfantryAttack)
@@ -525,13 +698,13 @@ void Manager::attack()
         switch (selectedBuildingTag)
         {
         case POWER_PLANT_TAG:
-            _gameScene->decreasePowerPlant();            // 电厂数量减一 如果电厂数量为0
+            _gameScene->decreasePowerPlant();            // 电厂数量减一 
             this->resetPower();
             break;
 
         case MINE_TAG:
             _gameScene->decreaseMine();                  // 矿场数量-1
-            _gameScene->addPower(buildingData::mineCastPower);
+            _gameScene->addPower(buildingData::mineCostPower);
             break;
 
         case BARRACKS_TAG:
@@ -550,7 +723,7 @@ void Manager::attack()
             {
                 _isWaitToCreateSoldier = false;
             }
-            _gameScene->addPower(buildingData::barracksCastPower);
+            _gameScene->addPower(buildingData::barracksCostPower);
             break;
 
         case CAR_FACTORY_TAG:
@@ -569,7 +742,7 @@ void Manager::attack()
             {
                 _isWaitToCreateCar = false;
             }
-            _gameScene->addPower(buildingData::carFactoryCastPower);
+            _gameScene->addPower(buildingData::carFactoryCostPower);
             break;
         }
     }
@@ -589,14 +762,17 @@ void Manager::attack()
 
 void Manager::addMoneyUpdate()
 {
-    static clock_t preT = clock();
-    clock_t nowT = clock();
-    if (_gameScene->getMineNum() != 0)
+    if (_gameScene->getMineNum())
     {
-        if (nowT - preT >= addMoneyDelay)
+        static clock_t preT = clock();
+        clock_t nowT = clock();
+        if (_gameScene->getMineNum() != 0)
         {
-            _gameScene->addMoney(_gameScene->getMineNum() * 1000);
-            preT = nowT;
+            if (nowT - preT >= addMoneyDelay)
+            {
+                _gameScene->addMoney(_gameScene->getMineNum() * 150);
+                preT = nowT;
+            }
         }
     }
 }
@@ -609,7 +785,7 @@ void Manager::resetPower()
     {
         if (building->getBuildingTag() == POWER_PLANT_TAG)
         {
-            totalPower += (50 + 5 * building->getHP() / 10);
+            totalPower += (500 + building->getHP());
         }
         else
         {
@@ -618,13 +794,27 @@ void Manager::resetPower()
     }
     _gameScene->setTotalPower(totalPower);
     _gameScene->setPower(totalPower - castPower);
+    // update power bar
+    if (_gameScene->getPower() <= 0 || _gameScene->getTotalPower() == 0)
+    {
+        auto progressTo = ProgressTo::create(0.5f, 0);
+        _gameScene->_powerBar->runAction(progressTo);
+    }
+    else
+    {
+        auto progressTo = ProgressTo::create(0.5f, _gameScene->getPower() * 100 
+            / _gameScene->getTotalPower());
+        _gameScene->_powerBar->runAction(progressTo);
+    }
 }
 
 cocos2d::Point Manager::getPutSoldierPosition()
 {
     Point barracksPosition = _gameScene->getBarracksPosition();
-    Point firstPosition = barracksPosition - Vec2(101, 101);
-    int soldierSize = 40;
+    Point firstPosition = barracksPosition - Vec2(80, 80);
+    int soldierSize = 30;
+    //log("getPutSoldier");
+    //log("barracks %f %f", barracksPosition.x, barracksPosition.y);
     // 兵营下方区域
     for (int i = 4; i > 0; --i)
     {
@@ -632,18 +822,21 @@ cocos2d::Point Manager::getPutSoldierPosition()
         {
             if (_moveController->canPut(firstPosition + Vec2(j*soldierSize, -i*soldierSize)))
             {
+                //log("down %f %f", (firstPosition + Vec2(j*soldierSize, -i * soldierSize)).x,
+                    //(firstPosition + Vec2(j*soldierSize, -i * soldierSize)).y);
                 return firstPosition + Vec2(j*soldierSize, -i*soldierSize);
             }
         }
     }
-    //兵营左方区域
+    //兵营右方区域
+    firstPosition += Vec2(160, 160);
     for (int i = 4; i > 0; --i)
     {
         for (int j = 4; j > 0; --j)
         {
-            if (_moveController->canPut(firstPosition + Vec2(-j * soldierSize, i*soldierSize)))
+            if (_moveController->canPut(firstPosition + Vec2(j*soldierSize, i*soldierSize)))
             {
-                return firstPosition + Vec2(-j * soldierSize, i*soldierSize);
+                return firstPosition + Vec2(j*soldierSize, i*soldierSize);
             }
         }
     }
@@ -654,12 +847,25 @@ cocos2d::Point Manager::getPutSoldierPosition()
 cocos2d::Point Manager::getPutCarPosition()
 {
     Point carFactoryPosition = _gameScene->getCarFactoryPosition();
-    Point firstPosition = carFactoryPosition + Vec2(270, 220);
-    int carSize = 80;
-    // 车厂右方区域
-    for (int i = 5; i > 0; --i)
+    Point firstPosition = carFactoryPosition - Vec2(100, 100);
+    int carSize = 50;
+    //车厂下方区域
+    for (int i = 3; i > 0; --i)
     {
-        for (int j = 3; j > 0; --j)
+        for (int j = 5; j > 0; --j)
+        {
+            log("car down");
+            if (_moveController->canPut(firstPosition + Vec2(j * carSize, -i*carSize)))
+            {
+                return firstPosition + Vec2(j * carSize, -i*carSize);
+            }
+        }
+    }
+    // 车厂右方区域
+    firstPosition += Vec2(200, 200);
+    for (int i = 4; i > 0; --i)
+    {
+        for (int j = 4; j > 0; --j)
         {
             if (_moveController->canPut(firstPosition + Vec2(j*carSize, i*carSize)))
             {
@@ -667,17 +873,11 @@ cocos2d::Point Manager::getPutCarPosition()
             }
         }
     }
-    //车厂上方区域
-    for (int i = 5; i > 3; --i)
-    {
-        for (int j = 2; j > 0; --j)
-        {
-            if (_moveController->canPut(firstPosition + Vec2(-j * carSize, i*carSize)))
-            {
-                return firstPosition + Vec2(-j * carSize, i*carSize);
-            }
-        }
-    }
     //那就别出来了
     return carFactoryPosition;
+}
+
+void Manager::setPanel(Panel* p)
+{
+	_panel = p;
 }

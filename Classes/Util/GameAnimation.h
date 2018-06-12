@@ -1,3 +1,9 @@
+/*
+*  @file     GameAnimation.h
+*  @brief    动画管理类
+*  @author   王亮
+*/
+
 #ifndef __UTIL_GAMEANIMATION_H__
 #define __UTIL_GAMEANIMATION_H__
 
@@ -19,6 +25,7 @@ public:
 	void initInfantry();
 	void initDog();
 	void initTank();
+	void initBaseCar();
 
 	cocos2d::Animation* createAnimation(const char* prefixName, int start, int end, float delay);
 

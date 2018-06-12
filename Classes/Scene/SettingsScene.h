@@ -12,9 +12,6 @@
 
 class SettingsScene : public cocos2d::Layer
 {
-public:
-	cocos2d::EventListenerKeyboard* keyEventListener;
-
 private:
     void menuOkCallback(cocos2d::Ref *pSender);
 
@@ -27,7 +24,7 @@ private:
 	*/
     cocos2d::Menu* createText();
 
-	void onExit();
+    void onEnter();
 public:
     static cocos2d::Scene* createScene();
     virtual bool init();

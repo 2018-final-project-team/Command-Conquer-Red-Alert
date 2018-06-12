@@ -36,6 +36,8 @@ private:
 	int sValue[8] = { 500,500,500,500,50,50,200 };
 
 	bool _clickToPlaceBuilding;
+    int _canToBuild;
+    int _nearOurBuilding;
 
 	GameScene* _gameScene;
 
@@ -48,6 +50,7 @@ private:
 	cocos2d::EventListenerTouchOneByOne* _mainButtonListener;
 	cocos2d::EventListenerTouchOneByOne* _iconButtonListener;
 
+    bool canBuild(cocos2d::Vec2 v, GameScene *_gameScene);
 
 	CC_SYNTHESIZE(Tag, _curCategoryTag, CurCategoryTag);
 	cocos2d::Vector<Icon*> _buildingList;

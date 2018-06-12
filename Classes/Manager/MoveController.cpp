@@ -1,6 +1,6 @@
 /*
 *  @file     MoveController.cpp
-*  @brief    各种兵的移动控制
+*  @brief    MoveController
 */
 #include "MoveController.h"
 #include "../Data/Building.h"
@@ -33,6 +33,10 @@ bool MoveController::initWithGameScene(GameScene* gameScene)
 
 void MoveController::selectSoldiersWithMouse(cocos2d::Vec2 mouseDownPoint, cocos2d::Vec2 mouseUpPoint)
 {
+	for (Unit* unit : *_selectedSoldiers)
+	{
+		unit->setIsSelected(false);
+	}
     _selectedSoldiers->clear();
     float rect_width = fabs(mouseUpPoint.x - mouseDownPoint.x);
     float rect_height = fabs(mouseUpPoint.y - mouseDownPoint.y);
@@ -49,6 +53,10 @@ void MoveController::selectSoldiersWithMouse(cocos2d::Vec2 mouseDownPoint, cocos
 
 void MoveController::selectSoldiersWithTag(Tag tag)
 {
+	for (Unit* unit : *_selectedSoldiers)
+	{
+		unit->setIsSelected(false);
+	}
     _selectedSoldiers->clear();
     for (auto& soldier : *(_gameScene->getSoldiers()))
     {
@@ -62,78 +70,130 @@ void MoveController::selectSoldiersWithTag(Tag tag)
 
 void MoveController::setDestination(cocos2d::Vec2 position)
 {
-    // 检测是否障碍
-    if (!_gameScene->isCollision(position))
+ //===========laji duixin===================
+    int col = 4;                     // column of duixin
+    int row = 0;                     // row of duixin
+    int soldierSize = 30;            // To Do
+    int carNum = 0;
+    // put the cars first   
+    for (auto& car : *_selectedSoldiers)
     {
-        return;
+        if (car->getUnitTag() == TANK_TAG)
+        {
+            carNum++;
+        }
     }
- //===========假的垃圾队形===================
-    int col;                     // 当前列
-    int row = 0;                     // 当前行  
-    int soldierSize = 40;            // To Do
-    // 先放车
-    col = 4;
+    if (carNum == 2)
+    {
+        col = 2;
+    }
+    else if (carNum == 1)
+    {
+        col = 0;
+    }
     for (auto& car : *_selectedSoldiers)
     {
         if (car->getUnitTag() == TANK_TAG)
         {
             while (!canPut(position + Vec2(col * soldierSize, -row * soldierSize)))
             {
-                col -= 2;              // 暂且认为坦克尺寸为兵的两倍 所以减2
+                col -= 2;              
                 if (col < -4)
                 {
                     col = 4;
-                    row += 2;          // 暂且认为坦克尺寸为兵的两倍 所以加2
+                    row += 1;          
                 }
+                //log("%d %d", col, row);
             }
             car->setDestination(position + Vec2(col * soldierSize, -row * soldierSize));
-            // 寻路
+            //log("%d %d car %f %f", col, row, car->getDestination().x, car->getDestination().y);
+            // find the best way
             findRroute(car, car->_route);
-            // 第一点
             car->setDestination(car->_route.front());
-            (car->_route).erase((car->_route).begin());
-            car->setGetDestination(false);
-        }
+            //just for change direction halfway
+            car->setGetDestination(true);
 
-        col -= 2;             // 暂且认为坦克尺寸为兵的两倍 所以减2
-        if (col < -4)
-        {
-            col = 4;
-            row += 2;          // 暂且认为坦克尺寸为兵的两倍 所以加2
+            col -= 2;             // temporarily think car is double size than infantry
+            if (col < -4)
+            {
+                col = 4;
+                row += 1;          // temporarily think car is double size than infantry
+            }
+            carNum++;
         }
     }
-    // 再放兵
+    // then put the soldiers   
+    int maxCol = 3;
+    if (!carNum && _selectedSoldiers->size() <= 3)
+    {
+        col = 1;
+        maxCol = 1;
+    }
     for (auto& soldier : *_selectedSoldiers)
     {
         switch (soldier->getUnitTag())
         {
         case TANK_TAG:
             continue;
+        case BASE_CAR_TAG:
+        {
+            soldier->setDestination(position);
+            soldier->setGetDestination(false);
+            Vec2 direction = (soldier->getDestination() - soldier->getPosition());
+            //change state of unit
+            if (fabs(direction.x) < fabs(direction.y))
+            {
+                if (direction.y > 0)           //up
+                {
+                    soldier->switchState(stateWalkUp);
+                }
+                else                          //down
+                {
+                    soldier->switchState(stateWalkDown);
+                }
+            }
+            else
+            {
+                //left
+                if (direction.x < 0)
+                {
+                    soldier->switchState(stateWalkLeft);
+                }
+                //right
+                else
+                {
+                    soldier->switchState(stateWalkRight);
+                }
+            }
+            return;
+        }
         default:
             while (!canPut(position + Vec2(col * soldierSize, -row * soldierSize)))
             {
                 --col;
-                if (col < -3)
+                if (col < -maxCol)
                 {
-                    col = 3;
+                    col = maxCol;
                     ++row;
                 }
+                //log("%d %d", col, row);
             }
             soldier->setDestination(position + Vec2(col * soldierSize, -row * soldierSize));
-            break;
-        }
-        // 寻路
-        findRroute(soldier, soldier->_route);
-        // 第一点
-        soldier->setDestination(soldier->_route.front());
-        (soldier->_route).erase( (soldier->_route).begin() );
-        soldier->setGetDestination(false);
+            //log("%d %d soldier %f %f",col, row, soldier->getDestination().x, soldier->getDestination().y);
+            // find the best way
+            findRroute(soldier, soldier->_route);
+            soldier->setDestination(soldier->_route.front());
+            //just for change direction halfway
+            soldier->setGetDestination(true);
 
-        --col;
-        if (col == -3)
-        {
-            col = 3;
-            ++row;
+            --col;
+            if (col < -maxCol)
+            {
+                col = maxCol;
+                ++row;
+            }
+
+            break;
         }
     }
 }
@@ -153,30 +213,61 @@ void MoveController::moveSoldiers()
             Vec2 direction = destination - nowPosition;
             direction.normalize();
             float distance = destination.distance(nowPosition);
+            //log("now position %f %f", nowPosition.x, nowPosition.y);
+            //log("destination %f %f", destination.x, destination.y);
          
             Vec2 move = soldier->getUnitSpeed() * interval * direction;
-            // 如果move的距离大于到达目的地的距离则直接到达目的地的
+            // if the distance of this move is longer than destination
             if (move.length() > distance)
             {
-                soldier->moveTo(destination, 0.01);
+                soldier->moveTo(destination);
                 soldier->setGetDestination(true);
+                soldier->switchState(stateNone);
                 continue;
             }
-            soldier->moveTo(move + nowPosition, 0.01);
+            soldier->moveTo(move + nowPosition);
         }
         else if (soldier->_route.size())
         {
+            //log("route size %d", soldier->_route.size());
             soldier->setDestination(soldier->_route.front());
             (soldier->_route).erase((soldier->_route).begin());
             soldier->setGetDestination(false);
+            Vec2 direction= (soldier->getDestination() - soldier->getPosition());
+            log("destination %f %f", soldier->getDestination().x, soldier->getDestination().y);
+            //change state of unit
+            if (fabs(direction.x) < fabs(direction.y))
+            {
+                if (direction.y > 0)           //up
+                {
+                    soldier->switchState(stateWalkUp);
+                }
+                else                          //down
+                {
+                    soldier->switchState(stateWalkDown);
+                }
+            }
+            else
+            {
+                //left
+                if (direction.x < 0)
+                {
+                    soldier->switchState(stateWalkLeft);
+                }
+                //right
+                else
+                {
+                    soldier->switchState(stateWalkRight);
+                }
+            }
         }
     }
 }
 
-//用于寻路的节点
-//whereX,whereY,当前士兵位置，以地图左下为原点
-//cost 花费
-//father 父节点，用于找到路后返回
+//i forget what is this
+//what's
+//the
+//fuck
 struct node 
 {
     int whereX;
@@ -192,20 +283,20 @@ struct node
     }
 };
 
-//寻路算法的组成部分
-//判断当前找到的地和目的地间是否有障碍
-//如果没有障碍，结束寻路
-//前面的路按找到的路走，后面的路直接走直线
-//传入当前位置，目的地（地图坐标
+//what
+//is
+//the
+//fuck
+//i,m dying
 bool MoveController::is_find(Vec2 position, Vec2 destination)
 {
     Vec2 direction = destination - position;
-    //两点之间任取15个点，如果都没障碍，即没障碍
-    //因为地图特殊所以精度应该足够  
-    for (int i = 0; i < 15; ++i)
+    //i
+    //am 
+    for (int i = 0; i < 25; ++i)
     {
-        if (!_gameScene->isCollision(_gameScene->
-            _tileMap->convertToWorldSpace(position + i * direction / 20)))
+        if (_gameScene->isCollision(_gameScene->
+            _tileMap->convertToWorldSpace(position + i * direction / 25)))
         {
             return false;
         }
@@ -215,27 +306,23 @@ bool MoveController::is_find(Vec2 position, Vec2 destination)
 }
 
 /**
-寻路算法主体
-类似A*算法
-可参考 https://blog.csdn.net/jialeheyeshu/article/details/53105810
-* @brief 传入要移动的士兵和一个Vector<Point*> route,来装找到的路
-为了效率考虑，相邻两个节点的distance=240,，可以通过除以速度得到每秒以及每帧的位置
-by czd
+going
+to
+die https://blog.csdn.net/jialeheyeshu/article/details/53105810
+* @brief you can read more about the algorithm by clicking this url
+and this function is written by czd
 * @return  void
 */
 void MoveController::findRroute(Unit *soldier, std::vector<Point> &route)
 {
+    int mapNode[200][200];
+	memset(mapNode, 0, sizeof(mapNode));
+    route.clear();
     Vec2 screenNowPosition = soldier->getPosition();
     Vec2 screenDestination = soldier->getDestination();
-    //转化为以地图左下角为原点的坐标    
+    //so  
     Vec2 nowPosition = _gameScene->_tileMap->convertToNodeSpace(screenNowPosition);
     Vec2 nowDestination = _gameScene->_tileMap->convertToNodeSpace(screenDestination);
-    //这个以后可能有用
-    //struct cmp {
-    //	bool operator()(node *a, node *b) {
-    //		return a->cost >= b->cost;
-    //	}
-    //};
     std::queue<node*> open;
     std::vector<node*> storeNew;
     //std::priority_queue<node*, std::vector<node*>, cmp> close;
@@ -243,13 +330,13 @@ void MoveController::findRroute(Unit *soldier, std::vector<Point> &route)
     storeNew.push_back(head);
     node *myend = head;
     open.push(head);
-    int distance = 240;
-    //8个方向
-    //上下左右，左上左下等
-    float directX[8] = { 0,0,-1 * distance ,distance,0.7*distance ,0.7* distance ,-0.7* distance ,-0.7* distance };
-    float directY[8] = { distance,-1 * distance,0 ,0,0.7* distance ,-0.7* distance ,0.7* distance ,-0.7* distance };
+    int distance = 100;
+    //don't    
+    //know
+    float directX[8] = { 0.7*distance ,0.7* distance ,-0.7* distance ,-0.7* distance ,0,0,-1 * distance ,distance };
+    float directY[8] = { 0.7* distance ,-0.7* distance ,0.7* distance ,-0.7* distance,distance,-1 * distance,0 ,0 };
     int is_not_find = 1;
-    //这两个点间无障碍
+    //whats
     if (is_find(nowPosition, nowDestination))
     {
         is_not_find = 0;
@@ -259,19 +346,22 @@ void MoveController::findRroute(Unit *soldier, std::vector<Point> &route)
         node *cur = open.front();
         //close.push(cur);
         open.pop();
-        //列举8个方向        
+        //is      
         for (int i = 0; i < 8; i++)
         {
-            //绑定位置是否有障碍            
-            if (_gameScene->isCollision(_gameScene->_tileMap->convertToWorldSpace
-            (Point(cur->whereX + directX[i], cur->whereY + directY[i]))))
+            //this         
+            if (!_gameScene->isCollision(_gameScene->_tileMap->convertToWorldSpace(Point(cur->whereX + directX[i], cur->whereY + directY[i])))&&
+				!_gameScene->isCollision(_gameScene->_tileMap->convertToWorldSpace(Point(cur->whereX + directX[i]/4, cur->whereY + directY[i]/4)))&&
+				!_gameScene->isCollision(_gameScene->_tileMap->convertToWorldSpace(Point(cur->whereX + directX[i] / 2, cur->whereY + directY[i] / 2)))&&
+				!_gameScene->isCollision(_gameScene->_tileMap->convertToWorldSpace(Point(cur->whereX + directX[i]*3 / 4, cur->whereY + directY[i]*3 / 4))))
             {
-                //进一步筛选                
-                if (Vec2(nowDestination.x - (cur->whereX), nowDestination.y - (cur->whereY)).length() >
-                    Vec2(nowDestination.x - (cur->whereX) - directX[i], nowDestination.y - (cur->whereY) - directY[i]).length()
-                    - 0.7*distance)
+				int nodeX = (cur->whereX + directX[i])*3.5 / distance;
+				int nodeY = (cur->whereY + directY[i])*3.5 / distance;
+                //fucking           
+                if (mapNode[nodeX][nodeY]!=1)
                 {
                     node *n = new node(cur->whereX + directX[i], cur->whereY + directY[i], distance, cur);
+					mapNode[nodeX][nodeY] = 1;
                     storeNew.push_back(n);
                     if (is_find(Point(n->whereX, n->whereY), nowDestination))
                     {
@@ -285,21 +375,21 @@ void MoveController::findRroute(Unit *soldier, std::vector<Point> &route)
 
         }
     }
-    //该地和目的地可直达
+    //notes
     Point nowPlace{ 0,0 };
     nowPlace.x = static_cast<float>(myend->whereX);
     nowPlace.y = static_cast<float>(myend->whereY);
     Point direction = nowDestination - nowPlace;
     direction.normalize();
-    //从找到的地到出发地
+    //let   
     while (myend != NULL)
     {
         route.push_back(Point(myend->whereX, myend->whereY));
         myend = myend->father;
     }
-    //reverse后，就是出发地到找到地
+    //the 
     std::reverse(route.begin(), route.end());
-    //再把后面的路加入route
+    //fucking
     while ((nowDestination - nowPlace).length() > distance)
     {
         route.push_back(nowPlace + distance * direction);
@@ -308,16 +398,16 @@ void MoveController::findRroute(Unit *soldier, std::vector<Point> &route)
     route.push_back(nowDestination);
     // delete
     std::vector<node*>::iterator iter = storeNew.end() - 1;
-	size_t i = storeNew.size();
+    size_t i = storeNew.size();
     for (size_t cnt = 0; cnt < i; cnt++)
     {
         delete *iter;
-		if (cnt < i - 1)
-		{
-			iter--;
-		}
+        if (cnt < i - 1)
+        {
+            iter--;
+        }
     }
-    // 转化为世界坐标
+    //vs  
     std::vector<Point>::iterator iter2;
     for (iter2 = route.begin(); iter2 != route.end(); iter2++)
     {
@@ -327,23 +417,20 @@ void MoveController::findRroute(Unit *soldier, std::vector<Point> &route)
 
 bool MoveController::canPut(cocos2d::Point position)
 {
-    Vec2 mapPosition = _gameScene->_tileMap->convertToNodeSpace(position);
-    // 是否在地图外
-    if (mapPosition.x < 0 || mapPosition.y < 0)
+    // is the collision or not in map
+    if (_gameScene->isCollision(position))
     {
         return false;
     }
-    // 是否在海上
-    if (!_gameScene->isCollision(convertToWorldSpace(mapPosition)))
-    {
-        return false;
-    }
-    // 是否有建筑士兵
+    // is there any soldier or building
     for (auto& soldier : *(_gameScene->getSoldiers()))
     {
+        //log("soldier position %f %f", soldier->getPosition().x, soldier->getPosition().y);
         Rect rect = Rect(soldier->getPositionX() - soldier->getContentSize().width / 2,
             soldier->getPositionY() - soldier->getContentSize().height / 2,
             soldier->getContentSize().width, soldier->getContentSize().height);
+        //log("%f %f %f %f", rect.getMinX(), rect.getMinY(), rect.size.width, rect.size.height);
+        //log("put position %f %f", position.x, position.y);
         if (rect.containsPoint(position))
         {
             return false;
@@ -359,6 +446,6 @@ bool MoveController::canPut(cocos2d::Point position)
             return false;
         }
     }
-    // 都没有
+    // yes you can put soldier here   
     return true;
 }

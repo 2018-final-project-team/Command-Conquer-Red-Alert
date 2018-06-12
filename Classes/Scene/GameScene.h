@@ -8,6 +8,7 @@ const clock_t addMoneyDelay = 1000 * 10;
 #include "Data\UnitData.h"
 #include "Manager\GameManager.h"
 #include "Panel/Panel.h"
+#include "Scene/EndingScene.h"
 
 class Manager;   //解决头文件互相包含时带来的问题
 class Panel;     //解决头文件互相包含时带来的问题
@@ -15,6 +16,7 @@ class Panel;     //解决头文件互相包含时带来的问题
 
 class GameScene : public cocos2d::Layer
 {
+	int cnt = 0;
 public:
     Manager * _manager;
     cocos2d::TMXTiledMap* _tileMap;
@@ -25,12 +27,12 @@ private:
     int MAPX;
     int MAPY;
 
-	bool _keyUp = false;
-	bool _keyDown = false;
-	bool _keyLeft = false;
-	bool _keyRight = false;
+    bool _keyUp = false;
+    bool _keyDown = false;
+    bool _keyRight = false;
+    bool _keyLeft = false;                 // C++ 11 的初始化方法
 
-	cocos2d::Point _cursorPosition{ 0,0 };  // C++ 11 允许这样初始化
+	cocos2d::Point _cursorPosition;
 	void scrollMap();
 
 	cocos2d::Vector<Unit*> _selectedSoldiers;
@@ -43,7 +45,25 @@ private:
 	cocos2d::Point _touchBegan;
 	cocos2d::Point _touchEnd;
 
+    //显示金币
+    char _moneyStr[8];
+    char _timeStr[10];
+    cocos2d::Label* _moneyCount;
+    cocos2d::Label* _timeCount;
+
+    //时间
+    long _time = 0;
+
+    //sell building
+    cocos2d::Menu* _sellBuildingMenu;
+    Building* _sellBuilding = nullptr;
+    bool _isSellMenuExit = false;
+
 public:
+
+    //power bar
+    cocos2d::ProgressTimer* _powerBar;
+
 	cocos2d::EventListenerTouchOneByOne* _gameListener;
 	cocos2d::EventDispatcher* _gameEventDispatcher;
 
@@ -88,8 +108,7 @@ public:
 
 	virtual bool init();
 
-	//物理碰撞监听
-	virtual void onEnter();
+    virtual void onEnter();
 
 	virtual void onExit();
 
@@ -101,7 +120,10 @@ public:
 	// implement the "static create()" method manually
 	CREATE_FUNC(GameScene);
 
-	void menuBackCallback(Ref *pSender);
+	void menuBackCallback(cocos2d::Ref *pSender);
+
+	void menuEndingCallback(cocos2d::Ref *pSender);
+
 
 	/**
 	* @brief getSelectedSoldiers
@@ -266,6 +288,18 @@ public:
     *@brief 移动所有士兵建筑 包括目的地
     */
     void moveSpritesWithMap(cocos2d::Vec2 direction);
+
+    /*
+    * @brief print time every second
+    */
+    void printTime(float dt);
+
+    /*
+    *@brief sell building call back function
+    */
+    void sellBuildingCallBack();
+
+	void onMouseDown(cocos2d::Event *event);
 
 };
 

@@ -1,3 +1,4 @@
+
 /*
 *  @file     Icon.cpp
 *  @brief    控制图标类，控制栏中显示的图标
@@ -31,6 +32,8 @@ bool Icon::initIcon(Tag tag, int money, GameScene* gameScene)
 	}
 	_gameScene = gameScene;
 
+	_clickToPlaceBuilding = false;
+
 	_status = eIconPre;
 	_isAble = false;
 
@@ -55,7 +58,7 @@ bool Icon::initIcon(Tag tag, int money, GameScene* gameScene)
 	_statusLabel->setColor(Color3B(255, 153, 0));
 	_statusLabel->setPosition(Point(-_icon->getContentSize().width / 5, -_icon->getContentSize().height / 4));
 	_statusLabel->setVisible(false);
-	addChild(_statusLabel,3);
+	addChild(_statusLabel, 3);
 
 	//用于Unit的label，只有一个功能，当金钱不足是显示红色的$
 	_statusLabel2 = Label::createWithTTF(String::createWithFormat("$")->getCString(), "fonts/Marker Felt.ttf", 22);
@@ -70,7 +73,7 @@ bool Icon::initIcon(Tag tag, int money, GameScene* gameScene)
 
 
 	setMoney(money);
-	setTag(tag);
+	setIconTag(tag);
 
 	this->retain();
 }
@@ -137,7 +140,7 @@ void Icon::setStatus(IconsStatus iconSta)
 	case eIconPreForUnit:
 		_statusLabel->setVisible(false);
 		_invalidIcon->setVisible(false);
-		if(getMoney() > _gameScene->getMoney())
+		if (getMoney() > _gameScene->getMoney())
 		{
 			_statusLabel2->setVisible(true);
 			setIsAble(false);
@@ -149,22 +152,22 @@ void Icon::setStatus(IconsStatus iconSta)
 		}
 		break;
 	case eIconOnForUnit:
-		if (tag == INFANTRY_TAG)
+		if (_iconTag == INFANTRY_TAG)
 		{
 			_statusLabel->setString(std::to_string(_gameScene->getInfantryNum()));
 		}
-		else if (tag == DOG_TAG)
+		else if (_iconTag == DOG_TAG)
 		{
 			_statusLabel->setString(std::to_string(_gameScene->getDogNum()));
 		}
-		else if (tag == TANK_TAG)
+		else if (_iconTag == TANK_TAG)
 		{
 			_statusLabel->setString(std::to_string(_gameScene->getTankNum()));
 		}
-		
-		_statusLabel->setColor(Color3B(0, 0, 255));
+
+		_statusLabel->setColor(Color3B(0, 255, 0));
 		_statusLabel->setVisible(true);
-		_invalidIcon->setVisible(false);
+		_invalidIcon->setVisible(true);
 		if (getMoney() > _gameScene->getMoney())
 		{
 			_statusLabel2->setVisible(true);
@@ -177,22 +180,22 @@ void Icon::setStatus(IconsStatus iconSta)
 		}
 		break;
 	case eIconQueuingForUnit:
-		if (tag == INFANTRY_TAG)
+		if (_iconTag == INFANTRY_TAG)
 		{
 			_statusLabel->setString(std::to_string(_gameScene->getInfantryNum()));
 		}
-		else if (tag == DOG_TAG)
+		else if (_iconTag == DOG_TAG)
 		{
 			_statusLabel->setString(std::to_string(_gameScene->getDogNum()));
 		}
-		else if (tag == TANK_TAG)
+		else if (_iconTag == TANK_TAG)
 		{
 			_statusLabel->setString(std::to_string(_gameScene->getTankNum()));
 		}
 
-		_statusLabel->setColor(Color3B(0, 0, 255));
+		_statusLabel->setColor(Color3B(0, 255, 0));
 		_statusLabel->setVisible(true);
-		_invalidIcon->setVisible(false);
+		_invalidIcon->setVisible(true);
 		if (getMoney() > _gameScene->getMoney())
 		{
 			_statusLabel2->setVisible(true);
@@ -210,7 +213,7 @@ void Icon::setStatus(IconsStatus iconSta)
 void Icon::showProgressOfWait(float duration)   //单位为秒
 {
 	_invalidIcon->setVisible(true);
-	
+
 	if (progressTimer1 != nullptr)
 	{
 		this->removeChild(progressTimer1, true);
@@ -239,7 +242,7 @@ void Icon::showProgressOfWait(float duration)   //单位为秒
 	auto progressTo = ProgressTo::create(duration, 100);
 	progressTimer1->runAction(RepeatForever::create(progressTo->clone()));
 	progressTimer2->runAction(RepeatForever::create(progressTo->clone()));
-	
+
 
 }
 
@@ -248,3 +251,4 @@ IconsStatus Icon::getStatus()
 {
 	return _status;
 }
+
