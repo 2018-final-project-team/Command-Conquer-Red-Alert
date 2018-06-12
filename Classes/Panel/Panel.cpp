@@ -240,7 +240,7 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 		drawNode->clear();
 		if (_clickToPlaceBuilding)
 		{
-			if (_canToBuild) {
+			if (_canToBuild && _nearOurBuilding) {
 				_gameScene->_manager->createBuilding(touch->getLocation());
 				setCurButton(_curCategoryTag);
 			}
