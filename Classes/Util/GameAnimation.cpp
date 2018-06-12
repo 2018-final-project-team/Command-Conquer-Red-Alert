@@ -47,8 +47,8 @@ Vector<SpriteFrame*> GameAnimation::getAnimation(const char* format, int count)
 
 void GameAnimation::initInfantry()
 {
-	AnimationCache::getInstance()->addAnimation(createAnimation("Unit1-forward (%d).png", 1, 12, 0.2f), "infantry_forward");
-	AnimationCache::getInstance()->addAnimation(createAnimation("Unit1-back (%d).png", 1, 12, 0.2f), "infantry_back");
+	AnimationCache::getInstance()->addAnimation(createAnimation("Unit1-forward (%d).png", 1, 12, 0.1f), "infantry_forward");
+	AnimationCache::getInstance()->addAnimation(createAnimation("Unit1-back (%d).png", 1, 12, 0.1f), "infantry_back");
 	AnimationCache::getInstance()->addAnimation(createAnimation("Unit1-left (%d).png", 1, 12, 0.2f), "infantry_left");
 	AnimationCache::getInstance()->addAnimation(createAnimation("Unit1-right (%d).png", 1, 12, 0.2f), "infantry_right");
 	AnimationCache::getInstance()->addAnimation(createAnimation("Unit1-attackLeft (%d).png", 1, 10, 0.2f), "infantry_attackLeft");

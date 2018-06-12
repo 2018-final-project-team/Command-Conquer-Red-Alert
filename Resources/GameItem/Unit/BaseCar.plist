@@ -11,11 +11,11 @@
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{55,100}</string>
+                <string>{100,100}</string>
                 <key>spriteSourceSize</key>
-                <string>{55,100}</string>
+                <string>{100,100}</string>
                 <key>textureRect</key>
-                <string>{{0,0},{55,100}}</string>
+                <string>{{0,0},{100,100}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -26,11 +26,11 @@
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{55,100}</string>
+                <string>{100,100}</string>
                 <key>spriteSourceSize</key>
-                <string>{55,100}</string>
+                <string>{100,100}</string>
                 <key>textureRect</key>
-                <string>{{55,0},{55,100}}</string>
+                <string>{{0,100},{100,100}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -41,11 +41,11 @@
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{55,100}</string>
+                <string>{100,100}</string>
                 <key>spriteSourceSize</key>
-                <string>{55,100}</string>
+                <string>{100,100}</string>
                 <key>textureRect</key>
-                <string>{{0,100},{55,100}}</string>
+                <string>{{0,200},{100,100}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -56,11 +56,11 @@
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{55,100}</string>
+                <string>{100,100}</string>
                 <key>spriteSourceSize</key>
-                <string>{55,100}</string>
+                <string>{100,100}</string>
                 <key>textureRect</key>
-                <string>{{55,100},{55,100}}</string>
+                <string>{{0,300},{100,100}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -75,7 +75,7 @@
                 <key>spriteSourceSize</key>
                 <string>{100,55}</string>
                 <key>textureRect</key>
-                <string>{{0,200},{100,55}}</string>
+                <string>{{0,400},{100,55}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -90,7 +90,7 @@
                 <key>spriteSourceSize</key>
                 <string>{100,55}</string>
                 <key>textureRect</key>
-                <string>{{0,255},{100,55}}</string>
+                <string>{{0,455},{100,55}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -105,7 +105,7 @@
                 <key>spriteSourceSize</key>
                 <string>{100,55}</string>
                 <key>textureRect</key>
-                <string>{{0,310},{100,55}}</string>
+                <string>{{0,510},{100,55}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -120,7 +120,7 @@
                 <key>spriteSourceSize</key>
                 <string>{100,55}</string>
                 <key>textureRect</key>
-                <string>{{0,365},{100,55}}</string>
+                <string>{{0,565},{100,55}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -136,9 +136,9 @@
             <key>realTextureFileName</key>
             <string>BaseCar.png</string>
             <key>size</key>
-            <string>{110,420}</string>
+            <string>{100,620}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:eee1fafc3ec950557d92764f96cc3cfa:b0a3d28b52eecdab8fffaa48f319ad04:490ebd3d7a4bb1e8bcf1786cf60fb1cd$</string>
+            <string>$TexturePacker:SmartUpdate:004e79f933e6b957615ecc6e5bbadb8c:30f34b36df99a47456639249d745f695:490ebd3d7a4bb1e8bcf1786cf60fb1cd$</string>
             <key>textureFileName</key>
             <string>BaseCar.png</string>
         </dict>
