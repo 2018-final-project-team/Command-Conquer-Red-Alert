@@ -350,9 +350,10 @@ void MoveController::findRroute(Unit *soldier, std::vector<Point> &route)
         for (int i = 0; i < 8; i++)
         {
             //this         
-            if (!_gameScene->isCollision(_gameScene->_tileMap->convertToWorldSpace
-				//cur->whereX是地图坐标
-            (Point(cur->whereX + directX[i], cur->whereY + directY[i]))))
+            if (!_gameScene->isCollision(_gameScene->_tileMap->convertToWorldSpace(Point(cur->whereX + directX[i], cur->whereY + directY[i])))&&
+				!_gameScene->isCollision(_gameScene->_tileMap->convertToWorldSpace(Point(cur->whereX + directX[i]/4, cur->whereY + directY[i]/4)))&&
+				!_gameScene->isCollision(_gameScene->_tileMap->convertToWorldSpace(Point(cur->whereX + directX[i] / 2, cur->whereY + directY[i] / 2)))&&
+				!_gameScene->isCollision(_gameScene->_tileMap->convertToWorldSpace(Point(cur->whereX + directX[i]*3 / 4, cur->whereY + directY[i]*3 / 4))))
             {
 				int nodeX = (cur->whereX + directX[i])*3.5 / distance;
 				int nodeY = (cur->whereY + directY[i])*3.5 / distance;
