@@ -58,7 +58,7 @@ private:
 	GameScene* _gameScene;
 
 	CC_SYNTHESIZE(bool, _isAble, IsAble);   //是否可通过点击增加任务
-	CC_SYNTHESIZE(Tag, tag, tag);         //图标的Tag
+	CC_SYNTHESIZE(Tag, _iconTag, IconTag);         //图标的Tag
 	CC_SYNTHESIZE(int, money, Money);    //执行建造or训练or制造计划需要的金钱数
 
 	cocos2d::ProgressTimer* progressTimer1;

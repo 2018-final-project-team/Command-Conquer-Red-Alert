@@ -71,7 +71,7 @@ bool Icon::initIcon(Tag tag, int money, GameScene* gameScene)
 
 
 	setMoney(money);
-	setTag(tag);
+	setIconTag(tag);
 
 	this->retain();
 }
@@ -150,22 +150,22 @@ void Icon::setStatus(IconsStatus iconSta)
 		}
 		break;
 	case eIconOnForUnit:
-		if (tag == INFANTRY_TAG)
+		if (_iconTag == INFANTRY_TAG)
 		{
 			_statusLabel->setString(std::to_string(_gameScene->getInfantryNum()));
 		}
-		else if (tag == DOG_TAG)
+		else if (_iconTag == DOG_TAG)
 		{
 			_statusLabel->setString(std::to_string(_gameScene->getDogNum()));
 		}
-		else if (tag == TANK_TAG)
+		else if (_iconTag == TANK_TAG)
 		{
 			_statusLabel->setString(std::to_string(_gameScene->getTankNum()));
 		}
 
-		_statusLabel->setColor(Color3B(0, 0, 255));
+		_statusLabel->setColor(Color3B(0, 255, 0));
 		_statusLabel->setVisible(true);
-		_invalidIcon->setVisible(false);
+		_invalidIcon->setVisible(true);
 		if (getMoney() > _gameScene->getMoney())
 		{
 			_statusLabel2->setVisible(true);
@@ -178,22 +178,22 @@ void Icon::setStatus(IconsStatus iconSta)
 		}
 		break;
 	case eIconQueuingForUnit:
-		if (tag == INFANTRY_TAG)
+		if (_iconTag == INFANTRY_TAG)
 		{
 			_statusLabel->setString(std::to_string(_gameScene->getInfantryNum()));
 		}
-		else if (tag == DOG_TAG)
+		else if (_iconTag == DOG_TAG)
 		{
 			_statusLabel->setString(std::to_string(_gameScene->getDogNum()));
 		}
-		else if (tag == TANK_TAG)
+		else if (_iconTag == TANK_TAG)
 		{
 			_statusLabel->setString(std::to_string(_gameScene->getTankNum()));
 		}
 
-		_statusLabel->setColor(Color3B(0, 0, 255));
+		_statusLabel->setColor(Color3B(0, 255, 0));
 		_statusLabel->setVisible(true);
-		_invalidIcon->setVisible(false);
+		_invalidIcon->setVisible(true);
 		if (getMoney() > _gameScene->getMoney())
 		{
 			_statusLabel2->setVisible(true);

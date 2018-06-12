@@ -125,7 +125,7 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 		if (rect2.containsPoint(locationInNode))
 		{
 			//log("touch icon");
-			switch (_selectedButton->getTag())
+			switch (_selectedButton->getIconTag())
 			{
 				//==================建筑类图标的点击处理===================
 			case POWER_PLANT_TAG:
@@ -134,7 +134,7 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 			case CAR_FACTORY_TAG:
 				if (_selectedButton->getIsAble())
 				{
-					_gameScene->_manager->clickCreateBuildingByTag(static_cast<Tag>(_selectedButton->getTag()), clock());
+					_gameScene->_manager->clickCreateBuildingByTag(static_cast<Tag>(_selectedButton->getIconTag()), clock());
 					_selectedButton->showProgressOfWait((_gameScene->_manager->getWaitTimeToCreateBuilding()) / 1000);  //单位转化为秒
 				}
 				else if (_selectedButton->getStatus() == eIconOK)
@@ -152,7 +152,7 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 			case DOG_TAG:
 				if (_selectedButton->getIsAble())
 				{
-					_gameScene->_manager->clickCreateSoldierByTag(static_cast<Tag>(_selectedButton->getTag()));
+					_gameScene->_manager->clickCreateSoldierByTag(static_cast<Tag>(_selectedButton->getIconTag()));
 				}
 				break;
 				//=======================================================
@@ -161,7 +161,7 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 			case TANK_TAG:
 				if (_selectedButton->getIsAble())
 				{
-					_gameScene->_manager->clickCreateSoldierByTag(static_cast<Tag>(_selectedButton->getTag()));
+					_gameScene->_manager->clickCreateSoldierByTag(static_cast<Tag>(_selectedButton->getIconTag()));
 				}
 				break;
 				//=======================================================
@@ -389,7 +389,7 @@ void Panel::update(float dt)
 	{
 		for (Icon* i : *_curList)
 		{
-			auto tag = i->getTag();
+			auto tag = i->getIconTag();
 			//图标状态的处理，建筑与Unit方式不同
 			switch (tag)
 			{
@@ -447,6 +447,8 @@ void Panel::update(float dt)
 				{
 					i->setStatus(eIconPreForUnit);
 				}
+
+				break;
 
 
 			case TANK_TAG:
