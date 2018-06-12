@@ -434,7 +434,7 @@ void Unit::changeToDown()
 
 void Unit::changeToRight()
 {
-	log("trun right");
+	log("turn right");
 	stopAllActions();
 	runAction(RepeatForever::create(Animate::create(
 		(AnimationCache::getInstance()->getAnimation(getUnitName() + "_right")))));

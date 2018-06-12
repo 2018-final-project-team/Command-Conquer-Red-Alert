@@ -421,7 +421,7 @@ void Manager::attack()
 
                     if (_selectedEnemy->getUnitHP() <= 0)
                     {
-                        _selectedEnemy->setDeath();
+                        _selectedEnemy->switchState(stateDeath);
                         if (_gameScene->getSoldiers()->contains(_selectedEnemy))
                         {
                             isMySoldierDied = true;
@@ -452,7 +452,7 @@ void Manager::attack()
 
                     if (_selectedEnemy->getUnitHP() <= 0)
                     {
-                        _selectedEnemy->setDeath(); 
+                        _selectedEnemy->switchState(stateDeath);
                         if (_gameScene->getSoldiers()->contains(_selectedEnemy))
                         {
                             isMySoldierDied = true;
@@ -483,7 +483,7 @@ void Manager::attack()
 
                     if (_selectedEnemy->getUnitHP() <= 0)
                     {
-                        _selectedEnemy->setDeath();
+                        _selectedEnemy->switchState(stateDeath);
                         if (_gameScene->getSoldiers()->contains(_selectedEnemy))
                         {
                             isMySoldierDied = true;
@@ -618,7 +618,7 @@ void Manager::attack()
 
                         if (enemy->getUnitHP() <= 0)
                         {
-                            enemy->setDeath();
+                            enemy->switchState(stateDeath);
                             enemySoldiers->eraseObject(enemy);
                             _gameScene->removeChild(enemy);
                         }
@@ -640,7 +640,7 @@ void Manager::attack()
 
                         if (enemy->getUnitHP() <= 0)
                         {
-                            enemy->setDeath();
+                            enemy->switchState(stateDeath);
                             enemySoldiers->eraseObject(enemy);
                             _gameScene->removeChild(enemy);
                         }
@@ -662,7 +662,7 @@ void Manager::attack()
 
                         if (enemy->getUnitHP() <= 0)
                         {
-                            enemy->setDeath();
+                            enemy->switchState(stateDeath);
                             enemySoldiers->eraseObject(enemy);
                             _gameScene->removeChild(enemy);
                         }
