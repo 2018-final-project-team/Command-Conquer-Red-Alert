@@ -219,7 +219,7 @@ void Manager::waitCreateSoldier()
             {
                 _waitTimeToCreateSoldier = unitData::NotEnoughPower::infantryWait;
             }
-			_panel->_infantryIcon->showProgressOfWait(_waitTimeToCreateBuilding / 1000);
+			_panel->_infantryIcon->showProgressOfWait(_waitTimeToCreateSoldier / 1000);
             break;
 
         case DOG_TAG:

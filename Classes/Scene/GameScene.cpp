@@ -223,6 +223,7 @@ bool GameScene::init()
 						this->addChild(base, 2);
 						_isBaseExist = true;
 						_buildings.pushBack(base);
+						panel->setCurButton(panel->getCurCategoryTag());;
 						break;
 					}
                 }
