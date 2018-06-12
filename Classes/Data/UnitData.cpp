@@ -8,6 +8,8 @@
 #include "cocos2d.h"
 #include "math.h"
 #include "Util/GameAnimation.h"
+#include "Util/GameAudio.h"
+#include "Building.h"
 
 USING_NS_CC;
 
@@ -221,10 +223,11 @@ void Unit::attack(Unit * enemy)
 {
     enemy->getInjuredBy(this);
     //==========TO DO:音效=====================
+	GameAudio::getInstance()->playEffect("Sound/Explosion.mp3");
 }
-void Unit::attack(Building *)
+void Unit::attack(Building * enemy)
 {
-
+	
 }
 
 

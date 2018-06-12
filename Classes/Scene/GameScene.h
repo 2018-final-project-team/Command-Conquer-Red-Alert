@@ -8,6 +8,7 @@ const clock_t addMoneyDelay = 1000 * 10;
 #include "Data\UnitData.h"
 #include "Manager\GameManager.h"
 #include "Panel/Panel.h"
+#include "Scene/EndingScene.h"
 
 class Manager;   //解决头文件互相包含时带来的问题
 class Panel;     //解决头文件互相包含时带来的问题
@@ -119,7 +120,10 @@ public:
 	// implement the "static create()" method manually
 	CREATE_FUNC(GameScene);
 
-	void menuBackCallback(Ref *pSender);
+	void menuBackCallback(cocos2d::Ref *pSender);
+
+	void menuEndingCallback(cocos2d::Ref *pSender);
+
 
 	/**
 	* @brief getSelectedSoldiers

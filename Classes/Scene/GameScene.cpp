@@ -493,6 +493,11 @@ void GameScene::dataInit()
 	_isBaseExist = false;
 }
 
+void GameScene::menuEndingCallback(Ref *pSender)
+{
+ 
+	Director::getInstance()->pushScene(TransitionFade::create(1, EndingScene::createScene()));
+}
 void GameScene::menuBackCallback(Ref *pSender)
 {
 	//跳转到第一个场景，记得包含第一个场景的头文件：GameScene.h  

@@ -1,3 +1,9 @@
+/*
+*  @file     GameAnimation.h
+*  @brief    动画管理类
+*  @author   王亮
+*/
+
 #ifndef __UTIL_GAMEANIMATION_H__
 #define __UTIL_GAMEANIMATION_H__
 
