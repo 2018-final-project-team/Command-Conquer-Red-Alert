@@ -8,7 +8,6 @@ const clock_t addMoneyDelay = 1000 * 10;
 #include "Data\UnitData.h"
 #include "Manager\GameManager.h"
 #include "Panel/Panel.h"
-#include "Scene/EndingScene.h"
 
 class Manager;   //解决头文件互相包含时带来的问题
 class Panel;     //解决头文件互相包含时带来的问题
@@ -120,10 +119,7 @@ public:
 	// implement the "static create()" method manually
 	CREATE_FUNC(GameScene);
 
-	void menuBackCallback(cocos2d::Ref *pSender);
-
-	void menuEndingCallback(cocos2d::Ref *pSender);
-
+	void menuBackCallback(Ref *pSender);
 
 	/**
 	* @brief getSelectedSoldiers
@@ -299,7 +295,16 @@ public:
     */
     void sellBuildingCallBack();
 
-	void onMouseDown(cocos2d::Event *event);
+    /*
+    *@brief 得到点相对于中心点的位置,转换到第一象限,利用函数
+    *关系判断点是否在菱形内
+    *@param 菱形中心点
+    *@parma 菱形宽度一半
+    *@param 菱形高度一半
+    *@param 目的点
+    */
+    bool inDiamond(cocos2d::Point center, float width, 
+        float height, cocos2d::Point position);
 
 };
 
