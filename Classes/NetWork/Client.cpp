@@ -181,8 +181,6 @@ int Client::client(void)
     
     if(client_mode == 2)
     {
-        system("ping -c 1 255.255.255.255");
-//        std::cout << "ping done" << std::endl;
         system("arp -a > arp.txt");
 //        std::cout << "arp done" << std::endl;
         
@@ -209,32 +207,22 @@ int Client::client(void)
         }
         else
         {
-            bool start_read = false;
-            while (!in.eof())
-            {
-                std::string temp;
-                getline(in, temp);
-                if (in.eof()) {
-                    break;
-                }
-                if (temp.size() >= 3)
-                {
-                    if (temp[2] == 'I')
-                    {
-                        start_read = true;
-                        continue;
-                    }
-                }
-                
-                if (!start_read) {
-                    continue;
-                }
-                int i = temp.find(' ', 3);
-                temp = temp.substr(2, i - 2);
-//                std::cout << temp << std::endl;
-                currentIp = temp;
-                ipList.push_back(temp);
-            }
+			std::string temp;
+			getline(in, temp);
+			getline(in, temp);
+
+			int index = temp.find('.');
+			index = temp.find('.', index + 1);
+			index = temp.find('.', index + 1);
+			temp = temp.substr(6, index - 5);
+			//                std::cout << temp << std::endl;
+			for (int j = 0; j < 255; ++j)
+			{
+				char num[4];
+				sprintf(num, "%d", j);
+				ipList.push_back(temp + num);
+			}
+
         }
         
     }
@@ -250,37 +238,7 @@ int Client::client(void)
         {
             break;
         }
-        
-        if(ipList.size() == 0){
-            return 0;
-        }
-        
-        bool if_wrong = false;
-        int point_count = 0;
-        
-        for(int j = 0; j < ipList.at(i).size(); j++)
-        {
-            if(ipList.at(i).at(j) > '9' || ipList.at(i).at(j) < '0')
-            {
-                if(ipList.at(i).at(j) != '.')
-                {
-                    if_wrong = true;
-                    break;
-                }
-                
-                if(ipList.at(i).at(j) == '.')
-                {
-                    point_count++;
-                }
-                
-            }
-        }
-        
-        if(point_count != 3 || if_wrong)
-        {
-            continue;
-        }
-        
+ 
         
         boost::asio::io_service io_service;
         
@@ -295,7 +253,7 @@ int Client::client(void)
         
         ipindex = i;
         
-        Sleep(5000);
+        Sleep(50);
         
         c.close();
         t.join();

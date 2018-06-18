@@ -253,11 +253,11 @@ system("ping -c 1 255.255.255.255");
             thisObject->addChild(role_layer, 1);
             
             
-            auto role_selector = Sprite::create("Scene/BlankBoard.png");
+            auto role_selector = Sprite::create("BlankBoard.png");
             role_selector->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
             role_layer->addChild(role_selector, 1);
             
-            auto back_button = Button::create("closeNormal.png");
+            auto back_button = Button::create("backNormal.png");
             auto create_button = Button::create("Scene/button.png");
             auto join_button = Button::create("Scene/button.png");
             
