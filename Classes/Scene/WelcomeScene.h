@@ -1,4 +1,4 @@
-/*
+﻿/*
 *  @file     WelcomeScene.h
 *  @brief    欢迎（主）场景类，可通过此场景进入游戏、设置、帮助场景，可退出游戏
 *  @author   王亮
@@ -19,7 +19,7 @@ public:
 	void menuCloseCallback(cocos2d::Ref* pSender);
 
 	// 用于跳转到其他场景的menu回调函数
-	void menuPlayCallback(Ref *pSender);
+	void menuNetCallback(Ref *pSender);
 	void menuSettingsCallback(cocos2d::Ref * pSender);
 	void menuHelpCallback(cocos2d::Ref * pSender);
 

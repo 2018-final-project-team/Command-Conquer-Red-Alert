@@ -1,4 +1,4 @@
-
+﻿
 /*
 *  @file     Panel.cpp
 *  @brief    控制栏类，使用控制栏进行建造建筑、训练士兵、制造战车
@@ -426,7 +426,6 @@ void Panel::update(float dt)
 
 			case INFANTRY_TAG:
 			case DOG_TAG:
-				//===========TO DO:与gamescene中的变量名保持一致===========
 				if (_gameScene->_manager->_isWaitToCreateSoldier && tag == _gameScene->_manager->getSoldierTag())
 				{
 					i->setStatus(eIconOnForUnit);

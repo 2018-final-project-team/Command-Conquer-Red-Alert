@@ -67,7 +67,7 @@ void LoginScene::createLoginButton()
     loginButton->addTouchEventListener([=](Ref* sender, ui::Widget::TouchEventType type)
     {
         if (type != ui::Widget::TouchEventType::ENDED) return;
-        auto username = usernameInput->getString();
+        username = usernameInput->getString();
         if (username.empty())
         {
             MessageBox("Username can't be empty", "Alert");
@@ -129,3 +129,5 @@ void LoginScene::onEnter()
     Layer::onEnter();
     GameAudio::getInstance()->playBgm("Sound/WelcomeScene.mp3");
 }
+
+

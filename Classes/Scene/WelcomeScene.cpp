@@ -1,4 +1,4 @@
-/*
+﻿/*
 *  @file     WelcomeScene.cpp
 *  @brief    欢迎（主）场景类，可通过此场景进入游戏、设置、帮助场景，可退出游戏
 *  @author   王亮
@@ -9,6 +9,7 @@
 #include "Scene/SettingsScene.h"
 #include "Scene/HelpScene.h"
 #include "Util/GameAnimation.h"
+#include "Scene\NetMenu.h"
 
 USING_NS_CC;
 
@@ -74,7 +75,7 @@ bool WelcomeScene::init()
 	auto startItem = MenuItemImage::create(
 		"StartNormal.png",
 		"StartSelected.png",
-		CC_CALLBACK_1(WelcomeScene::menuPlayCallback, this));
+		CC_CALLBACK_1(WelcomeScene::menuNetCallback, this));
 
 	if (startItem == nullptr ||
 		startItem->getContentSize().width <= 0 ||
@@ -242,9 +243,9 @@ void WelcomeScene::menuCloseCallback(Ref* pSender)
 }
 
 
-void WelcomeScene::menuPlayCallback(Ref *pSender)
+void WelcomeScene::menuNetCallback(Ref *pSender)
 {
-	Director::getInstance()->pushScene(TransitionFade::create(1, GameScene::createScene()));
+	Director::getInstance()->pushScene(TransitionFade::create(1, NetMenu::createScene()));
 }
 
 void WelcomeScene::menuSettingsCallback(cocos2d::Ref * pSender) {

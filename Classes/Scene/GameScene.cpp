@@ -1,4 +1,4 @@
-#include "Scene/WelcomeScene.h"  
+﻿#include "Scene/WelcomeScene.h"  
 #include "Scene/GameScene.h"  
 #include "ui\CocosGUI.h"
 #include "Panel/Panel.h"
@@ -175,6 +175,15 @@ bool GameScene::init()
                     {
                         if (building == target)
                         {
+                            if (!inDiamond(building->getPosition(), size.width/2, size.height/2, _touchEnd))
+                            {
+                                return;
+                            }
+                            //因为即使菱形也有点误差,所以决定,不能生成两个sell.
+                            if (_isSellMenuExit)
+                            {
+                                return;
+                            }
                             _sellBuilding = building;
                             //sell menu
                             auto sellBuildingMenuItem = MenuItemImage::create("Scene/sell_up.png", "Scene/sell_down.png",
@@ -223,7 +232,6 @@ bool GameScene::init()
 						this->addChild(base, 2);
 						_isBaseExist = true;
 						_buildings.pushBack(base);
-						panel->setCurButton(panel->getCurCategoryTag());;
 						break;
 					}
                 }
@@ -494,11 +502,6 @@ void GameScene::dataInit()
 	_isBaseExist = false;
 }
 
-void GameScene::menuEndingCallback(Ref *pSender)
-{
- 
-	Director::getInstance()->pushScene(TransitionFade::create(1, EndingScene::createScene()));
-}
 void GameScene::menuBackCallback(Ref *pSender)
 {
 	//跳转到第一个场景，记得包含第一个场景的头文件：GameScene.h  
@@ -657,7 +660,8 @@ void GameScene::scrollMap()
             moveSpritesWithMap(Vec2(-MAPX + visibleSize.width - mapPosition.x, 0));
         }
     }
-
+    // re get the map position
+    mapPosition = _tileMap->getPosition();
 	if (Y < MINLENTH || _keyDown) 
     {
 		if (_tileMap->getPositionY() + SPEED < 0) 
@@ -745,14 +749,14 @@ bool GameScene::isCollision(cocos2d::Vec2 position)
     {
         return true;
     }
-	for (auto &building : *(this -> getBuildings())) {
-		auto X = position.x - building->getPositionX()+100;
-		auto Y = position.y - building->getPositionY()+30;
-		if (Y>-0.5*X && Y<0.5*X && 0.5*X - 100<Y && Y<100 - 0.5*X)
-		{
-			return true;
-		}
-	}
+    for (auto &building : *(this->getBuildings())) {
+        auto X = position.x - building->getPositionX() + 100;
+        auto Y = position.y - building->getPositionY();
+        if (Y > -0.5*X && Y < 0.5*X && 0.5*X - 100 < Y && Y < 100 - 0.5*X)
+        {
+            return true;
+        }
+    }
     position.x = static_cast<int>(mapPosition.x / tileSize.width);
     position.y = mapSize.height - static_cast<int>(mapPosition.y / tileSize.width) - 1;
     // get the GID of tile
@@ -869,4 +873,27 @@ void GameScene::sellBuildingCallBack()
     _sellBuilding = nullptr;
     _isSellMenuExit = false;
 
+}
+
+bool GameScene::inDiamond(cocos2d::Point center, float width,
+    float height, cocos2d::Point position)
+{
+    Vec2 direction = position - center;
+    //得到相对于中心点的坐标并转到第一象限.
+    float x = fabs(direction.x);
+    float y = fabs(direction.y);
+
+    //根据x算出线上的y.
+    float Y = (height * width - x * height) / width;
+
+    log("Y: %f, y: %f", Y, y);
+
+    if (Y > y)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
