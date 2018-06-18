@@ -71,8 +71,6 @@ bool NetMenu::init()
     }
 	//todo :convey
 	_playerName = "wxz";
-
-system("ping -c 1 255.255.255.255");
     
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();

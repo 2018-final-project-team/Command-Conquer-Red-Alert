@@ -539,7 +539,7 @@ void RoomScene::update(float delta)
 	loop++;
 	if (loop / 100 > 1) {
 		loop = 0;
-		system("ping -c 1 255.255.255.255");
+		//system("ping -c 1 255.255.255.255");
 	}
 
 
