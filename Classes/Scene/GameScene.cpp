@@ -232,6 +232,8 @@ bool GameScene::init()
 						this->addChild(base, 2);
 						_isBaseExist = true;
 						_buildings.pushBack(base);
+						//刷新Panel
+						panel->setCurButton(panel->getCurCategoryTag());
 						break;
 					}
                 }

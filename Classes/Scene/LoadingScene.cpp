@@ -10,6 +10,7 @@
 #include "PreloadList.h"
 #include "Util/GameAudio.h"
 #include "Util/GameAnimation.h"
+#include "Scene/NetMenu.h"
 USING_NS_CC;
 
 Scene* LoadingScene::createScene()
@@ -24,7 +25,7 @@ Scene* LoadingScene::createScene()
 }
 
 void LoadingScene::endLoading(float dt) {
-    const auto transition = TransitionFade::create(1, LoginScene::createScene());
+    const auto transition = TransitionFade::create(1, NetMenu::createScene());
     Director::getInstance()->replaceScene(transition);
 }
 
