@@ -26,12 +26,20 @@ public:
 	bool _isWaitToCreateSoldier;
 	bool _isWaitToCreateCar;
 private:
+
+	Vec2            _destination;          /// Unit的目的地
+	std::string     _command;              /// 读取的远程信息
+	int             _index;                /// 需要移动的Unit在对应Vector中的索引
+	std::string     _playerName;           /// 人物Name
+
+
 	Panel* _panel;
     GameScene* _gameScene;
     MoveController* _moveController;
 
     std::queue<Tag> _carQueue;               // 待建车队列
     std::queue<Tag> _soldierQueue;           // 待建士兵队列 
+
 
 //========CreateController===========
 	CC_SYNTHESIZE(clock_t, _timeToCreateBuilding, TimeToCreateBuilding);               // 单位毫秒
@@ -148,6 +156,12 @@ public:
     cocos2d::Point getPutSoldierPosition();
 
     cocos2d::Point getPutCarPosition();
+
+    // 执行命令.
+    void doCommands();
+
+	//提取移动命令
+	void readMoveCommand();
 
 };
 

@@ -1,4 +1,4 @@
-/*
+﻿/*
 *  @file     GameManager.cpp
 *  @brief    游戏的控制类
 */
@@ -157,6 +157,8 @@ void Manager::waitCreateSoldier()
             // 走出兵营
             soldier->setDestination(getPutSoldierPosition());
             soldier->setGetDestination(false);
+            //To Do:
+            _gameScene->_client->sendMessage("movetopositon", "todo");
             Vec2 direction = (soldier->getDestination() - soldier->getPosition());
             //change state of unit
             if (fabs(direction.x) < fabs(direction.y))
@@ -261,6 +263,8 @@ void Manager::waitCreateCar()
             // 开出车厂
             car->setDestination(getPutCarPosition());
             car->setGetDestination(false);
+            //To Do:
+            _gameScene->_client->sendMessage("movetopositon", "todo");
             Vec2 direction = (car->getDestination() - car->getPosition());
             //change state of unit
             if (fabs(direction.x) < fabs(direction.y))
@@ -337,6 +341,8 @@ void Manager::createBuilding(cocos2d::Vec2 position)
         _gameScene->_gameEventDispatcher->addEventListenerWithSceneGraphPriority
                 (_gameScene->_gameListener->clone(), building);
         building->setPosition(position);
+        //To Do:
+        _gameScene->_client->sendMessage("createBuilding", "position&&tag");
         _gameScene->addChild(building, 2);
         switch (_buildingTag)
         {
@@ -880,4 +886,141 @@ cocos2d::Point Manager::getPutCarPosition()
 void Manager::setPanel(Panel* p)
 {
 	_panel = p;
+}
+
+void Manager::doCommands()
+{
+    std::string tempCommand;
+    while ((tempCommand = _gameScene->_client->executeOrder()) != "no")
+    {
+        _gameScene->_commands.push(tempCommand);
+    }
+
+    while (_gameScene->_commands.size() != 0)
+    {
+        _command = _gameScene->_commands.front();
+        _gameScene->_commands.pop();
+        //To Do:
+        bool set_enemy_position = true;
+        if (set_enemy_position)
+        {
+			readMoveCommand();
+            Vec2 destination = _destination;
+			int index = _index;
+            Unit* enemy = _gameScene->getEnemySoldiers()->at(index);
+            enemy->setDestination(destination);
+            enemy->setGetDestination(false);
+            Vec2 direction = (destination - enemy->getPosition());
+            //change state of unit
+            if (fabs(direction.x) < fabs(direction.y))
+            {
+                if (direction.y > 0)           //up
+                {
+                    enemy->switchState(stateWalkUp);
+                }
+                else                          //down
+                {
+                    enemy->switchState(stateWalkDown);
+                }
+            }
+            else
+            {
+                //left
+                if (direction.x < 0)
+                {
+                    enemy->switchState(stateWalkLeft);
+                }
+                //right
+                else
+                {
+                    enemy->switchState(stateWalkRight);
+                }
+            }
+        }
+        //if (_command[0] /* == enemy move*/ )
+        //{
+        //    std::string name = std::string(&_command[1]);
+        //    if (name == scene._localPlayerName)
+        //    {
+        //        //                std::cout << "LocalPlayerDead message" << std::endl;
+        //        scene._player = scene._localPlayer;
+        //        scene._player->stopAllActions();
+        //        scene._localPlayer->setPlayerDead();
+
+        //        executePlayer(delta, scene);
+        //    }
+        //    else {
+        //        //                std::cout << "RemotePlayerDead message" << std::endl;
+        //        scene._player = scene._remotePlayer[name];
+        //        scene._player->stopAllActions();
+        //        scene._player->setPlayerDead();
+        //        executePlayer(delta, scene);
+        //    }
+
+        //}
+    //    if (_command[0] /*!= KEY_ORDER[0]*/)
+    //    {
+    //        continue;
+    //    }
+    //    readCommand();
+    //    // bool isPress;
+
+    //    if (_playerName == scene._localPlayerName)
+    //        continue;
+    //    scene._player = scene._remotePlayer[_playerName];
+    //    if (_code[0] == 'p')
+    //    {
+    //        scene._player->setKeys(scene._keyPressesedOrder[_code], true);
+    //    }
+    //    else
+    //    {
+    //        scene._player->setKeys(scene._keyReleasedOrder[_code], false);
+    //    }
+
+    //    executePlayer(delta, scene);
+    //    scene._player->setPosition(_playerCurrentPosition);
+    //}
+    //for (int i = 0; i < scene._playerList.size(); i++)
+    //{
+    //    _playerName = scene._playerList.at(i).player_name;
+
+    //    if (_playerName == scene._localPlayerName)
+    //        continue;
+
+    //    else {
+    //        //std::cout << "PlayerName:" << _playerName << std::endl;
+    //        scene._player = scene._remotePlayer[_playerName];
+    //        executePlayer(delta, scene);
+    //    }
+    }
+}
+
+template <class Type>
+Type stringToNum(const std::string& str) {
+	std::istringstream iss(str);
+	Type num;
+	iss >> num;
+	return num;
+}
+
+void Manager::readMoveCommand()
+{
+	auto leftBracket = _command.find('(');
+	auto comma = _command.find(',');
+	auto rightBracket = _command.find(')');
+
+	std::string index(_command.begin() + 1, _command.begin() + 3);
+	std::string playerName(_command.begin() + 3, _command.begin() + leftBracket);
+	std::string spositionX(_command.begin() + 1 + leftBracket, _command.begin() + comma);
+	std::string spositionY(_command.begin() + 1 + comma, _command.begin() + rightBracket);
+
+	//std::cout << playerName << std::endl;
+
+	float positionX = stringToNum<float>(spositionX);
+	float positionY = stringToNum<float>(spositionY);
+	//std::cout << positionX << std::endl;
+	// std::cout << positionY << std::endl;
+	_index = stringToNum<int>(index);
+	_playerName = playerName;
+	_destination = Vec2(positionX, positionY);
 }

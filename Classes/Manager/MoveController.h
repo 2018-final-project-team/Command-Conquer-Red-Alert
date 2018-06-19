@@ -8,8 +8,10 @@
 
 #include "cocos2d.h"
 #include <iostream>
+#include <string>
 #include <vector>
 #include "Scene\GameScene.h"
+#include "NetWork/MessageCode.h" 
 
 class GameScene;
 
@@ -71,6 +73,11 @@ public:
     * @brief can put slidier at this position
     */
     bool canPut(cocos2d::Point position);
+
+	/*
+	* @brief create message about move
+	*/
+	std::string getMoveMessage(Unit* u);
 
 };
 
