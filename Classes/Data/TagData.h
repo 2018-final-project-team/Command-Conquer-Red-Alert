@@ -1,4 +1,4 @@
-﻿#ifndef __TAG_H_
+#ifndef __TAG_H_
 #define __TAG_H_
 
 typedef enum

@@ -1,4 +1,4 @@
-﻿/*
+/*
 *  @file     GameManager.cpp
 *  @brief    游戏的控制类
 */
