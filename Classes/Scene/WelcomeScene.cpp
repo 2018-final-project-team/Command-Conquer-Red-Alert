@@ -13,6 +13,8 @@
 
 USING_NS_CC;
 
+static std::string _userName;
+
 
 Scene* WelcomeScene::createScene()
 {
@@ -24,6 +26,19 @@ Scene* WelcomeScene::createScene()
 
 	return scene;
 
+}
+
+Scene* WelcomeScene::createScene(std::string playerName)
+{
+	auto scene = Scene::create();
+
+	_userName = playerName;
+
+	auto layer = WelcomeScene::create();
+
+	scene->addChild(layer);
+
+	return scene;
 }
 
 // Print useful error message instead of segfaulting when files are not there.
@@ -245,7 +260,7 @@ void WelcomeScene::menuCloseCallback(Ref* pSender)
 
 void WelcomeScene::menuNetCallback(Ref *pSender)
 {
-	Director::getInstance()->pushScene(TransitionFade::create(1, NetMenu::createScene()));
+	Director::getInstance()->pushScene(TransitionFade::create(1, NetMenu::createScene(_userName)));
 }
 
 void WelcomeScene::menuSettingsCallback(cocos2d::Ref * pSender) {

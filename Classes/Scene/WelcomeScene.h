@@ -12,7 +12,10 @@
 class WelcomeScene : public cocos2d::Layer
 {
 public:
+	static std::string _playerName;
+public:
 	static cocos2d::Scene* createScene();
+	static cocos2d::Scene* createScene(std::string playerName);
 
 	virtual bool init();
 

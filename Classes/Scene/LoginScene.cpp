@@ -67,7 +67,7 @@ void LoginScene::createLoginButton()
     loginButton->addTouchEventListener([=](Ref* sender, ui::Widget::TouchEventType type)
     {
         if (type != ui::Widget::TouchEventType::ENDED) return;
-        username = usernameInput->getString();
+		username = usernameInput->getString();
         if (username.empty())
         {
             MessageBox("Username can't be empty", "Alert");
@@ -77,7 +77,7 @@ void LoginScene::createLoginButton()
             username.substr(0, 16);
             UserDefault::getInstance()->setStringForKey("username", username);
 
-            Director::getInstance()->replaceScene(TransitionFade::create(1.2f, WelcomeScene::createScene()));
+            Director::getInstance()->replaceScene(TransitionFade::create(1.2f, WelcomeScene::createScene(username)));
         }
     });
     addChild(loginButton);
@@ -129,5 +129,3 @@ void LoginScene::onEnter()
     Layer::onEnter();
     GameAudio::getInstance()->playBgm("Sound/WelcomeScene.mp3");
 }
-
-

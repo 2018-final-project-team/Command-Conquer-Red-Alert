@@ -395,10 +395,10 @@ bool RoomScene::initForServer()
 
 	return_button->setPosition(Vec2(origin.x + visibleSize.width / 4, origin.y + visibleSize.height*0.2));
 
-	return_button->addTouchEventListener([](Ref* pSender, Widget::TouchEventType type) {
+	return_button->addTouchEventListener([this](Ref* pSender, Widget::TouchEventType type) {
 		if (type == Widget::TouchEventType::ENDED) {
 
-			auto transition = TransitionSlideInR::create(0.5, NetMenu::createScene());
+			auto transition = TransitionSlideInR::create(0.5, NetMenu::createScene(_playerName));
 
 			Director::getInstance()->replaceScene(transition);
 		}

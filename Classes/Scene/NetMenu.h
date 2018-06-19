@@ -44,7 +44,6 @@
 #include <iostream>
 #include "cocos2d.h"
 #include "cocos-ext.h"
-#include "Scene/LoginScene.h"
 #include "Scene/WelcomeScene.h"
 #include "Scene/GameScene.h"
 #include "Scene/LoadingScene.h"
@@ -80,7 +79,7 @@ public:
     *
     * @return   指向网络菜单场景的指针
     */
-    static cocos2d::Scene* createScene();
+	static cocos2d::Scene* createScene(std::string playerName);
 
     /** 
     * @brief    自定义的初始化函数

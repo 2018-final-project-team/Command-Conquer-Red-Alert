@@ -49,15 +49,18 @@
 #include "WelcomeScene.h"
 #include "Util/GameAudio.h"
 
+
 USING_NS_CC;
 
 using namespace ui;
 
+static std::string userName;
 
-Scene* NetMenu::createScene()
+Scene* NetMenu::createScene(std::string playerName)
 {
+	userName = playerName;
     auto scene = Scene::create();
-    auto layer = NetMenu::create();
+	auto layer = NetMenu::create();
     scene->addChild(layer);
     
     return scene;
@@ -69,8 +72,8 @@ bool NetMenu::init()
     {
         return false;
     }
-	//todo :convey
-	_playerName = "wxz";
+
+	_playerName = userName;
     
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -336,69 +339,11 @@ bool NetMenu::init()
     });
     return_button->setVisible(false);
     this->addChild(return_button, 1);
-//============================input name=========================
-    auto NameInput = Sprite::create("NameInput.png");
-    NameInput->setScale(0.7f,0.7f);
-    NameInput->setPosition(origin / 2 + visibleSize / 2);
-    this->addChild(NameInput,1);
-    
-    cocos2d::ui::TextField* textField = cocos2d::ui::TextField::create("input words here", "Arial", 30);
-    textField->setMaxLengthEnabled(true);
-    textField->setMaxLength(20);
-    textField->setPosition(Point(visibleSize.width/2,visibleSize.height/3 + 50));
-    textField->addEventListener(CC_CALLBACK_2(NetMenu::textFieldEvent, this));
-    this->addChild(textField,3);
-    
-    auto inputBox = Sprite::create("InputBox.png");
-    inputBox->setPosition(Point(visibleSize.width/2,visibleSize.height/3 + 50));
-    inputBox->setScale(0.6, 0.6);
-    this->addChild(inputBox,1);
-    
 
-    auto pleaseStartButton = Button::create("button.png");
-    pleaseStartButton->setScale(1.0);
-    pleaseStartButton->setPosition(Vec2(origin.x + visibleSize.width /2, origin.y + visibleSize.height*0.5 - 230));
-    
-    pleaseStartButton->setTitleText("input your name");
-    pleaseStartButton->setTitleFontSize(20);
-    pleaseStartButton->setVisible(false);
-    _pleaseStartButton = pleaseStartButton;
-    
-    this->addChild(pleaseStartButton,3);
-    
-    auto nameStartButton = Button::create("button.png");
-    nameStartButton->setScale(1.0);
-    nameStartButton->setPosition(Vec2(origin.x + visibleSize.width /2, origin.y + visibleSize.height*0.5 - 230));
-    
-    nameStartButton->setTitleText("Start");
-    nameStartButton->setTitleFontSize(20);
 
-    auto name = &_playerName;
-    
-    nameStartButton->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
-        if (type == Widget::TouchEventType::ENDED) {
-            if(_playerName.size() < 4)
-                _nameStartButton->setTitleText("At least 4 character");
-            else{
-            
-                pleaseStartButton->setVisible(false);
-                _pleaseStartButton->setVisible(false);
-                textField->setVisible(false);
-                inputBox->setVisible(false);
-                nameStartButton->setVisible(false);
-                NameInput->setVisible(false);
-            
-                local_button->setVisible(true);
-                remote_button->setVisible(true);
-                return_button->setVisible(true);
-            }
-        }
-    });
-
-    nameStartButton->setVisible(false);
-    _nameStartButton = nameStartButton;
-
-    this->addChild(nameStartButton,3);
+	local_button->setVisible(true);
+	remote_button->setVisible(true);
+	return_button->setVisible(true);
 
     return true;
 }
