@@ -8,6 +8,9 @@ const clock_t addMoneyDelay = 1000 * 10;
 #include "Data\UnitData.h"
 #include "Manager\GameManager.h"
 #include "Panel/Panel.h"
+#include "NetWork/Client.h"
+#include "Data/ExternData.h"
+#include "Data/LevelData.h"
 
 class Manager;   //解决头文件互相包含时带来的问题
 class Panel;     //解决头文件互相包含时带来的问题
@@ -17,8 +20,20 @@ class GameScene : public cocos2d::Layer
 {
 	int cnt = 0;
 public:
+	cocos2d::Sprite*           small_map;
+
+	LevelData*                 _inputData;           ///选择人物时的数据
+	GameScene*                 _thisScene;           ///等于This指针
+	std::vector<PlayerData>    _playerList;          ///所有远程玩家的信息
+
+
+	cocos2d::TMXTiledMap*      _tileMap;
+
+	Client*                   _client;              ///服务端指针
+	std::string               _localPlayerName;     ///本地玩家的名字
+
     Manager * _manager;
-    cocos2d::TMXTiledMap* _tileMap;
+    
     Panel * panel;
 
 private:
@@ -103,7 +118,7 @@ public:
 
 	CC_SYNTHESIZE(cocos2d::Vec2, _barracksPosition, BarracksPosition);
 
-	static cocos2d::Scene* createScene();
+	static cocos2d::Scene* createScene(LevelData &data, Client* client, std::string playerName);
 
 	virtual bool init();
 

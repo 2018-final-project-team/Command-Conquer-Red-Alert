@@ -345,15 +345,6 @@ bool RoomScene::initForServer()
 	);
 	pageView->setAnchorPoint(Vec2(0.5, 0.5));
 
-	// add three layouts
-	//for (int i = 0; i < 1; ++i)
-	//{
-		// set a layout
-	
-
-
-
-
 
 
 
@@ -759,7 +750,7 @@ void RoomScene::update(float delta)
 			{
 				_game_data->player_list.push_back(player_list.at(i));
 			}
-			auto transition = TransitionSplitRows::create(2.0, GameScene::createScene());
+			auto transition = TransitionSplitRows::create(2.0, GameScene::createScene(*_game_data, client, _owner_player_name));
 
 			Director::getInstance()->pushScene(transition);
 		}

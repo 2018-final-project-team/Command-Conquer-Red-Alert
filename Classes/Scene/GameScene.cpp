@@ -2,10 +2,18 @@
 #include "Scene/GameScene.h"  
 #include "ui\CocosGUI.h"
 #include "Panel/Panel.h"
+
 #define small_mapX 300
 #define small_mapY 300
 #define MINLENTH 15
 #define SPEED 20
+
+
+static int _mapIndex = 1;
+static std::string splayerName;
+static Client* clients;
+//a static pointer which is gong to be used to make LevelData oject reference count nonzero
+static LevelData* ptr = NULL;
 
 USING_NS_CC;
 using namespace ui;
@@ -17,14 +25,19 @@ static void problemLoading(const char* filename)
 	printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in WelcomeScene.cpp\n");
 }
 
-Scene* GameScene::createScene()
+Scene* GameScene::createScene(LevelData &data, Client* client, std::string playerName)
 {
 	auto scene = Scene::createWithPhysics();
-
-	//调试用
-	scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 	
 	scene->getPhysicsWorld()->setGravity(Vec2(0, 0));
+
+	data.retain();
+
+	_mapIndex = data.getmapIndex();
+	clients = client;
+	splayerName = playerName;
+	//Make LevelData oject reference count nonzero
+	ptr = &data;
 
 	auto layer = GameScene::create();
 
@@ -41,13 +54,29 @@ bool GameScene::init()
 		return false;
 	}
 
+
+	_thisScene = this;
+	_client = clients;
+	_inputData = ptr;
+	_localPlayerName = splayerName;
+	_playerList = ptr->player_list;
+
+
 	this->dataInit();
 
     auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	//===================Load map=========================
-	_tileMap = TMXTiledMap::create("GameItem/Map/mapbeautiful1.tmx");
+	if (_inputData->getmapIndex() == 1)
+	{
+		_tileMap = TMXTiledMap::create("GameItem/Map/mapbeautiful1.tmx");
+	}
+	else if (_inputData->getmapIndex() == 2)
+	{
+		_tileMap = TMXTiledMap::create("GameItem/Map/mapbeautiful2.tmx");
+	}
+	
     MAPX = _tileMap->getMapSize().width * _tileMap->getTileSize().width;
     MAPY = _tileMap->getMapSize().height * _tileMap->getTileSize().height;
 	this->addChild(_tileMap);
@@ -55,7 +84,14 @@ bool GameScene::init()
 	_barrier = _tileMap->getLayer("barrier");
 
 	/*update by czd*/
-	Sprite* small_map = Sprite::create("GameItem/Map/small_map1.png"); 
+	if (_inputData->getmapIndex() == 1)
+	{
+		small_map = Sprite::create("GameItem/Map/small_map1.png");
+	}
+	else if (_inputData->getmapIndex() == 2)
+	{
+		small_map = Sprite::create("GameItem/Map/small_map2.png");
+	}
     small_map->setPosition(Point(visibleSize.width - small_mapX / 2, visibleSize.height - small_mapX / 2));
 	this->addChild(small_map, 3);
 
