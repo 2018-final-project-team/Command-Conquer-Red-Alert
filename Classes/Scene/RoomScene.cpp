@@ -311,8 +311,11 @@ bool RoomScene::initForServer()
 	send_message_button->addTouchEventListener([&](Ref* pSender, Widget::TouchEventType type) {
 		if (type == Widget::TouchEventType::ENDED) {
 			std::string message = std::to_string(findPlayerId()) + _chatWindow->getString();
+			if (player_count > 1) {
 			client->sendMessage(CHAT_MESSAGE, message);
 			_chatWindow->setString("");
+			}
+
 		}
 	});
 	auto inputBar = Sprite::create("InputBar.png");
@@ -343,51 +346,76 @@ bool RoomScene::initForServer()
 	pageView->setAnchorPoint(Vec2(0.5, 0.5));
 
 	// add three layouts
-	for (int i = 0; i < 3; ++i)
-	{
+	//for (int i = 0; i < 1; ++i)
+	//{
 		// set a layout
-		Layout* layout = Layout::create();
+	
 
-		// set the contentsize
-		layout->setContentSize(Size(300.0f, 300.0f));
 
-		// set a imageview
-		ImageView* imageView = ImageView::create(StringUtils::format("GameItem/Map/small_map%d.png", i + 1));
-		imageView->setContentSize(Size(300.0f, 3000.0f));
-		imageView->setScale(300.0f / 680.0f);
-		imageView->setPosition(Vec2
-		(layout->getContentSize().width / 2.0f, layout->getContentSize().height / 2.0f)
-		);
 
-		// add the image view as a child
-		layout->addChild(imageView);
 
-		// insert the layout at the position i representing for
-		pageView->insertPage(layout, i);
-	}
 
-	// add the eventListener
-	pageView->addEventListener([=](Ref* pSender, PageView::EventType type)
-	{
-		switch (type)
-		{
-		case PageView::EventType::TURNING:
-		{
-			PageView* pageView = dynamic_cast<PageView*>(pSender);
-			_selectLevelIndex = pageView->getCurPageIndex();
-			start_button->setTitleText(StringUtils::format("map%d", _selectLevelIndex + 1));
+
+
+
+
+
+//===============小地图==============================
+		
+	Sprite* small_map2 = Sprite::create("GameItem/Map/small_map2.png");
+	small_map2->setPosition(Vec2
+	(visibleSize.width / 2, visibleSize.height / 2)
+	);
+	this->addChild(small_map2);
+	small_map2->setVisible(false);
+
+	Sprite* small_map1 = Sprite::create("GameItem/Map/small_map1.png");
+	small_map1->setPosition(Vec2
+	(visibleSize.width / 2, visibleSize.height / 2)
+	);
+	this->addChild(small_map1);
+	small_map1->setVisible(true);
+
+
+	auto thisObject = this;
+//================换地图的按键============================
+	
+	auto right_button = Button::create("button.png");
+	right_button->setTitleText("right");
+	right_button->setTitleFontSize(30);
+	right_button->setPosition(Vec2(visibleSize.width*3 / 4, visibleSize.height*0.5));
+	right_button->setVisible(true);
+
+	auto left_button = Button::create("button.png");
+	left_button->setTitleText("left");
+	left_button->setTitleFontSize(30);
+	left_button->setPosition(Vec2(visibleSize.width * 1 / 4, visibleSize.height*0.5));
+	left_button->setVisible(false);
+
+	right_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
+		if (type == Widget::TouchEventType::ENDED) {
+			small_map1->setVisible(false);
+			small_map2->setVisible(true);
+			left_button->setVisible(true);
+			right_button->setVisible(false);
+			start_button->setTitleText("map2");
+			_selectLevelIndex = 1;
 		}
-		break;
-		default:break;
+	});
+	left_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
+		if (type == Widget::TouchEventType::ENDED) {
+			small_map2->setVisible(false);
+			small_map1->setVisible(true);
+			right_button->setVisible(true);
+			left_button->setVisible(false);
+			start_button->setTitleText("map1");
+			_selectLevelIndex = 0;
 		}
 	});
 
-	// add the pageview as a child
-	board->addChild(pageView, 1);
 
-	// thisObject is *LevelSelector
-	auto thisObject = this;
-
+	this->addChild(right_button);
+	this->addChild(left_button);
 	//====================================return_button==============================
 	//return button
 	auto return_button = Button::create("return.png");
@@ -412,7 +440,10 @@ bool RoomScene::initForServer()
 	start_button->setPosition(Vec2(visibleSize.width / 2, visibleSize.height*0.2));
 	start_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
 		if (type == Widget::TouchEventType::ENDED) {
-
+			right_button->setVisible(false);
+			left_button->setVisible(false);
+			small_map1->setVisible(false);
+			small_map2->setVisible(false);
 			//Add a translucent black layer
 			Color4B black = Color4B(0, 0, 0, 100);
 			auto role_layer = LayerColor::create(black, 680, 680);
