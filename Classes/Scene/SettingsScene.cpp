@@ -109,6 +109,7 @@ void SettingsScene::onEnter()
 
 void SettingsScene::menuOkCallback(cocos2d::Ref * pSender)
 {
+	GameAudio::getInstance()->playEffect("Sound/button.mp3");
     Director::getInstance()->popScene();
 }
 

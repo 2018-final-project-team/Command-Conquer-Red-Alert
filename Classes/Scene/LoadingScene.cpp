@@ -60,7 +60,11 @@ void LoadingScene::loadSound()
 		gameAudioInstance->preloadBgm(bgm.c_str());
 	}
 
-	//=========== to do : 初始化音效 ============
+	//=====================初始化音效================================
+	for (auto effect : Preload::effect)
+	{
+		gameAudioInstance->preloadEffect(effect.c_str());
+	}
 }
 
 void LoadingScene::loadImage() {

@@ -44,13 +44,10 @@
 #include <iostream>
 #include "cocos2d.h"
 #include "cocos-ext.h"
-#include "Scene/WelcomeScene.h"
-#include "Scene/GameScene.h"
-#include "Scene/LoadingScene.h"
-#include "ui\CocosGUI.h"
+#include "ui/CocosGUI.h"
 #include "NetWork/LocalServer.h"
 #include "Scene/RoomScene.h"
-#include "Classes\NetWork\Client.h"
+#include "NetWork/Client.h"
 
 USING_NS_CC;
 using namespace ui;
