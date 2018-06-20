@@ -9,11 +9,13 @@
 #include "Scene/SettingsScene.h"
 #include "Scene/HelpScene.h"
 #include "Util/GameAnimation.h"
-#include "Scene\NetMenu.h"
+#include "Scene/NetMenu.h"
+#include "Util/GameAudio.h"
 
 USING_NS_CC;
 
 static std::string _userName;
+
 
 
 Scene* WelcomeScene::createScene()
@@ -260,13 +262,16 @@ void WelcomeScene::menuCloseCallback(Ref* pSender)
 
 void WelcomeScene::menuNetCallback(Ref *pSender)
 {
+	GameAudio::getInstance()->playEffect("Sound/button.mp3");
 	Director::getInstance()->pushScene(TransitionFade::create(1, NetMenu::createScene(_userName)));
 }
 
 void WelcomeScene::menuSettingsCallback(cocos2d::Ref * pSender) {
+	GameAudio::getInstance()->playEffect("Sound/button.mp3");
 	Director::getInstance()->pushScene(TransitionFade::create(1, SettingsScene::createScene()));
 }
 
 void WelcomeScene::menuHelpCallback(cocos2d::Ref * pSender) {
+	GameAudio::getInstance()->playEffect("Sound/button.mp3");
 	Director::getInstance()->pushScene(TransitionFade::create(1, HelpScene::createScene()));
 }

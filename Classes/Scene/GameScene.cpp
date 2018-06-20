@@ -1,4 +1,4 @@
-﻿#include "Scene/WelcomeScene.h"  
+#include "Scene/WelcomeScene.h"  
 #include "Scene/GameScene.h"  
 #include "ui/CocosGUI.h"
 #include "Panel/Panel.h"

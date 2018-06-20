@@ -368,8 +368,8 @@ void MoveController::findRroute(Unit *soldier, std::vector<Point> &route)
     int distance = 100;
     //don't    
     //know
-    float directX[8] = { 0.7*distance ,0.7* distance ,-0.7* distance ,-0.7* distance ,0,0,-1 * distance ,distance };
-    float directY[8] = { 0.7* distance ,-0.7* distance ,0.7* distance ,-0.7* distance,distance,-1 * distance,0 ,0 };
+    float directX[8] = { static_cast<float>(0.7*distance) ,static_cast<float>(0.7* distance) ,static_cast<float>(-0.7* distance) ,static_cast<float>(-0.7* distance) ,0,0,static_cast<float>(-1 * distance) ,static_cast<float>(distance) };
+    float directY[8] = { static_cast<float>(0.7* distance) ,static_cast<float>(-0.7* distance) ,static_cast<float>(0.7* distance) ,static_cast<float>(-0.7* distance),static_cast<float>(distance),static_cast<float>(-1 * distance),0 ,0 };
     int is_not_find = 1;
     //whats
     if (is_find(nowPosition, nowDestination))

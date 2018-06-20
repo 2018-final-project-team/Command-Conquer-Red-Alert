@@ -45,12 +45,12 @@
 #include <iostream>
 #include "cocos2d.h"
 #include "json/document.h"
-#include "../Data/LevelData.h"
-#include "../Scene/GameScene.h"
-#include "../NetWork/LocalServer.h"
-#include "../NetWork/Client.h"
-#include "../Data/ExternData.h"
-#include "../Scene/NetMenu.h"
+#include "Data/LevelData.h"
+#include "Scene/GameScene.h"
+#include "NetWork/LocalServer.h"
+#include "NetWork/Client.h"
+#include "Data/ExternData.h"
+#include "Scene/NetMenu.h"
 /**
 * @brief 房间类,开房开房开房！继承自cocos2d:Layer
 * 这里房间信息可以实时更新,玩家可以随便聊天
@@ -59,7 +59,7 @@ class RoomScene : public cocos2d::Layer
 {
 protected:
 	Vector<Sprite*>     _exist_player;             ///目前房间里的Player
-	int                 _selectLevelIndex;         ///目前选择的地图索引
+	int                 selectMapIndex;         ///目前选择的地图索引
 	Sprite*             _room_ptr;                 ///房间背景
 	std::string         _owner_player_name;        ///房主的姓名
 	PlayerData*         _owner_player_data;        ///房主的个人信息

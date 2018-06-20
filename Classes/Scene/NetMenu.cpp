@@ -1,4 +1,4 @@
-﻿/*****************************************************************************
+/*****************************************************************************
 *  Copyright (C) 2017 李坤 1061152718@qq.com
 *
 *  此文件属于软件学院2017c++大项目泡泡堂选题的项目文件.
@@ -41,12 +41,11 @@
 
 
 #include <stdio.h>
-#include "NetMenu.h"
-#include "SearchScene.h"
+#include "Scene/NetMenu.h"
+#include "Scene/SearchScene.h"
 #include "ui/CocosGUI.h"
-#include "LoginScene.h"
+#include "Scene/WelcomeScene.h"
 #include "Settings.h"
-#include "WelcomeScene.h"
 #include "Util/GameAudio.h"
 
 
@@ -78,220 +77,206 @@ bool NetMenu::init()
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
     
-    auto bg = Sprite::create("bg.png");
+    auto bg = Sprite::create("background.png");
     this->addChild(bg);
     bg->setPosition(Vec2(visibleSize.width/2, visibleSize.height/2));
 
-    _selectLevelIndex = 0;
+    selectMapIndex = 0;
 
-//=============================map select window===========================
 
-    auto pageView = PageView::create();
-    pageView->setContentSize(Size(680.0f, 680.0f));
-    
-    pageView->setPosition(Vec2((visibleSize.width - pageView->getContentSize().width) / 2.0f,
-                               (visibleSize.height - pageView->getContentSize().height)*0.6));
-    
+	auto remote_button = Button::create("button_normal.png", "button_select.png");
+    auto local_button = Button::create("button_normal.png", "button_select.png");
+	auto return_button = Button::create("backNormal.png", "backSelected.png");
+	remote_button->setTitleText("manual input IP");
+	local_button->setTitleText("auto search IP");
+	remote_button->setTitleFontSize(20);
+	local_button->setTitleFontSize(20);
+	remote_button->setScale(1.5);
+	local_button->setScale(1.5);
+	return_button->setScale(1.5);
 
-    for (int i = 0; i < 2; ++i)
-    {
-        Layout* layout = Layout::create();
-        layout->setContentSize(Size(680.0f, 680.0f));
-        
-        ImageView* imageView = ImageView::create(StringUtils::format("map%d.png", i + 1));
-        imageView->setContentSize(Size(680.0f, 680.0f));
-        imageView->setPosition(Vec2(layout->getContentSize().width / 2.0f, layout->getContentSize().height / 2.0f));
-        
-        layout->addChild(imageView);
-
-        pageView->insertPage(layout, i);
-    }
-    
-    pageView->addEventListener([=](Ref* pSender, PageView::EventType type)
-                               {
-                                   switch (type)
-                                   {
-                                       case PageView::EventType::TURNING:
-                                       {
-                                           PageView* pageView = dynamic_cast<PageView*>(pSender);
-                                           _selectLevelIndex = pageView->getCurPageIndex();
-                                       }
-                                           break;
-                                       default:break;
-                                   }
-                               });
-    
-    auto thisObject = this;
-
-//=============================remote network button已改好===========================
-	auto remote_button = Button::create("RemoteFight.png");
-    auto local_button = Button::create("LocalFight.png");
-    remote_button->setScale(1.0);
-    
+	//=============================remote_button===========================
     remote_button->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 5 * 3));
 
     remote_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
         if (type == Widget::TouchEventType::ENDED) {
+			GameAudio::getInstance()->playEffect("Sound/button.mp3");
 			initIPBox();
 			remote_button->setVisible(false);
 			local_button->setVisible(false);
-			auto IPButton = ui::Button::create("RoomScene/button_normal.png", "RoomScene/button_selected.png");
+			return_button->setVisible(false);
+			auto IPButton = Button::create("button_normal.png", "button_selected.png");
+			auto returnButton = Button::create("backNormal.png", "backSelected.png");
 			IPButton->setTitleText("landlord's IP");
 			IPButton->setTitleFontName(Settings::Font::Type::official);
 			IPButton->setTitleFontSize(Settings::Font::Size::label);
 			IPButton->setPosition(Vec2(visibleSize.width / 2, visibleSize.height * 0.35f));
+			returnButton->setPosition(Vec2(visibleSize.width / 2, visibleSize.height * 0.15f));
 			IPButton->setOpacity(233);
 
-			IPButton->addTouchEventListener([=](Ref* sender, ui::Widget::TouchEventType type)
+			returnButton->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type)
 			{
-				if (type != ui::Widget::TouchEventType::ENDED) return;
+				if (type == Widget::TouchEventType::ENDED)
+				{
+					GameAudio::getInstance()->playEffect("Sound/button.mp3");
+					Director::getInstance()->pushScene(TransitionFade::create(1, NetMenu::createScene(_playerName)));
+				}
+			});
+
+			IPButton->addTouchEventListener([=](Ref* sender, Widget::TouchEventType type)
+			{
+				if (type != Widget::TouchEventType::ENDED)
+                {
+                    GameAudio::getInstance()->playEffect("Sound/button.mp3");
+                    return;
+                }
 				IP = IPInput->getString();
 				//log("IP    IP   %c", IP[0]);
 				//log("IP    IP   %c", IP[4]);
 				if (IP.empty())
 				{
 					MessageBox("IP can't be empty", "Alert");
+					return;
 				}
 				else
 				{
+					IPBG->setVisible(false);
+					IPInput->setVisible(false);
+					returnButton->setVisible(false);
 					IP.substr(0, 16);
 					UserDefault::getInstance()->setStringForKey("IP", IP);
 
+					//透明黑底板
 					Color4B black = Color4B(0, 0, 0, 100);
-					auto role_layer = LayerColor::create(black, 680, 680);
-					role_layer->setPosition(Vec2(origin.x, origin.y));
+					auto blackLayer = LayerColor::create(black, 1024, 860);
+					blackLayer->setPosition(Vec2(origin.x, origin.y));
 
-					thisObject->addChild(role_layer, 2);
+					this->addChild(blackLayer, 2);
 
-					auto role_selector = Sprite::create("BlankBoard.png");
-					role_selector->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
-					role_layer->addChild(role_selector);
+					auto selector = Sprite::create("BlankBoard.png");
+					selector->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
+					blackLayer->addChild(selector);
 
-					auto back_button = Button::create("backNormal.png");
-					auto create_button = Button::create("Scene/button.png");
-					auto join_button = Button::create("Scene/button.png");
+					auto back_button = Button::create("backNormal.png", "backSelected.png");
+					auto create_button = Button::create("button_normal.png", "button_selected.png");
+					auto join_button = Button::create("button_normal.png", "button_selected.png");
 
-					role_selector->addChild(create_button);
-					role_selector->addChild(join_button);
-					role_layer->addChild(back_button);
+					selector->addChild(create_button);
+					selector->addChild(join_button);
+					blackLayer->addChild(back_button);
 
 					create_button->setTitleText("create room");
 					create_button->setTitleFontSize(20);
 					join_button->setTitleText("join room");
 					join_button->setTitleFontSize(20);
 
+					create_button->setPosition(Vec2(selector->getContentSize().width / 2, selector->getContentSize().height / 3 * 2));
 
-					float widthMargin = visibleSize.width/2 - role_selector->getContentSize().width/2;
-					float heightMargin = visibleSize.height/2 - role_selector->getContentSize().height/2;
+					join_button->setPosition(Vec2(selector->getContentSize().width / 2, selector->getContentSize().height / 3));
 
-					create_button->setPosition(Vec2(role_selector->getContentSize().width/2, role_selector->getContentSize().height / 3 * 2));
-
-					join_button->setPosition(Vec2(role_selector->getContentSize().width/2, role_selector->getContentSize().height / 3));
-
-					back_button->setPosition(Vec2(origin.x + visibleSize.width - widthMargin, origin.y + role_selector->getContentSize().height * 7.5 / 9 + heightMargin));
+					back_button->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.1));
 
 					back_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
-					if (type == Widget::TouchEventType::ENDED) {
-
-					thisObject->removeChild(role_layer);
-					remote_button->setVisible(true);
-					local_button->setVisible(true);
-
-					}
+						if (type == Widget::TouchEventType::ENDED) {
+							GameAudio::getInstance()->playEffect("Sound/button.mp3");
+							removeChild(blackLayer);
+							IPBG->setVisible(true);
+							IPInput->setVisible(true);
+							returnButton->setVisible(true);
+						}
 					});
 
 					join_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
-					if (type == Widget::TouchEventType::ENDED) {
+						if (type == Widget::TouchEventType::ENDED) {
+							GameAudio::getInstance()->playEffect("Sound/button.mp3");
+							auto client = Client::create(1);
+							client->_landlordIP = IP;
+							client->_with_server = false;
+							auto transition = TransitionSlideInL::create(0.5, SearchScene::createScene(client, _playerName));
 
-					auto client = Client::create(1);
-					client->_landlordIP = IP;
-					client->_with_server = false;
-					auto transition = TransitionSlideInL::create(0.5, SearchScene::createScene(client, _playerName));
-
-					Director::getInstance()->pushScene(transition);
-					}
+							Director::getInstance()->pushScene(transition);
+						}
 					});
 
 					create_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
-					if (type == Widget::TouchEventType::ENDED) {
+						if (type == Widget::TouchEventType::ENDED) {
+							GameAudio::getInstance()->playEffect("Sound/button.mp3");
+							auto server = LocalServer::create();
+							this->addChild(server);
+							auto client = Client::create(1);
+							this->addChild(client);
+							client->_filter_mode = true;
+							client->sensitive_word = _playerName;
+							client->_with_server = true;
 
-					auto server = LocalServer::create();
-					this->addChild(server);
-					auto client = Client::create(1);
-					this->addChild(client);
-					client->_filter_mode = true;
-					client->sensitive_word = _playerName;
-					client->_with_server = true;
+							auto transition = TransitionSlideInL::create(0.5, RoomScene::createScene(client, 2, _playerName));
+							Director::getInstance()->pushScene(transition);
 
-					auto transition = TransitionSlideInL::create(0.5, RoomScene::createScene(client, 2, _playerName));
-					Director::getInstance()->pushScene(transition);
-
-					}
+						}
 					});
 
 
 				}
 			});
 			addChild(IPButton);
-            
-
+			addChild(returnButton);
         }
     });
     this->addChild(remote_button, 1);
     
-//=============================local network button===========================
-    local_button->setScale(1.0);
+//=============================local_button===========================
     
     local_button->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 5 * 2));
-    //to understand
     local_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
         if (type == Widget::TouchEventType::ENDED) {
-
+			GameAudio::getInstance()->playEffect("Sound/button.mp3");
+			remote_button->setVisible(false);
+			local_button->setVisible(false);
+			return_button->setVisible(false);
             Color4B black = Color4B(0, 0, 0, 100);
-            auto role_layer = LayerColor::create(black, 680, 680);
-            role_layer->setPosition(Vec2(origin.x, origin.y));
+            auto blackLayer = LayerColor::create(black, 1024, 860);
+            blackLayer->setPosition(Vec2(origin.x, origin.y));
             
-            thisObject->addChild(role_layer, 1);
+            this->addChild(blackLayer, 1);
             
             
-            auto role_selector = Sprite::create("BlankBoard.png");
-            role_selector->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
-            role_layer->addChild(role_selector, 1);
+            auto selector = Sprite::create("BlankBoard.png");
+            selector->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
+            blackLayer->addChild(selector, 1);
             
-            auto back_button = Button::create("backNormal.png");
-            auto create_button = Button::create("Scene/button.png");
-            auto join_button = Button::create("Scene/button.png");
-            
-            role_selector->addChild(create_button, 1);
-            role_selector->addChild(join_button, 1);
-            role_layer->addChild(back_button, 1);
-            
-            create_button->setTitleText("create room");
-            create_button->setTitleFontSize(20);
-            join_button->setTitleText("join room");
-            join_button->setTitleFontSize(20);
+			auto back_button = Button::create("backNormal.png", "backSelected.png");
+			auto create_button = Button::create("button_normal.png", "button_selected.png");
+			auto join_button = Button::create("button_normal.png", "button_selected.png");
 
-            float widthMargin = visibleSize.width/2 - role_selector->getContentSize().width/2;
-            float heightMargin = visibleSize.height/2 - role_selector->getContentSize().height/2;
-            
-            create_button->setPosition(Vec2(role_selector->getContentSize().width/2, role_selector->getContentSize().height / 3 * 2));
-            
-            join_button->setPosition(Vec2(role_selector->getContentSize().width/2, role_selector->getContentSize().height / 3));
-            
-            back_button->setPosition(Vec2(origin.x + visibleSize.width - widthMargin, origin.y + role_selector->getContentSize().height * 7.5 / 9 + heightMargin));
+			selector->addChild(create_button);
+			selector->addChild(join_button);
+			blackLayer->addChild(back_button);
+
+			create_button->setTitleText("create room");
+			create_button->setTitleFontSize(20);
+			join_button->setTitleText("join room");
+			join_button->setTitleFontSize(20);
+
+			create_button->setPosition(Vec2(selector->getContentSize().width / 2, selector->getContentSize().height / 3 * 2));
+
+			join_button->setPosition(Vec2(selector->getContentSize().width / 2, selector->getContentSize().height / 3));
+
+			back_button->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.1));
             
             back_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
                 if (type == Widget::TouchEventType::ENDED) {
-
-                    thisObject->removeChild(role_layer);
-                    remote_button->setVisible(true);
-                    local_button->setVisible(true);
+					GameAudio::getInstance()->playEffect("Sound/button.mp3");
+					this->removeChild(blackLayer);
+					remote_button->setVisible(true);
+					local_button->setVisible(true);
+					return_button->setVisible(true);
                     
                 }
             });
             
             join_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
                 if (type == Widget::TouchEventType::ENDED) {
+					GameAudio::getInstance()->playEffect("Sound/button.mp3");
                     auto client = Client::create(2);
                     client->_with_server = false;
                     auto transition = TransitionSlideInL::create(0.5, SearchScene::createScene(client, _playerName));
@@ -302,7 +287,7 @@ bool NetMenu::init()
             
             create_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
                 if (type == Widget::TouchEventType::ENDED) {
-
+					GameAudio::getInstance()->playEffect("Sound/button.mp3");
                     auto server = LocalServer::create();
                     this->addChild(server, 1);
                     auto client = Client::create(2);
@@ -323,27 +308,16 @@ bool NetMenu::init()
     this->addChild(local_button, 1);
 
 //=============================return button===========================
-
-    auto return_button = Button::create("return.png");
-    return_button->setScale(1.0);
     
     return_button->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height*0.2));
     
     return_button->addTouchEventListener([](Ref* pSender, Widget::TouchEventType type) {
         if (type == Widget::TouchEventType::ENDED) {
-            
-            //auto transition = TransitionSlideInR::create(0.5, GameMenu::createScene());
-            //
-            //Director::getInstance()->replaceScene(transition);
+			GameAudio::getInstance()->playEffect("Sound/button.mp3");
+			Director::getInstance()->pushScene(TransitionFade::create(1, WelcomeScene::createScene()));
         }
     });
-    return_button->setVisible(false);
     this->addChild(return_button, 1);
-
-
-	local_button->setVisible(true);
-	remote_button->setVisible(true);
-	return_button->setVisible(true);
 
     return true;
 }

@@ -45,10 +45,10 @@
 #include <iostream>
 #include "cocos2d.h"
 #include "json/document.h"
-#include "../Data/LevelData.h"
+#include "Data/LevelData.h"
 #include "GameScene.h"
-#include "../NetWork/LocalServer.h"
-#include "../NetWork/Client.h"
+#include "NetWork/LocalServer.h"
+#include "NetWork/Client.h"
 
 /**
 *   @brief  搜索界面\n
@@ -58,7 +58,7 @@ class SearchScene : public cocos2d::Layer
 {
 private:
 
-	int                 _selectLevelIndex;      ///地图索引
+	int                 selectMapIndex;      ///地图索引
 	Sprite*             _room_list_bg;          ///房间列表的背景图片名称
 	std::string         _player_name;           ///玩家名称
 	Vector<Button*>     button_list;            ///存储所列出的房间对象

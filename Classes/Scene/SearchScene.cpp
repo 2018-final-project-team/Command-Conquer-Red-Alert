@@ -1,4 +1,4 @@
-﻿/*****************************************************************************
+/*****************************************************************************
 *  Copyright (C) 2017 李坤 1061152718@qq.com
 *
 *  此文件属于软件学院2017c++大项目泡泡堂选题的项目文件.
@@ -42,8 +42,9 @@
 #include <stdio.h>
 #include "Scene/RoomScene.h"
 #include "ui/CocosGUI.h"
-#include "SearchScene.h"
+#include "Scene/SearchScene.h"
 #include "NetWork/MessageCode.h"
+#include "Util/GameAudio.h"
 
 USING_NS_CC;
 using namespace ui;
@@ -87,9 +88,22 @@ bool SearchScene::init()
 	_room_list_bg = RoomListBg;
 	this->addChild(RoomListBg, 1);
 
-	auto bg = Sprite::create("bg.png");
+	auto bg = Sprite::create("background.png");
 	bg->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
 	this->addChild(bg);
+
+	auto backButton = Button::create("backNormal.png", "backSelected.png");
+	backButton->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 5));
+	backButton->addTouchEventListener([=](Ref * pSender, Widget::TouchEventType type)
+	{
+		if (type == Widget::TouchEventType::ENDED)
+		{
+			GameAudio::getInstance()->playEffect("Sound/button.mp3");
+
+			Director::getInstance()->pushScene(TransitionFade::create(1, NetMenu::createScene(_static_player_name)));
+		}
+	});
+	RoomListBg->addChild(backButton);
 
 	this->scheduleUpdate();
 
@@ -131,6 +145,8 @@ void SearchScene::update(float delta)
 					room_owner.push_back(owner_name);
 
 					auto board = Button::create("PlayerBar.png", "PlayerBar.png");
+					/*auto in_button = Button::create("button_normal", "button_selected");
+                    in_button->setTitleText("Connect");*/
 					auto in_button = Button::create("RoomList_connect.png");
 					board->addChild(in_button);
 
@@ -142,6 +158,8 @@ void SearchScene::update(float delta)
 
 					in_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
 						if (type == Widget::TouchEventType::ENDED) {
+
+							GameAudio::getInstance()->playEffect("Sound/button.mp3");
 
 							client->_filter_mode = true;
 							client->sensitive_word = button_owner_name;
