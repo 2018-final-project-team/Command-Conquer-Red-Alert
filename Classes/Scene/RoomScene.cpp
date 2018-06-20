@@ -329,8 +329,8 @@ bool RoomScene::initForServer()
 
 			std::string message = std::to_string(findPlayerId()) + _chatWindow->getString();
 			if (player_count > 1) {
-				client->sendMessage(CHAT_MESSAGE, message);
-				_chatWindow->setString("");
+			client->sendMessage(CHAT_MESSAGE, message);
+			_chatWindow->setString("");
 			}
 
 		}
@@ -343,35 +343,36 @@ bool RoomScene::initForServer()
 
 
 	//====================================select map==============================
-	auto board_bg = Sprite::create("SelectMap.png");
+	auto board_bg = Layout::create();
 	this->addChild(board_bg);
 	board_bg->setPosition(Vec2(visibleSize.width / 2.0f, visibleSize.height / 2.0f));
+	auto board = ImageView::create("SelectMap.png");
+	board_bg->addChild(board);
 
 
-
-	//===============小地图==============================
-
+//===============小地图==============================
+		
 	Sprite* small_map2 = Sprite::create("GameItem/Map/small_map2.png");
 	small_map2->setPosition(Vec2
 	(visibleSize.width / 2, visibleSize.height / 2)
 	);
-	board_bg->addChild(small_map2, 1);
+	this->addChild(small_map2);
 	small_map2->setVisible(false);
 
 	Sprite* small_map1 = Sprite::create("GameItem/Map/small_map1.png");
 	small_map1->setPosition(Vec2
 	(visibleSize.width / 2, visibleSize.height / 2)
 	);
-	board_bg->addChild(small_map1, 1);
+	this->addChild(small_map1);
 	small_map1->setVisible(true);
 
-	//================换地图的按键============================
-
+//================换地图的按键============================
+	
 	auto start_button = Button::create("button_normal.png", "button_selected.png");
 	auto right_button = Button::create("button_normal.png", "button_selected.png");
 	right_button->setTitleText("right");
 	right_button->setTitleFontSize(30);
-	right_button->setPosition(Vec2(visibleSize.width * 3 / 4, visibleSize.height*0.5));
+	right_button->setPosition(Vec2(visibleSize.width*3 / 4, visibleSize.height*0.5));
 	right_button->setVisible(true);
 
 	auto left_button = Button::create("button_normal.png", "button_selected.png");
@@ -406,8 +407,8 @@ bool RoomScene::initForServer()
 	});
 
 
-	board_bg->addChild(right_button, 1);
-	board_bg->addChild(left_button, 1);
+	this->addChild(right_button);
+	this->addChild(left_button);
 	//====================================return_button==============================
 	//return button
 	auto return_button = Button::create("backNormal.png", "backSelected.png");
@@ -485,6 +486,9 @@ bool RoomScene::initForServer()
 					start_button->setVisible(true);
 					return_button->setVisible(true);
 					board_bg->setVisible(true);
+					small_map1->setVisible(true);
+					right_button->setVisible(true);
+					selectMapIndex = 0;
 				}
 			});
 
