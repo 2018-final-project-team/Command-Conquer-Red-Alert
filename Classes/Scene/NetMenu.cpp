@@ -81,7 +81,7 @@ bool NetMenu::init()
     this->addChild(bg);
     bg->setPosition(Vec2(visibleSize.width/2, visibleSize.height/2));
 
-    _selectLevelIndex = 0;
+    selectMapIndex = 0;
 
 
 	auto remote_button = Button::create("button_normal.png", "button_select.png");
@@ -150,16 +150,16 @@ bool NetMenu::init()
 
 					this->addChild(blackLayer, 2);
 
-					auto role_selector = Sprite::create("BlankBoard.png");
-					role_selector->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
-					blackLayer->addChild(role_selector);
+					auto selector = Sprite::create("BlankBoard.png");
+					selector->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
+					blackLayer->addChild(selector);
 
 					auto back_button = Button::create("backNormal.png", "backSelected.png");
 					auto create_button = Button::create("button_normal.png", "button_selected.png");
 					auto join_button = Button::create("button_normal.png", "button_selected.png");
 
-					role_selector->addChild(create_button);
-					role_selector->addChild(join_button);
+					selector->addChild(create_button);
+					selector->addChild(join_button);
 					blackLayer->addChild(back_button);
 
 					create_button->setTitleText("create room");
@@ -167,9 +167,9 @@ bool NetMenu::init()
 					join_button->setTitleText("join room");
 					join_button->setTitleFontSize(20);
 
-					create_button->setPosition(Vec2(role_selector->getContentSize().width / 2, role_selector->getContentSize().height / 3 * 2));
+					create_button->setPosition(Vec2(selector->getContentSize().width / 2, selector->getContentSize().height / 3 * 2));
 
-					join_button->setPosition(Vec2(role_selector->getContentSize().width / 2, role_selector->getContentSize().height / 3));
+					join_button->setPosition(Vec2(selector->getContentSize().width / 2, selector->getContentSize().height / 3));
 
 					back_button->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.1));
 
@@ -189,7 +189,7 @@ bool NetMenu::init()
 							auto client = Client::create(1);
 							client->_landlordIP = IP;
 							client->_with_server = false;
-							auto transition = TransitionSlideInL::create(1, SearchScene::createScene(client, _playerName));
+							auto transition = TransitionSlideInL::create(0.5, SearchScene::createScene(client, _playerName));
 
 							Director::getInstance()->pushScene(transition);
 						}
@@ -206,7 +206,7 @@ bool NetMenu::init()
 							client->sensitive_word = _playerName;
 							client->_with_server = true;
 
-							auto transition = TransitionSlideInL::create(1, RoomScene::createScene(client, 2, _playerName));
+							auto transition = TransitionSlideInL::create(0.5, RoomScene::createScene(client, 2, _playerName));
 							Director::getInstance()->pushScene(transition);
 
 						}
@@ -237,16 +237,16 @@ bool NetMenu::init()
             this->addChild(blackLayer, 1);
             
             
-            auto role_selector = Sprite::create("BlankBoard.png");
-            role_selector->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
-            blackLayer->addChild(role_selector, 1);
+            auto selector = Sprite::create("BlankBoard.png");
+            selector->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
+            blackLayer->addChild(selector, 1);
             
 			auto back_button = Button::create("backNormal.png", "backSelected.png");
 			auto create_button = Button::create("button_normal.png", "button_selected.png");
 			auto join_button = Button::create("button_normal.png", "button_selected.png");
 
-			role_selector->addChild(create_button);
-			role_selector->addChild(join_button);
+			selector->addChild(create_button);
+			selector->addChild(join_button);
 			blackLayer->addChild(back_button);
 
 			create_button->setTitleText("create room");
@@ -254,9 +254,9 @@ bool NetMenu::init()
 			join_button->setTitleText("join room");
 			join_button->setTitleFontSize(20);
 
-			create_button->setPosition(Vec2(role_selector->getContentSize().width / 2, role_selector->getContentSize().height / 3 * 2));
+			create_button->setPosition(Vec2(selector->getContentSize().width / 2, selector->getContentSize().height / 3 * 2));
 
-			join_button->setPosition(Vec2(role_selector->getContentSize().width / 2, role_selector->getContentSize().height / 3));
+			join_button->setPosition(Vec2(selector->getContentSize().width / 2, selector->getContentSize().height / 3));
 
 			back_button->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.1));
             
@@ -276,7 +276,7 @@ bool NetMenu::init()
 					GameAudio::getInstance()->playEffect("Sound/button.mp3");
                     auto client = Client::create(2);
                     client->_with_server = false;
-                    auto transition = TransitionSlideInL::create(1, SearchScene::createScene(client, _playerName));
+                    auto transition = TransitionSlideInL::create(0.5, SearchScene::createScene(client, _playerName));
                     
                     Director::getInstance()->pushScene(transition);
                 }
@@ -293,7 +293,7 @@ bool NetMenu::init()
                     client->sensitive_word = _playerName;
                     client->_with_server = true;
                     
-                    auto transition = TransitionSlideInL::create(1, RoomScene::createScene(client, 2, _playerName));
+                    auto transition = TransitionSlideInL::create(0.5, RoomScene::createScene(client, 2, _playerName));
                     Director::getInstance()->pushScene(transition);
                     
                 }

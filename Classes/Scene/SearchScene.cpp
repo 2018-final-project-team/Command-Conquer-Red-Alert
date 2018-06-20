@@ -162,7 +162,7 @@ void SearchScene::update(float delta)
 							client->_filter_mode = true;
 							client->sensitive_word = button_owner_name;
 
-							auto transition = TransitionSlideInL::create(1, RoomScene::createScene(client, 1, _player_name));
+							auto transition = TransitionSlideInL::create(0.5, RoomScene::createScene(client, 1, _player_name));
 							Director::getInstance()->pushScene(transition);
 
 						}

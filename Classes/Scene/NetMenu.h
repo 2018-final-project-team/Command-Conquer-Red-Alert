@@ -60,7 +60,7 @@ using namespace ui;
 class NetMenu : public cocos2d::Layer,public EditBoxDelegate
 {
 protected:
-    int             _selectLevelIndex;      ///地图对应的索引
+    int             selectMapIndex;      ///地图对应的索引
 
     std::string     _playerName;            ///玩家名称
 

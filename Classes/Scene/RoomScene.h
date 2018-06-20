@@ -59,7 +59,7 @@ class RoomScene : public cocos2d::Layer
 {
 protected:
 	Vector<Sprite*>     _exist_player;             ///目前房间里的Player
-	int                 _selectLevelIndex;         ///目前选择的地图索引
+	int                 selectMapIndex;         ///目前选择的地图索引
 	Sprite*             _room_ptr;                 ///房间背景
 	std::string         _owner_player_name;        ///房主的姓名
 	PlayerData*         _owner_player_data;        ///房主的个人信息

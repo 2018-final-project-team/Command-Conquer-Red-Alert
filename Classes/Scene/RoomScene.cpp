@@ -45,6 +45,7 @@
 #include "NetWork/MessageCode.h"
 #include "Util/GameAudio.h"
 
+
 USING_NS_CC;
 using namespace ui;
 
@@ -129,7 +130,7 @@ bool RoomScene::initForClient()
 	bg->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
 
 	// default begins at the first level, the index 0
-	_selectLevelIndex = 0;
+	selectMapIndex = 0;
 
 	//====================================room list==============================
 	auto room = Sprite::create("Room.png");
@@ -145,31 +146,43 @@ bool RoomScene::initForClient()
 
 	this->addChild(blackLayer, 2);
 
-	//Add roleSelectore menu
-	auto role_selector = Sprite::create("roleSelector.png");
-	role_selector->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
-	blackLayer->addChild(role_selector);
+	//Add select menu
+	auto selector = Sprite::create("roleSelector.png");
+	selector->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
+	blackLayer->addChild(selector);
 
 	auto back_button = Button::create("backNormal.png", "backSelected.png");
 
-	auto red_player_button = Button::create("player_down.png");
-	auto black_player_button = Button::create("player2_down.png");
+	auto sulian_button = Button::create("sulian.jpg");
+	auto mengjun_button = Button::create("mengjun.jpg");
+
+	sulian_button->setScale(0.8);
+	mengjun_button->setScale(0.5);
 
 	//Add role select button and back button
-	blackLayer->addChild(red_player_button);
-	blackLayer->addChild(black_player_button);
+	blackLayer->addChild(sulian_button);
+	blackLayer->addChild(mengjun_button);
 	blackLayer->addChild(back_button);
 
-	float widthMargin = visibleSize.width / 2 - role_selector->getContentSize().width / 2;
-	float heightMargin = visibleSize.height / 2 - role_selector->getContentSize().height / 2;
 
+	sulian_button->setPosition(Vec2(origin.x + visibleSize.width / 2 - selector->getContentSize().width / 4, origin.y + blackLayer->getContentSize().height / 2.3f));
 
-	red_player_button->setPosition(Vec2(origin.x + widthMargin + role_selector->getContentSize().width / 4, origin.y + blackLayer->getContentSize().height / 2));
+	mengjun_button->setPosition(Vec2(origin.x + visibleSize.width / 2 + selector->getContentSize().width * 1 / 4, origin.y + blackLayer->getContentSize().height / 2.3f));
 
-	black_player_button->setPosition(Vec2(origin.x + widthMargin + role_selector->getContentSize().width * 3 / 4, origin.y + blackLayer->getContentSize().height / 2));
+	back_button->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 3));
+
+	back_button->addTouchEventListener([=](Ref * pSender, Widget::TouchEventType type)
+	{
+		if(type == Widget::TouchEventType::ENDED)
+		{
+			GameAudio::getInstance()->playEffect("Sound/button.mp3");
+			// the transition effect
+			Director::getInstance()->pushScene(TransitionSlideInR::create(0.5, RoomScene::createScene(client, CLIENT_MODE, player_name)));
+		}
+	});
 
 	//Choose red role
-	red_player_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
+	sulian_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
 		if (type == Widget::TouchEventType::ENDED) {
 			// the transition effect
 			GameAudio::getInstance()->playEffect("Sound/button.mp3");
@@ -188,14 +201,14 @@ bool RoomScene::initForClient()
 			player_count++;
 			blackLayer->setVisible(false);
 
-			auto playerData = LevelData::create(_selectLevelIndex + 1, StringUtils::format("map%d.png", _selectLevelIndex + 1), "player_down.png", "player");
+			auto playerData = LevelData::create(selectMapIndex + 1, StringUtils::format("map%d.png", selectMapIndex + 1), "sulian.jpg", "player");
 			this->addChild(playerData);
 			_game_data = playerData;
 		}
 	});
 
 	//Choose black role
-	black_player_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
+	mengjun_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
 		if (type == Widget::TouchEventType::ENDED) {
 			// the transition effect
 			GameAudio::getInstance()->playEffect("Sound/button.mp3");
@@ -214,7 +227,7 @@ bool RoomScene::initForClient()
 			player_count++;
 			blackLayer->setVisible(false);
 
-			auto playerData = LevelData::create(_selectLevelIndex + 1, StringUtils::format("map%d.png", _selectLevelIndex + 1), "player2_down.png", "player2");
+			auto playerData = LevelData::create(selectMapIndex + 1, StringUtils::format("map%d.png", selectMapIndex + 1), "mengjun.jpg", "player2");
 			this->addChild(playerData);
 			_game_data = playerData;
 		}
@@ -274,7 +287,7 @@ bool RoomScene::initForServer()
 	bg->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
 
 	// default begins at the first level, the index 0
-	_selectLevelIndex = 0;
+	selectMapIndex = 0;
 
 	//====================================room list==============================
 	auto room = Sprite::create("Room.png");
@@ -316,8 +329,8 @@ bool RoomScene::initForServer()
 
 			std::string message = std::to_string(findPlayerId()) + _chatWindow->getString();
 			if (player_count > 1) {
-			client->sendMessage(CHAT_MESSAGE, message);
-			_chatWindow->setString("");
+				client->sendMessage(CHAT_MESSAGE, message);
+				_chatWindow->setString("");
 			}
 
 		}
@@ -330,48 +343,35 @@ bool RoomScene::initForServer()
 
 
 	//====================================select map==============================
-	auto board_bg = Layout::create();
+	auto board_bg = Sprite::create("SelectMap.png");
 	this->addChild(board_bg);
 	board_bg->setPosition(Vec2(visibleSize.width / 2.0f, visibleSize.height / 2.0f));
-	auto board = ImageView::create("SelectMap.png");
-	board_bg->addChild(board);
-
-	//create a pageView
-	auto pageView = PageView::create();
-
-	// set the contentsize
-	pageView->setContentSize(Size(300.0f, 300.0f));
-	pageView->setPosition(Vec2(
-		board->getContentSize().width / 2, board->getContentSize().height / 2)
-	);
-	pageView->setAnchorPoint(Vec2(0.5, 0.5));
 
 
-//===============小地图==============================
-		
+
+	//===============小地图==============================
+
 	Sprite* small_map2 = Sprite::create("GameItem/Map/small_map2.png");
 	small_map2->setPosition(Vec2
 	(visibleSize.width / 2, visibleSize.height / 2)
 	);
-	this->addChild(small_map2);
+	board_bg->addChild(small_map2, 1);
 	small_map2->setVisible(false);
 
 	Sprite* small_map1 = Sprite::create("GameItem/Map/small_map1.png");
 	small_map1->setPosition(Vec2
 	(visibleSize.width / 2, visibleSize.height / 2)
 	);
-	this->addChild(small_map1);
+	board_bg->addChild(small_map1, 1);
 	small_map1->setVisible(true);
 
+	//================换地图的按键============================
 
-	auto thisObject = this;
-//================换地图的按键============================
-	
 	auto start_button = Button::create("button_normal.png", "button_selected.png");
 	auto right_button = Button::create("button_normal.png", "button_selected.png");
 	right_button->setTitleText("right");
 	right_button->setTitleFontSize(30);
-	right_button->setPosition(Vec2(visibleSize.width*3 / 4, visibleSize.height*0.5));
+	right_button->setPosition(Vec2(visibleSize.width * 3 / 4, visibleSize.height*0.5));
 	right_button->setVisible(true);
 
 	auto left_button = Button::create("button_normal.png", "button_selected.png");
@@ -388,8 +388,8 @@ bool RoomScene::initForServer()
 			small_map2->setVisible(true);
 			left_button->setVisible(true);
 			right_button->setVisible(false);
-			start_button->setTitleText("map2");
-			_selectLevelIndex = 1;
+			start_button->setTitleText("Start map2");
+			selectMapIndex = 1;
 		}
 	});
 	left_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
@@ -400,14 +400,14 @@ bool RoomScene::initForServer()
 			small_map1->setVisible(true);
 			right_button->setVisible(true);
 			left_button->setVisible(false);
-			start_button->setTitleText("map1");
-			_selectLevelIndex = 0;
+			start_button->setTitleText("Start map1");
+			selectMapIndex = 0;
 		}
 	});
 
 
-	this->addChild(right_button);
-	this->addChild(left_button);
+	board_bg->addChild(right_button, 1);
+	board_bg->addChild(left_button, 1);
 	//====================================return_button==============================
 	//return button
 	auto return_button = Button::create("backNormal.png", "backSelected.png");
@@ -445,7 +445,7 @@ bool RoomScene::initForServer()
 			auto blackLayer = LayerColor::create(black, 1024, 860);
 			blackLayer->setPosition(Vec2(origin.x, origin.y));
 
-			thisObject->addChild(blackLayer, 2);
+			this->addChild(blackLayer, 2);
 
 			//Make the original button unvisible
 			start_button->setVisible(false);
@@ -453,31 +453,27 @@ bool RoomScene::initForServer()
 			board_bg->setVisible(false);
 
 			//Add roleSelectore menu
-			auto role_selector = Sprite::create("roleSelector.png");
-			role_selector->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
-			blackLayer->addChild(role_selector);
+			auto selector = Sprite::create("roleSelector.png");
+			selector->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
+			blackLayer->addChild(selector);
 
 			auto back_button = Button::create("backNormal.png", "backSelected.png");
-			auto red_player_button = Button::create("player_down.png");
-			auto black_player_button = Button::create("player2_down.png");
+			auto sulian_button = Button::create("sulian.jpg");
+			auto mengjun_button = Button::create("mengjun.jpg");
 
 			//Add role select button and back button
-			blackLayer->addChild(red_player_button);
-			blackLayer->addChild(black_player_button);
+			blackLayer->addChild(sulian_button);
+			blackLayer->addChild(mengjun_button);
 			blackLayer->addChild(back_button);
 
-			float widthMargin = visibleSize.width / 2 - role_selector->getContentSize().width / 2;
-			float heightMargin = visibleSize.height / 2 - role_selector->getContentSize().height / 2;
+			sulian_button->setScale(0.8);
+			mengjun_button->setScale(0.5);
 
-			red_player_button->setPosition(Vec2(origin.x + widthMargin + role_selector->getContentSize().width / 4, origin.y + blackLayer->getContentSize().height / 2));
+			sulian_button->setPosition(Vec2(origin.x + visibleSize.width / 2 - selector->getContentSize().width / 4, origin.y + blackLayer->getContentSize().height / 2.3f));
 
-			black_player_button->setPosition(Vec2(origin.x + widthMargin + role_selector->getContentSize().width * 3 / 4, origin.y + blackLayer->getContentSize().height / 2));
+			mengjun_button->setPosition(Vec2(origin.x + visibleSize.width / 2 + selector->getContentSize().width * 1 / 4, origin.y + blackLayer->getContentSize().height / 2.3f));
 
-			back_button->setPosition(Vec2(origin.x + visibleSize.width - widthMargin, origin.y + role_selector->getContentSize().height * 7.5 / 9 + heightMargin));
-
-			//Make the two role the same size
-			red_player_button->setScale(1.5);
-			black_player_button->setScale(1.8);
+			back_button->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 3));
 
 			//Add event listner which remove the blackLayer and make the original button visible
 			back_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
@@ -485,25 +481,26 @@ bool RoomScene::initForServer()
 					GameAudio::getInstance()->playEffect("Sound/button.mp3");
 
 					// the transition effect
-					thisObject->removeChild(blackLayer);
+					this->removeChild(blackLayer);
 					start_button->setVisible(true);
 					return_button->setVisible(true);
 					board_bg->setVisible(true);
 				}
 			});
 
-			//Choose red role
-			red_player_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
+			//Choose Sulian
+			sulian_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
 				if (type == Widget::TouchEventType::ENDED) {
 					// the transition effect
 					GameAudio::getInstance()->playEffect("Sound/button.mp3");
 
-					auto temp = new PlayerData(_owner_player_name, "player", 1);
+					room->setVisible(true);
+					auto temp = new PlayerData(player_name, "player", 1);
 					_owner_player_data = temp;
 					player_count++;
 					blackLayer->setVisible(false);
 
-					auto playerData = LevelData::create(_selectLevelIndex + 1, StringUtils::format("map%d.png", _selectLevelIndex + 1), "player_down.png", "player");
+					auto playerData = LevelData::create(selectMapIndex + 1, StringUtils::format("GameItem/Map/small_map%d.png", selectMapIndex + 1), "sulian.jpg", "player");
 					this->addChild(playerData);
 					_game_data = playerData;
 
@@ -523,7 +520,7 @@ bool RoomScene::initForServer()
 			});
 
 			//Choose black role
-			black_player_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
+			mengjun_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
 				if (type == Widget::TouchEventType::ENDED) {
 					// the transition effect
 					GameAudio::getInstance()->playEffect("Sound/button.mp3");
@@ -533,7 +530,7 @@ bool RoomScene::initForServer()
 					player_count++;
 					blackLayer->setVisible(false);
 
-					auto playerData = LevelData::create(_selectLevelIndex + 1, StringUtils::format("map%d.png", _selectLevelIndex + 1), "player2_down.png", "player2");
+					auto playerData = LevelData::create(selectMapIndex + 1, StringUtils::format("GameItem/Map/small_map%d.png", selectMapIndex + 1), "mengjun.jpg", "player2");
 					this->addChild(playerData);
 					_game_data = playerData;
 
@@ -633,7 +630,7 @@ void RoomScene::update(float delta)
 			std::string players_in_room;
 			std::string number;
 			number.append("0");
-			number[0] += _selectLevelIndex;
+			number[0] += selectMapIndex;
 			client->sendMessage(MAP_SELECT, number);
 			for (int i = 0; i < player_list.size(); i++) {
 				char buffer[2];
