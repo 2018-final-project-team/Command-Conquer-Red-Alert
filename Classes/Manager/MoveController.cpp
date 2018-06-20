@@ -506,11 +506,13 @@ std::string MoveController::getMoveMessage(Unit* u)
 	{
 		sIndex[0] = '0';
 	}
+
+    auto mapPosition = _gameScene->_tileMap->convertToNodeSpace(u->getDestination());
 	
-	ssX << u->getPositionX();
+	ssX << mapPosition.x;
 	std::string sX = ssX.str();
 
-	ssY << u->getPositionY();
+	ssY << mapPosition.y;
 	std::string sY = ssY.str();
 
 	return sIndex + _gameScene->_localPlayerName + s1 + sX + s2 + sY + s3;

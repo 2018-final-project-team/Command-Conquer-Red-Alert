@@ -1,6 +1,6 @@
 ﻿#include "Scene/WelcomeScene.h"  
 #include "Scene/GameScene.h"  
-#include "ui\CocosGUI.h"
+#include "ui/CocosGUI.h"
 #include "Panel/Panel.h"
 
 #define small_mapX 300
@@ -60,6 +60,13 @@ bool GameScene::init()
 	_inputData = ptr;
 	_localPlayerName = splayerName;
 	_playerList = ptr->player_list;
+    for (auto& playerData : _playerList)
+    {
+        if (_localPlayerName == playerData.player_name)
+        {
+            _localPlayerID = playerData.player_id;
+        }
+    }
 
 
 	this->dataInit();
@@ -79,6 +86,21 @@ bool GameScene::init()
 	
     MAPX = _tileMap->getMapSize().width * _tileMap->getTileSize().width;
     MAPY = _tileMap->getMapSize().height * _tileMap->getTileSize().height;
+    switch (_localPlayerID)
+    {
+    case 1:
+        _tileMap->setPosition(Vec2::ZERO);
+        break;
+    case 2:
+        _tileMap->setPosition(Vec2(visibleSize.width - MAPX, visibleSize.height - MAPY));
+        break;
+    case 3:
+        _tileMap->setPosition(Vec2(0, visibleSize.height - MAPY));
+        break;
+    case 4:
+        _tileMap->setPosition(Vec2(visibleSize.width - MAPX, 0));
+        break;
+    }
 	this->addChild(_tileMap);
 
 	_barrier = _tileMap->getLayer("barrier");
@@ -520,6 +542,8 @@ void GameScene::onExit()
 
 void GameScene::dataInit()
 {
+    auto visibleSize = Director::getInstance()->getVisibleSize();
+
     _cursorPosition = 0.5 * Director::getInstance()->getVisibleSize();
 
 	_isPowerEnough = false;
@@ -536,6 +560,22 @@ void GameScene::dataInit()
     _dogNum = 0;
 
 	_carFactoryPosition = _barracksPosition = Vec2::ZERO;
+
+    //To Do :id
+    auto baseCar = Unit::create(BASE_CAR_TAG);
+    if (_localPlayerID == 1)
+    {
+        baseCar->setPosition(Vec2(MAPX - visibleSize.width / 2, MAPY - visibleSize.height / 2));
+        baseCar->setDestination(Vec2(MAPX - visibleSize.width / 2, MAPY - visibleSize.height / 2));
+    }
+    else
+    {
+        baseCar->setPosition(Vec2(visibleSize.width / 2 - MAPX, visibleSize.height / 2 - MAPY));
+        baseCar->setDestination(Vec2(visibleSize.width / 2 - MAPX, visibleSize.height / 2 - MAPY));
+    }
+    baseCar->setGetDestination(true);
+    this->addChild(baseCar, 1);
+    _enemySoldiers.pushBack(baseCar);
 
 	_isBaseExist = false;
 }
