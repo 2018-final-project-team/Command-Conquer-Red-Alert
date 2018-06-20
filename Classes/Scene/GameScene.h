@@ -31,6 +31,7 @@ public:
 
 	Client*                    _client;              ///服务端指针
 	std::string                _localPlayerName;     ///本地玩家的名字
+    int                        _localPlayerID;
 
     Manager * _manager;
     

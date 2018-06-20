@@ -487,7 +487,7 @@ bool MoveController::canPut(cocos2d::Point position)
 
 std::string MoveController::getMoveMessage(Unit* u, cocos2d::Vec2 des)
 {
-	//¸ñÊ½£ºË÷Òý + Íæ¼Òid + (X,Y)
+	//ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ + ï¿½ï¿½ï¿½id + (X,Y)
 	auto index = _gameScene->getSoldiers()->getIndex(u);
 
 	std::stringstream ssIndex;
@@ -499,7 +499,7 @@ std::string MoveController::getMoveMessage(Unit* u, cocos2d::Vec2 des)
 	std::string s2 = ",";
 	std::string s3 = ")";
 
-	ssIndex.fill(0);            //Ë÷ÒýÎ»¿íÎª2£¬×ó²à²¹Áã
+	ssIndex.fill(0);            //ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½Îª2ï¿½ï¿½ï¿½ï¿½à²¹ï¿½ï¿½
 	ssIndex.width(2);
 	ssIndex << index;
 	std::string sIndex = ssIndex.str();
@@ -509,7 +509,7 @@ std::string MoveController::getMoveMessage(Unit* u, cocos2d::Vec2 des)
 	}
 
 
-	ssPlayerId.fill(0);            //Ë÷ÒýÎ»¿íÎª2£¬×ó²à²¹Áã
+	ssPlayerId.fill(0);            //ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½Îª2ï¿½ï¿½ï¿½ï¿½à²¹ï¿½ï¿½
 	ssPlayerId.width(2);
 	ssPlayerId << _gameScene->_localPlayerId;
 	std::string sId = ssPlayerId.str();
@@ -518,7 +518,7 @@ std::string MoveController::getMoveMessage(Unit* u, cocos2d::Vec2 des)
 		sId[0] = '0';
 	}
 
-	//×ª»»ÎªµØÍ¼×ø±ê
+	//×ªï¿½ï¿½Îªï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½
 	auto mapPosition = _gameScene->_tileMap->convertToNodeSpace(des);
 	
 	ssX << mapPosition.x;
