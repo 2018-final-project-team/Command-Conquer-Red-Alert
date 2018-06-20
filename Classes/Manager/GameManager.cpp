@@ -158,7 +158,7 @@ void Manager::waitCreateSoldier()
             soldier->setDestination(getPutSoldierPosition());
             soldier->setGetDestination(false);
             //To Do:
-            _gameScene->_client->sendMessage("movetopositon", "todo");
+            _gameScene->_client->sendMessage(MOVE_UNIT, _moveController->getMoveMessage(soldier, getPutSoldierPosition()));
             Vec2 direction = (soldier->getDestination() - soldier->getPosition());
             //change state of unit
             if (fabs(direction.x) < fabs(direction.y))
@@ -264,7 +264,7 @@ void Manager::waitCreateCar()
             car->setDestination(getPutCarPosition());
             car->setGetDestination(false);
             //To Do:
-            _gameScene->_client->sendMessage("movetopositon", "todo");
+            _gameScene->_client->sendMessage(MOVE_UNIT, _moveController->getMoveMessage(car, getPutCarPosition()));
             Vec2 direction = (car->getDestination() - car->getPosition());
             //change state of unit
             if (fabs(direction.x) < fabs(direction.y))
@@ -1010,7 +1010,7 @@ void Manager::readMoveCommand()
 	auto rightBracket = _command.find(')');
 
 	std::string index(_command.begin() + 1, _command.begin() + 3);
-	std::string playerName(_command.begin() + 3, _command.begin() + leftBracket);
+	std::string playerId(_command.begin() + 3, _command.begin() + leftBracket);
 	std::string spositionX(_command.begin() + 1 + leftBracket, _command.begin() + comma);
 	std::string spositionY(_command.begin() + 1 + comma, _command.begin() + rightBracket);
 
@@ -1021,6 +1021,6 @@ void Manager::readMoveCommand()
 	//std::cout << positionX << std::endl;
 	// std::cout << positionY << std::endl;
 	_index = stringToNum<int>(index);
-	_playerName = playerName;
+	_playerId = playerId;
 	_destinationForMessage = Vec2(positionX, positionY);
 }

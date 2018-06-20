@@ -62,6 +62,9 @@ bool GameScene::init()
 	_playerList = ptr->player_list;
 
 
+	_enemySoldiers.pushBack(Unit::create(BASE_CAR_TAG));
+
+
 	this->dataInit();
 
     auto visibleSize = Director::getInstance()->getVisibleSize();

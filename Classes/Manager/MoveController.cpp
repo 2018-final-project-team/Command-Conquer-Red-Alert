@@ -143,7 +143,7 @@ void MoveController::setDestination(cocos2d::Vec2 position)
             soldier->setDestination(position);
             soldier->setGetDestination(false);
 
-            _gameScene->_client->sendMessage(MOVE_UNIT, getMoveMessage(soldier));
+            _gameScene->_client->sendMessage(MOVE_UNIT, getMoveMessage(soldier, position));
 
             Vec2 direction = (soldier->getDestination() - soldier->getPosition());
             //change state of unit
@@ -240,7 +240,7 @@ void MoveController::moveSoldiers()
         {
             //log("route size %d", soldier->_route.size());
             soldier->setDestination(soldier->_route.front());
-            _gameScene->_client->sendMessage(MOVE_UNIT, getMoveMessage(soldier));
+            _gameScene->_client->sendMessage(MOVE_UNIT, getMoveMessage(soldier, soldier->_route.front()));
             (soldier->_route).erase((soldier->_route).begin());
             soldier->setGetDestination(false);
             Vec2 direction= (soldier->getDestination() - soldier->getPosition());
@@ -485,12 +485,13 @@ bool MoveController::canPut(cocos2d::Point position)
     return true;
 }
 
-std::string MoveController::getMoveMessage(Unit* u)
+std::string MoveController::getMoveMessage(Unit* u, cocos2d::Vec2 des)
 {
-	//格式：索引 + 玩家name + (X,Y)
+	//格式：索引 + 玩家id + (X,Y)
 	auto index = _gameScene->getSoldiers()->getIndex(u);
 
 	std::stringstream ssIndex;
+	std::stringstream ssPlayerId;
 	std::stringstream ssX;
 	std::stringstream ssY;
 
@@ -506,12 +507,25 @@ std::string MoveController::getMoveMessage(Unit* u)
 	{
 		sIndex[0] = '0';
 	}
+
+
+	ssPlayerId.fill(0);            //索引位宽为2，左侧补零
+	ssPlayerId.width(2);
+	ssPlayerId << _gameScene->_localPlayerId;
+	std::string sId = ssPlayerId.str();
+	if (sId[0] == '\0')
+	{
+		sId[0] = '0';
+	}
+
+	//转换为地图坐标
+	auto mapPosition = _gameScene->_tileMap->convertToNodeSpace(des);
 	
-	ssX << u->getPositionX();
+	ssX << mapPosition.x;
 	std::string sX = ssX.str();
 
-	ssY << u->getPositionY();
+	ssY << mapPosition.y;
 	std::string sY = ssY.str();
 
-	return sIndex + _gameScene->_localPlayerName + s1 + sX + s2 + sY + s3;
+	return sIndex + sId + s1 + sX + s2 + sY + s3;
 }

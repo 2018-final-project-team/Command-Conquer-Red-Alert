@@ -77,7 +77,7 @@ public:
 	/*
 	* @brief create message about move
 	*/
-	std::string getMoveMessage(Unit* u);
+	std::string getMoveMessage(Unit* u, cocos2d::Vec2 des);
 
 };
 
