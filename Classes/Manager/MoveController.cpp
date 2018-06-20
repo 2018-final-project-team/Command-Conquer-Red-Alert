@@ -275,7 +275,7 @@ void MoveController::moveSoldiers()
     //enemy
     for (auto& enemy : *(_gameScene->getEnemySoldiers()))
     {
-        if (enemy->getGetDestination())
+        if (!enemy->getGetDestination())
         {
             Vec2 nowPosition = enemy->getPosition();
             Vec2 destination = enemy->getDestination();
@@ -487,7 +487,7 @@ bool MoveController::canPut(cocos2d::Point position)
 
 std::string MoveController::getMoveMessage(Unit* u, cocos2d::Vec2 des)
 {
-	//��ʽ������ + ���id + (X,Y)
+	//格式：索引 + 玩家id + (X,Y)
 	auto index = _gameScene->getSoldiers()->getIndex(u);
 
 	std::stringstream ssIndex;
@@ -499,7 +499,7 @@ std::string MoveController::getMoveMessage(Unit* u, cocos2d::Vec2 des)
 	std::string s2 = ",";
 	std::string s3 = ")";
 
-	ssIndex.fill(0);            //����λ��Ϊ2����ಹ��
+	ssIndex.fill(0);            //位宽为2，左侧补零
 	ssIndex.width(2);
 	ssIndex << index;
 	std::string sIndex = ssIndex.str();
@@ -509,9 +509,9 @@ std::string MoveController::getMoveMessage(Unit* u, cocos2d::Vec2 des)
 	}
 
 
-	ssPlayerId.fill(0);            //����λ��Ϊ2����ಹ��
+	ssPlayerId.fill(0);            
 	ssPlayerId.width(2);
-	ssPlayerId << _gameScene->_localPlayerId;
+	ssPlayerId << _gameScene->_localPlayerID;
 	std::string sId = ssPlayerId.str();
 	if (sId[0] == '\0')
 	{

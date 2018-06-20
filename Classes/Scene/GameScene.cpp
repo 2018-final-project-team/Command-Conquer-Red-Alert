@@ -69,10 +69,8 @@ bool GameScene::init()
     }
 
 
-	_enemySoldiers.pushBack(Unit::create(BASE_CAR_TAG));
+	//_enemySoldiers.pushBack(Unit::create(BASE_CAR_TAG));
 
-
-	this->dataInit();
 
     auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -107,6 +105,9 @@ bool GameScene::init()
 	this->addChild(_tileMap);
 
 	_barrier = _tileMap->getLayer("barrier");
+
+
+	this->dataInit();
 
 	/*update by czd*/
 	if (_inputData->getmapIndex() == 1)

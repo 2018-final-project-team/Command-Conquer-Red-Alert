@@ -900,11 +900,16 @@ void Manager::doCommands()
     {
         _command = _gameScene->_commands.front();
         _gameScene->_commands.pop();
+
         //To Do:
         bool set_enemy_position = true;
         if (set_enemy_position)
         {
 			readMoveCommand();
+			if (_playerId == _gameScene->_localPlayerID)
+			{
+				continue;
+			}
             Vec2 destination = _destinationForMessage;
 			int index = _index;
             Unit* enemy = _gameScene->getEnemySoldiers()->at(index);
@@ -1021,6 +1026,7 @@ void Manager::readMoveCommand()
 	//std::cout << positionX << std::endl;
 	// std::cout << positionY << std::endl;
 	_index = stringToNum<int>(index);
-	_playerId = playerId;
+	_playerId = stringToNum<int>(playerId);
 	_destinationForMessage = Vec2(positionX, positionY);
+	_destinationForMessage = _gameScene->_tileMap->convertToWorldSpace(_destinationForMessage);
 }
