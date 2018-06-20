@@ -284,6 +284,7 @@ bool GameScene::init()
 						}
 						_selectedSoldiers.clear();
 						Vec2 position = target->getPosition();
+						_client->sendMessage(REMOVE_UNIT, _manager->getRemoveUnitMessage(static_cast<Unit*>(target)));
 						_soldiers.eraseObject(static_cast<Unit*>(target), false);
 						this->removeChild(target);
 						//创建基地
@@ -294,6 +295,7 @@ bool GameScene::init()
 						this->addChild(base, 2);
 						_isBaseExist = true;
 						_buildings.pushBack(base);
+						_client->sendMessage(CREATE_BUILDING, _manager->getCreateBuildingMessage(position, BASE_TAG));
 						//刷新Panel
 						panel->setCurButton(panel->getCurCategoryTag());
 						break;
@@ -879,6 +881,8 @@ void GameScene::sellBuildingCallBack()
         return;
     }
 
+	_client->sendMessage(REMOVE_BUILDING, _manager->getRemoveBuildingMessage(_sellBuilding));
+
     // if is the base
     if (_sellBuilding->getBuildingTag() == BASE_TAG)
     {
@@ -897,6 +901,7 @@ void GameScene::sellBuildingCallBack()
         this->addChild(baseCar, 1);
         _isBaseExist = false;
         _soldiers.pushBack(baseCar);
+		_client->sendMessage(CREATE_UNIT, _manager->getCreateUnitMessage(BASE_CAR_TAG, position));
 
         removeChild(_sellBuildingMenu);
         _sellBuilding = nullptr;

@@ -32,7 +32,9 @@ private:
 	int             _index;                /// 需要移动的Unit在对应Vector中的索引
 	int             _playerId;             /// 人物Id
 	Tag             _tagForMessage;        ///建造建筑或Unit的Tag
-    cocos2d::Vec2    _positionForMessage;  ///建造建筑的位置
+    cocos2d::Vec2   _positionForMessage;  ///建造建筑的位置
+	Building*       _buildingForMessage;
+	Unit*           _unitForMessage;
 
 
 	Panel* _panel;
@@ -172,10 +174,22 @@ public:
 	void readCreateBuildingCommand();
 
 	//生成创造Unit命令
-	std::string getCreateUnitMessage(Tag tag);
+	std::string getCreateUnitMessage(Tag tag, cocos2d::Vec2 pos);
 
 	//提取创造Unit命令
 	void readCreateUnitCommand();
+
+	//生成移除建筑命令
+	std::string Manager::getRemoveBuildingMessage(Building* b);
+
+	//提取移除建筑命令
+	void Manager::readRemoveBuildingCommand();
+
+	//生成移除Unit命令
+	std::string Manager::getRemoveUnitMessage(Unit* u);
+
+	//提取移除Unit命令
+	void Manager::readRemoveUnitCommand();
 
 };
 

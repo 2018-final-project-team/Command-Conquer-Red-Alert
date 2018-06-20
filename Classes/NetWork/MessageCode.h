@@ -134,6 +134,21 @@
 			#define CREATE_UNIT    "m"
 			/** @} */
 
+/**
+			* @name 在游戏内广播移除建筑消息
+			* @{
+			*/
+			#define REMOVE_BUILDING    "n"
+			/** @} */
+
+/**
+			* @name 在游戏内广播移除Unit消息
+			* @{
+			*/
+			#define REMOVE_UNIT    "o"
+			/** @} */
+
+
 
 
 #endif /* MessageCode_h */

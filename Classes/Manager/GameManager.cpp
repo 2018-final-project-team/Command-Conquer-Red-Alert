@@ -151,8 +151,9 @@ void Manager::waitCreateSoldier()
             Unit* soldier = Unit::create(_soldierTag);
             _gameScene->_gameEventDispatcher->addEventListenerWithSceneGraphPriority
                     (_gameScene->_gameListener->clone(), soldier);
-            
+			_gameScene->_client->sendMessage(CREATE_UNIT, getCreateUnitMessage(_soldierTag, _gameScene->getBarracksPosition()));
 			soldier->setPosition(_gameScene->getBarracksPosition());
+			_gameScene->getSoldiers()->pushBack(soldier);
             _gameScene->addChild(soldier, 1);
             // 走出兵营
             soldier->setDestination(getPutSoldierPosition());
@@ -186,7 +187,7 @@ void Manager::waitCreateSoldier()
                 }
             }
 
-            _gameScene->getSoldiers()->pushBack(soldier);
+            
             _soldierQueue.pop();
             _isWaitToCreateSoldier = false;
 
@@ -257,8 +258,11 @@ void Manager::waitCreateCar()
             Unit* car = Unit::create(_carTag);
             _gameScene->_gameEventDispatcher->addEventListenerWithSceneGraphPriority
             (_gameScene->_gameListener->clone(), car);
+			_gameScene->_client->sendMessage(CREATE_UNIT, getCreateUnitMessage(_carTag, _gameScene->getCarFactoryPosition()));
 
             car->setPosition(_gameScene->getCarFactoryPosition());
+			_gameScene->getSoldiers()->pushBack(car);
+
             _gameScene->addChild(car, 1);
             // 开出车厂
             car->setDestination(getPutCarPosition());
@@ -292,7 +296,7 @@ void Manager::waitCreateCar()
                 }
             }
 
-            _gameScene->getSoldiers()->pushBack(car);
+            
             _carQueue.pop();
             _isWaitToCreateCar = false;
 
@@ -959,6 +963,42 @@ void Manager::doCommands()
 			_gameScene->getEnemyBuildings()->pushBack(building);
 
 		}
+		else if (_command[0] == CREATE_UNIT[0])
+		{
+			readCreateUnitCommand();
+			if (_playerId == _gameScene->_localPlayerID)
+			{
+				continue;
+			}
+			Unit* soldier = Unit::create(_tagForMessage);
+			_gameScene->_gameEventDispatcher->addEventListenerWithSceneGraphPriority
+			(_gameScene->_gameListener->clone(), soldier);
+
+			soldier->setPosition(_positionForMessage);
+			_gameScene->addChild(soldier, 1);
+
+			_gameScene->getEnemySoldiers()->pushBack(soldier);
+		}
+		else if (_command[0] == REMOVE_BUILDING[0])
+		{
+			readRemoveBuildingCommand();
+			if (_playerId == _gameScene->_localPlayerID)
+			{
+				continue;
+			}
+			_gameScene->removeChild(_gameScene->getEnemyBuildings()->at(_index));
+			_gameScene->getEnemyBuildings()->erase(_index);
+		}
+		else if (_command[0] == REMOVE_UNIT[0])
+		{
+			readRemoveUnitCommand();
+			if (_playerId == _gameScene->_localPlayerID)
+			{
+				continue;
+			}
+			_gameScene->removeChild(_gameScene->getEnemySoldiers()->at(_index));
+			_gameScene->getEnemySoldiers()->erase(_index);
+		}
 		else
 		{
 			continue;
@@ -1066,12 +1106,17 @@ void Manager::readCreateBuildingCommand()
 }
 
 
-std::string Manager::getCreateUnitMessage(Tag tag)
+std::string Manager::getCreateUnitMessage(Tag tag, Vec2 pos)
 {
-	//格式：玩家id + Tag
+	//格式：玩家id + Tag + 出生点位置（兵营/车厂）
 	std::stringstream ssPlayerId;
 	std::stringstream ssTag;
+	std::stringstream ssX;
 	std::stringstream ssY;
+
+	std::string s1 = "(";
+	std::string s2 = ",";
+	std::string s3 = ")";
 
 	ssPlayerId.fill(0);
 	ssPlayerId.width(2);
@@ -1091,16 +1136,113 @@ std::string Manager::getCreateUnitMessage(Tag tag)
 		sTag[0] = '0';
 	}
 
-	return sId + sTag ;
+	pos = _gameScene->_tileMap->convertToNodeSpace(pos);
+
+	ssX << pos.x;
+	std::string sX = ssX.str();
+
+	ssY << pos.y;
+	std::string sY = ssY.str();
+
+	return sId + sTag + s1 + sX + s2 + sY + s3;
 }
 
 
 void Manager::readCreateUnitCommand()
 {
+	auto leftBracket = _command.find('(');
+	auto comma = _command.find(',');
+	auto rightBracket = _command.find(')');
+
 	std::string sPlayerId(_command.begin() + 1, _command.begin() + 3);
 	std::string sTag(_command.begin() + 3, _command.begin() + 5);
+	std::string spositionX(_command.begin() + 1 + leftBracket, _command.begin() + comma);
+	std::string spositionY(_command.begin() + 1 + comma, _command.begin() + rightBracket);
+
+	float positionX = stringToNum<float>(spositionX);
+	float positionY = stringToNum<float>(spositionY);
 
 	_playerId = stringToNum<int>(sPlayerId);
 	int numTag = stringToNum<int>(sTag);
 	_tagForMessage = static_cast<Tag>(numTag);
+	_positionForMessage = Vec2(positionX, positionY);
+	_positionForMessage = _gameScene->_tileMap->convertToWorldSpace(_positionForMessage);
+}
+
+std::string Manager::getRemoveBuildingMessage(Building* b)
+{
+	//格式：索引 + 玩家id
+	auto index = _gameScene->getBuildings()->getIndex(b);
+
+	std::stringstream ssIndex;
+	std::stringstream ssPlayerId;
+
+	ssIndex.fill(0);            //位宽为2，左侧补零
+	ssIndex.width(2);
+	ssIndex << index;
+	std::string sIndex = ssIndex.str();
+	if (sIndex[0] == '\0')
+	{
+		sIndex[0] = '0';
+	}
+
+
+	ssPlayerId.fill(0);
+	ssPlayerId.width(2);
+	ssPlayerId << _gameScene->_localPlayerID;
+	std::string sId = ssPlayerId.str();
+	if (sId[0] == '\0')
+	{
+		sId[0] = '0';
+	}
+
+	return sIndex + sId;
+}
+
+void Manager::readRemoveBuildingCommand()
+{
+	std::string index(_command.begin() + 1, _command.begin() + 3);
+	std::string playerId(_command.begin() + 3, _command.begin() + 5);
+
+	_index = stringToNum<int>(index);
+	_playerId = stringToNum<int>(playerId);
+}
+
+std::string Manager::getRemoveUnitMessage(Unit* u)
+{
+	//格式：索引 + 玩家id
+	auto index = _gameScene->getSoldiers()->getIndex(u);
+
+	std::stringstream ssIndex;
+	std::stringstream ssPlayerId;
+
+	ssIndex.fill(0);            //位宽为2，左侧补零
+	ssIndex.width(2);
+	ssIndex << index;
+	std::string sIndex = ssIndex.str();
+	if (sIndex[0] == '\0')
+	{
+		sIndex[0] = '0';
+	}
+
+
+	ssPlayerId.fill(0);
+	ssPlayerId.width(2);
+	ssPlayerId << _gameScene->_localPlayerID;
+	std::string sId = ssPlayerId.str();
+	if (sId[0] == '\0')
+	{
+		sId[0] = '0';
+	}
+
+	return sIndex + sId;
+}
+
+void Manager::readRemoveUnitCommand()
+{
+	std::string index(_command.begin() + 1, _command.begin() + 3);
+	std::string playerId(_command.begin() + 3, _command.begin() + 5);
+
+	_index = stringToNum<int>(index);
+	_playerId = stringToNum<int>(playerId);
 }

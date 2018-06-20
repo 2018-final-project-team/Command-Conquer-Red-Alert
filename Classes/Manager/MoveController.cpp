@@ -483,7 +483,6 @@ std::string MoveController::getMoveMessage(Unit* u, cocos2d::Vec2 des)
 		sId[0] = '0';
 	}
 
-	//ת��Ϊ��ͼ����
 	auto mapPosition = _gameScene->_tileMap->convertToNodeSpace(des);
 	
 	ssX << mapPosition.x;
