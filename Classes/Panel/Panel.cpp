@@ -1,4 +1,4 @@
-﻿
+
 /*
 *  @file     Panel.cpp
 *  @brief    控制栏类，使用控制栏进行建造建筑、训练士兵、制造战车
@@ -177,8 +177,8 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 			_canToBuild = 1;
 			_nearOurBuilding = 0;
 			//和别的建筑碰撞
-			int directX[4] = { 0,0, -1 * VOLUMEOFBUILDING, VOLUMEOFBUILDING };
-			int directY[4] = { VOLUMEOFBUILDING*0.5,-0.5* VOLUMEOFBUILDING,0,0 };
+			int directX[4] = { 0,0, -1 * 100, 100 };
+			int directY[4] = { 50,-50,0,0 };
 			for (int i = 0; i < 4; i++) {
 				if (canBuild(Vec2(touch->getLocation().x + directX[i], touch->getLocation().y + directY[i]), _gameScene)) {
 				}

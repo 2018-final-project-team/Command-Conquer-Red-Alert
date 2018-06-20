@@ -1,6 +1,6 @@
-﻿#include "Scene/WelcomeScene.h"  
+#include "Scene/WelcomeScene.h"  
 #include "Scene/GameScene.h"  
-#include "ui\CocosGUI.h"
+#include "ui/CocosGUI.h"
 #include "Panel/Panel.h"
 #define small_mapX 300
 #define small_mapY 300

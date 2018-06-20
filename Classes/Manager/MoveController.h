@@ -9,7 +9,7 @@
 #include "cocos2d.h"
 #include <iostream>
 #include <vector>
-#include "Scene\GameScene.h"
+#include "Scene/GameScene.h"
 
 class GameScene;
 

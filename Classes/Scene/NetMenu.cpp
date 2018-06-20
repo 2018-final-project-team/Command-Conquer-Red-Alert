@@ -1,4 +1,4 @@
-﻿/*****************************************************************************
+/*****************************************************************************
 *  Copyright (C) 2017 李坤 1061152718@qq.com
 *
 *  此文件属于软件学院2017c++大项目泡泡堂选题的项目文件.
@@ -125,8 +125,11 @@ bool NetMenu::init()
 
 			IPButton->addTouchEventListener([=](Ref* sender, Widget::TouchEventType type)
 			{
-				GameAudio::getInstance()->playEffect("Sound/button.mp3");
-				if (type != Widget::TouchEventType::ENDED) return;
+				if (type != Widget::TouchEventType::ENDED)
+                {
+                    GameAudio::getInstance()->playEffect("Sound/button.mp3");
+                    return;
+                }
 				IP = IPInput->getString();
 				//log("IP    IP   %c", IP[0]);
 				//log("IP    IP   %c", IP[4]);

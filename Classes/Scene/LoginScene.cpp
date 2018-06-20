@@ -66,8 +66,11 @@ void LoginScene::createLoginButton()
 
     loginButton->addTouchEventListener([=](Ref* sender, ui::Widget::TouchEventType type)
     {
-		GameAudio::getInstance()->playEffect("Sound/button.mp3");
-        if (type != ui::Widget::TouchEventType::ENDED) return;
+        if (type != ui::Widget::TouchEventType::ENDED)
+        {
+            GameAudio::getInstance()->playEffect("Sound/button.mp3");
+            return;
+        }
 		username = usernameInput->getString();
         if (username.empty())
         {

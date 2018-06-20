@@ -1,4 +1,4 @@
-﻿/*****************************************************************************
+/*****************************************************************************
 *  Copyright (C) 2017 李坤 13167211978@163.com
 *
 *  此文件属于软件学院2017c++大项目泡泡堂选题的项目文件.
@@ -153,8 +153,8 @@ bool RoomScene::initForClient()
 
 	auto back_button = Button::create("backNormal.png", "backSelected.png");
 
-	auto sulian_button = Button::create("sulian.jpg");
-	auto mengjun_button = Button::create("mengjun.jpg");
+	auto sulian_button = Button::create("sulian.png");
+	auto mengjun_button = Button::create("mengjun.png");
 
 	sulian_button->setScale(0.8);
 	mengjun_button->setScale(0.5);
@@ -186,7 +186,7 @@ bool RoomScene::initForClient()
 		if (type == Widget::TouchEventType::ENDED) {
 			// the transition effect
 			GameAudio::getInstance()->playEffect("Sound/button.mp3");
-			auto temp = new PlayerData(_owner_player_name, "player", 1);
+			auto temp = new PlayerData(_owner_player_name, "sulian", 1);
 			_owner_player_data = temp;
 
 			char buffer[2];
@@ -201,7 +201,7 @@ bool RoomScene::initForClient()
 			player_count++;
 			blackLayer->setVisible(false);
 
-			auto playerData = LevelData::create(selectMapIndex + 1, StringUtils::format("map%d.png", selectMapIndex + 1), "sulian.jpg", "player");
+			auto playerData = LevelData::create(selectMapIndex + 1, StringUtils::format("map%d.png", selectMapIndex + 1), "sulian.png", "sulian");
 			this->addChild(playerData);
 			_game_data = playerData;
 		}
@@ -212,7 +212,7 @@ bool RoomScene::initForClient()
 		if (type == Widget::TouchEventType::ENDED) {
 			// the transition effect
 			GameAudio::getInstance()->playEffect("Sound/button.mp3");
-			auto temp = new PlayerData(_owner_player_name, "player2", 1);
+			auto temp = new PlayerData(_owner_player_name, "mengjun", 1);
 			_owner_player_data = temp;
 
 			char buffer[2];
@@ -227,7 +227,7 @@ bool RoomScene::initForClient()
 			player_count++;
 			blackLayer->setVisible(false);
 
-			auto playerData = LevelData::create(selectMapIndex + 1, StringUtils::format("map%d.png", selectMapIndex + 1), "mengjun.jpg", "player2");
+			auto playerData = LevelData::create(selectMapIndex + 1, StringUtils::format("map%d.png", selectMapIndex + 1), "mengjun.png", "mengjun");
 			this->addChild(playerData);
 			_game_data = playerData;
 		}
@@ -459,8 +459,8 @@ bool RoomScene::initForServer()
 			blackLayer->addChild(selector);
 
 			auto back_button = Button::create("backNormal.png", "backSelected.png");
-			auto sulian_button = Button::create("sulian.jpg");
-			auto mengjun_button = Button::create("mengjun.jpg");
+			auto sulian_button = Button::create("sulian.png");
+			auto mengjun_button = Button::create("mengjun.png");
 
 			//Add role select button and back button
 			blackLayer->addChild(sulian_button);
@@ -496,28 +496,29 @@ bool RoomScene::initForServer()
 			sulian_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
 				if (type == Widget::TouchEventType::ENDED) {
 					// the transition effect
-					GameAudio::getInstance()->playEffect("Sound/button.mp3");
+					GameAudio::getInstance()->playEffect("Sound/bell.mp3");
 
-					room->setVisible(true);
-					auto temp = new PlayerData(player_name, "player", 1);
+					
+					auto temp = new PlayerData(player_name, "sulian", 1);
 					_owner_player_data = temp;
 					player_count++;
 					blackLayer->setVisible(false);
-
-					auto playerData = LevelData::create(selectMapIndex + 1, StringUtils::format("GameItem/Map/small_map%d.png", selectMapIndex + 1), "sulian.jpg", "player");
+                    room->setVisible(true);
+					auto playerData = LevelData::create(selectMapIndex + 1, StringUtils::format("GameItem/Map/small_map%d.png", selectMapIndex + 1), "sulian.png", "sulian");
 					this->addChild(playerData);
 					_game_data = playerData;
 
 					start_game_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
-
-						if (player_list.size() == 1) {
-							start_game_button->setTitleText("Nobody together？");
-							start_game_button->setTitleFontSize(20);
-						}
-						else {
-							client->sendMessage(START_GAME, "start_game");
-						}
-
+                        if(type==Widget::TouchEventType::ENDED)
+                        {
+                            if (player_list.size() == 1) {
+                                start_game_button->setTitleText("Nobody together？");
+                                start_game_button->setTitleFontSize(20);
+                            }
+                            else {
+                                client->sendMessage(START_GAME, "start_game");
+                            }
+                        }
 
 					});
 				}
@@ -527,26 +528,31 @@ bool RoomScene::initForServer()
 			mengjun_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
 				if (type == Widget::TouchEventType::ENDED) {
 					// the transition effect
-					GameAudio::getInstance()->playEffect("Sound/button.mp3");
+					GameAudio::getInstance()->playEffect("Sound/bell.mp3");
 
-					auto temp = new PlayerData(_owner_player_name, "player2", 1);
+					auto temp = new PlayerData(_owner_player_name, "mengjun", 1);
 					_owner_player_data = temp;
 					player_count++;
 					blackLayer->setVisible(false);
 
-					auto playerData = LevelData::create(selectMapIndex + 1, StringUtils::format("GameItem/Map/small_map%d.png", selectMapIndex + 1), "mengjun.jpg", "player2");
+					auto playerData = LevelData::create(selectMapIndex + 1, StringUtils::format("GameItem/Map/small_map%d.png", selectMapIndex + 1), "mengjun.png", "mengjun");
 					this->addChild(playerData);
 					_game_data = playerData;
 
 					start_game_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
 
+                        GameAudio::getInstance()->playEffect("Sound/button.mp3");
+                        if(type==Widget::TouchEventType::ENDED)
+                        {
+                            if (player_list.size() == 1) {
+                                start_game_button->setTitleText("Nobody together？");
+                                start_game_button->setTitleFontSize(20);
+                            }
+                            else {
+                                client->sendMessage(START_GAME, "start_game");
+                            }
+                        }
 
-						if (player_list.size() == 1) {
-							start_game_button->setTitleText("No ghost in the shell! ");
-						}
-						else {
-							client->sendMessage(START_GAME, "start_game");
-						}
 
 
 					});
@@ -609,7 +615,8 @@ void RoomScene::update(float delta)
 		auto player_icon = Sprite::create(StringUtils::format("%s.png", _owner_player_data->player_role.c_str()));
 		board->addChild(player_icon);
 		player_icon->setPosition(Vec2(board->getContentSize().width - serial_num->getContentSize().width * 1, board->getContentSize().height / 2));
-
+        player_icon->setScale(0.5);
+        
 		board->setTitleText(show_string);
 
 		board->setTitleFontSize(30);
@@ -786,6 +793,7 @@ void RoomScene::update(float delta)
 		}
 		if (temp[0] == JOIN_ROOM[0]) {
 			player_count++;
+            GameAudio::getInstance()->playEffect("Sound/bell.mp3");
 			current_count = player_count;
 			int i = temp.find('|');
 			std::string role = temp.substr(2, i - 2);

@@ -1,4 +1,4 @@
-﻿/*****************************************************************************
+/*****************************************************************************
 *  Copyright (C) 2017 李坤 1061152718@qq.com
 *
 *  此文件属于软件学院2017c++大项目泡泡堂选题的项目文件.
@@ -145,7 +145,8 @@ void SearchScene::update(float delta)
 					room_owner.push_back(owner_name);
 
 					auto board = Button::create("PlayerBar.png", "PlayerBar.png");
-					auto in_button = Button::create("RoomList_connect.png");
+					auto in_button = Button::create("button_normal", "button_selected");
+                    in_button->setTitleText("Connect");
 					board->addChild(in_button);
 
 					in_button->setPosition(Vec2(board->getContentSize().width / 6 * 5, board->getContentSize().height / 2));
