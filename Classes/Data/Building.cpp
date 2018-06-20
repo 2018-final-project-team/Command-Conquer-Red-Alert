@@ -64,6 +64,16 @@ Building* Building::create(Tag tag)
 	temp->_bloodBarPt->setMidpoint(Vec2(0, 0.5));
 	temp->_bloodBarPt->setPercentage(100);
 	temp->addChild(temp->_bloodBarPt);
+
+	//红色血条
+	temp->_bloodBarAsEnemyPt = ProgressTimer::create(Sprite::create("GameItem/BloodBar/BuildingBloodBarEnemy.png"));
+	temp->_bloodBarAsEnemyPt->setScale(temp->getContentSize().width / 200);
+	temp->_bloodBarAsEnemyPt->setPosition(Vec2(temp->getContentSize().width / 2, temp->getContentSize().height + 10));
+	temp->_bloodBarAsEnemyPt->setType(ProgressTimer::Type::BAR);
+	temp->_bloodBarAsEnemyPt->setMidpoint(Vec2(0, 0.5));
+	temp->_bloodBarAsEnemyPt->setPercentage(100);
+	temp->_bloodBarAsEnemyPt->setVisible(false);    //默认不显示
+	temp->addChild(temp->_bloodBarAsEnemyPt);
     
     return temp;
 }
@@ -80,4 +90,5 @@ void Building::decreaseHP(int num)
 
 	auto progressTo = ProgressTo::create(0.5f, 100 * _hp/_FullHp);
 	_bloodBarPt->runAction(progressTo);
+	_bloodBarAsEnemyPt->runAction(progressTo);
 }

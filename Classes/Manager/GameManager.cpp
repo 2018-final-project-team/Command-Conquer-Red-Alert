@@ -959,6 +959,8 @@ void Manager::doCommands()
 			_gameScene->_gameEventDispatcher->addEventListenerWithSceneGraphPriority
 			(_gameScene->_gameListener->clone(), building);
 			building->setPosition(position);
+			building->_bloodBarPt->setVisible(false);
+			building->_bloodBarAsEnemyPt->setVisible(true);
 			_gameScene->addChild(building, 2);
 			_gameScene->getEnemyBuildings()->pushBack(building);
 
@@ -975,6 +977,8 @@ void Manager::doCommands()
 			(_gameScene->_gameListener->clone(), soldier);
 
 			soldier->setPosition(_positionForMessage);
+			soldier->_bloodBarPt->setVisible(false);
+			soldier->_bloodBarAsEnemyPt->setVisible(true);
 			_gameScene->addChild(soldier, 1);
 
 			_gameScene->getEnemySoldiers()->pushBack(soldier);

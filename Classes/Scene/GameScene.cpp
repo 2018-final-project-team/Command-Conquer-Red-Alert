@@ -580,6 +580,8 @@ void GameScene::dataInit()
         baseCar->setDestination(Vec2(visibleSize.width / 2 - MAPX, visibleSize.height / 2 - MAPY));
     }
     baseCar->setGetDestination(true);
+	baseCar->_bloodBarPt->setVisible(false);
+	baseCar->_bloodBarAsEnemyPt->setVisible(true);
     this->addChild(baseCar, 1);
     _enemySoldiers.pushBack(baseCar);
 
