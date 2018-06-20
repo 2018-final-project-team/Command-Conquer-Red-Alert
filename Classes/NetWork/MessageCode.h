@@ -120,5 +120,20 @@
 			#define MOVE_UNIT    "k"
 			/** @} */
 
+/**
+			* @name 在游戏内广播建造建筑消息
+			* @{
+			*/
+			#define CREATE_BUILDING    "l"
+			/** @} */
+
+/**
+			* @name 在游戏内广播创建Unit消息
+			* @{
+			*/
+			#define CREATE_UNIT    "m"
+			/** @} */
+
+
 
 #endif /* MessageCode_h */

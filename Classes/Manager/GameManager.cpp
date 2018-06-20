@@ -342,7 +342,7 @@ void Manager::createBuilding(cocos2d::Vec2 position)
                 (_gameScene->_gameListener->clone(), building);
         building->setPosition(position);
         //To Do:
-        _gameScene->_client->sendMessage("createBuilding", "position&&tag");
+        _gameScene->_client->sendMessage(CREATE_BUILDING, getCreateBuildingMessage(position, _buildingTag));
         _gameScene->addChild(building, 2);
         switch (_buildingTag)
         {
@@ -902,8 +902,8 @@ void Manager::doCommands()
         _gameScene->_commands.pop();
 
         //To Do:
-        bool set_enemy_position = true;
-        if (set_enemy_position)
+
+        if (_command[0] == MOVE_UNIT[0])
         {
 			readMoveCommand();
 			if (_playerId == _gameScene->_localPlayerID)
@@ -942,61 +942,28 @@ void Manager::doCommands()
                 }
             }
         }
-        //if (_command[0] /* == enemy move*/ )
-        //{
-        //    std::string name = std::string(&_command[1]);
-        //    if (name == scene._localPlayerName)
-        //    {
-        //        //                std::cout << "LocalPlayerDead message" << std::endl;
-        //        scene._player = scene._localPlayer;
-        //        scene._player->stopAllActions();
-        //        scene._localPlayer->setPlayerDead();
+		else if (_command[0] == CREATE_BUILDING[0])
+		{
+			readCreateBuildingCommand();
+			if (_playerId == _gameScene->_localPlayerID)
+			{
+				continue;
+			}
+			Vec2 position = _positionForMessage;
+			Tag buildingTag = _tagForMessage;
+			Building* building = Building::create(buildingTag);
+			_gameScene->_gameEventDispatcher->addEventListenerWithSceneGraphPriority
+			(_gameScene->_gameListener->clone(), building);
+			building->setPosition(position);
+			_gameScene->addChild(building, 2);
+			_gameScene->getEnemyBuildings()->pushBack(building);
 
-        //        executePlayer(delta, scene);
-        //    }
-        //    else {
-        //        //                std::cout << "RemotePlayerDead message" << std::endl;
-        //        scene._player = scene._remotePlayer[name];
-        //        scene._player->stopAllActions();
-        //        scene._player->setPlayerDead();
-        //        executePlayer(delta, scene);
-        //    }
-
-        //}
-    //    if (_command[0] /*!= KEY_ORDER[0]*/)
-    //    {
-    //        continue;
-    //    }
-    //    readCommand();
-    //    // bool isPress;
-
-    //    if (_playerName == scene._localPlayerName)
-    //        continue;
-    //    scene._player = scene._remotePlayer[_playerName];
-    //    if (_code[0] == 'p')
-    //    {
-    //        scene._player->setKeys(scene._keyPressesedOrder[_code], true);
-    //    }
-    //    else
-    //    {
-    //        scene._player->setKeys(scene._keyReleasedOrder[_code], false);
-    //    }
-
-    //    executePlayer(delta, scene);
-    //    scene._player->setPosition(_playerCurrentPosition);
-    //}
-    //for (int i = 0; i < scene._playerList.size(); i++)
-    //{
-    //    _playerName = scene._playerList.at(i).player_name;
-
-    //    if (_playerName == scene._localPlayerName)
-    //        continue;
-
-    //    else {
-    //        //std::cout << "PlayerName:" << _playerName << std::endl;
-    //        scene._player = scene._remotePlayer[_playerName];
-    //        executePlayer(delta, scene);
-    //    }
+		}
+		else
+		{
+			continue;
+		}
+       
     }
 }
 
@@ -1029,4 +996,111 @@ void Manager::readMoveCommand()
 	_playerId = stringToNum<int>(playerId);
 	_destinationForMessage = Vec2(positionX, positionY);
 	_destinationForMessage = _gameScene->_tileMap->convertToWorldSpace(_destinationForMessage);
+}
+
+
+std::string Manager::getCreateBuildingMessage(cocos2d::Vec2 pos, Tag tag)
+{
+	//格式：玩家id + Tag + (X,Y)
+	std::stringstream ssPlayerId;
+	std::stringstream ssTag;
+	std::stringstream ssX;
+	std::stringstream ssY;
+
+	std::string s1 = "(";
+	std::string s2 = ",";
+	std::string s3 = ")";
+
+	ssPlayerId.fill(0);
+	ssPlayerId.width(2);
+	ssPlayerId << _gameScene->_localPlayerID;
+	std::string sId = ssPlayerId.str();
+	if (sId[0] == '\0')
+	{
+		sId[0] = '0';
+	}
+
+	ssTag.fill(0);
+	ssTag.width(2);
+	ssTag << static_cast<int>(tag);
+	std::string sTag = ssTag.str();
+	if (sTag[0] == '\0')
+	{
+		sTag[0] = '0';
+	}
+
+	pos = _gameScene->_tileMap->convertToNodeSpace(pos);
+
+	ssX << pos.x;
+	std::string sX = ssX.str();
+
+	ssY << pos.y;
+	std::string sY = ssY.str();
+
+	return sId + sTag + s1 + sX + s2 + sY + s3;
+}
+
+void Manager::readCreateBuildingCommand()
+{
+	auto leftBracket = _command.find('(');
+	auto comma = _command.find(',');
+	auto rightBracket = _command.find(')');
+
+	std::string sPlayerId(_command.begin() + 1, _command.begin() + 3);
+	std::string sTag(_command.begin() + 3, _command.begin() + leftBracket);
+	std::string spositionX(_command.begin() + 1 + leftBracket, _command.begin() + comma);
+	std::string spositionY(_command.begin() + 1 + comma, _command.begin() + rightBracket);
+
+	//std::cout << playerName << std::endl;
+
+	float positionX = stringToNum<float>(spositionX);
+	float positionY = stringToNum<float>(spositionY);
+	//std::cout << positionX << std::endl;
+	// std::cout << positionY << std::endl;
+	
+	_playerId = stringToNum<int>(sPlayerId);
+	int numTag = stringToNum<int>(sTag);
+	_tagForMessage = static_cast<Tag>(numTag);
+	_positionForMessage = Vec2(positionX, positionY);
+	_positionForMessage = _gameScene->_tileMap->convertToWorldSpace(_positionForMessage);
+}
+
+
+std::string Manager::getCreateUnitMessage(Tag tag)
+{
+	//格式：玩家id + Tag
+	std::stringstream ssPlayerId;
+	std::stringstream ssTag;
+	std::stringstream ssY;
+
+	ssPlayerId.fill(0);
+	ssPlayerId.width(2);
+	ssPlayerId << _gameScene->_localPlayerID;
+	std::string sId = ssPlayerId.str();
+	if (sId[0] == '\0')
+	{
+		sId[0] = '0';
+	}
+
+	ssTag.fill(0);
+	ssTag.width(2);
+	ssTag << static_cast<int>(tag);
+	std::string sTag = ssTag.str();
+	if (sTag[0] == '\0')
+	{
+		sTag[0] = '0';
+	}
+
+	return sId + sTag ;
+}
+
+
+void Manager::readCreateUnitCommand()
+{
+	std::string sPlayerId(_command.begin() + 1, _command.begin() + 3);
+	std::string sTag(_command.begin() + 3, _command.begin() + 5);
+
+	_playerId = stringToNum<int>(sPlayerId);
+	int numTag = stringToNum<int>(sTag);
+	_tagForMessage = static_cast<Tag>(numTag);
 }

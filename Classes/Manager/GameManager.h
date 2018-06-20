@@ -30,7 +30,9 @@ private:
 	cocos2d::Vec2   _destinationForMessage;   /// Unit的目的地
 	std::string     _command;              /// 读取的远程信息
 	int             _index;                /// 需要移动的Unit在对应Vector中的索引
-	int             _playerId;           /// 人物Id
+	int             _playerId;             /// 人物Id
+	Tag             _tagForMessage;        ///建造建筑或Unit的Tag
+    cocos2d::Vec2    _positionForMessage;  ///建造建筑的位置
 
 
 	Panel* _panel;
@@ -162,6 +164,18 @@ public:
 
 	//提取移动命令
 	void readMoveCommand();
+
+	//生成建造建筑命令
+	std::string getCreateBuildingMessage(cocos2d::Vec2 pos, Tag tag);
+
+	//提取建造建筑的命令
+	void readCreateBuildingCommand();
+
+	//生成创造Unit命令
+	std::string getCreateUnitMessage(Tag tag);
+
+	//提取创造Unit命令
+	void readCreateUnitCommand();
 
 };
 
