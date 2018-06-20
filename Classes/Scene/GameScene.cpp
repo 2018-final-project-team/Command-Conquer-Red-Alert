@@ -1,4 +1,4 @@
-#include "Scene/WelcomeScene.h"  
+﻿#include "Scene/WelcomeScene.h"  
 #include "Scene/GameScene.h"  
 #include "ui/CocosGUI.h"
 #include "Panel/Panel.h"
@@ -799,6 +799,10 @@ void GameScene::moveSpritesWithMap(cocos2d::Vec2 direction)
     for (auto& soldier : _enemySoldiers)
     {
         soldier->setPosition(soldier->getPosition() + direction);
+        if (!soldier->getGetDestination())
+        {
+            soldier->setDestination(soldier->getDestination() + direction);
+        }
     }
     // enemy buildings
     for (auto& building : _enemyBuildings)

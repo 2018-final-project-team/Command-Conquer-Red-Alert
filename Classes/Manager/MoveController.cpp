@@ -138,41 +138,6 @@ void MoveController::setDestination(cocos2d::Vec2 position)
         {
         case TANK_TAG:
             continue;
-        case BASE_CAR_TAG:
-        {
-            soldier->setDestination(position);
-            soldier->setGetDestination(false);
-
-            _gameScene->_client->sendMessage(MOVE_UNIT, getMoveMessage(soldier, position));
-
-            Vec2 direction = (soldier->getDestination() - soldier->getPosition());
-            //change state of unit
-            if (fabs(direction.x) < fabs(direction.y))
-            {
-                if (direction.y > 0)           //up
-                {
-                    soldier->switchState(stateWalkUp);
-                }
-                else                          //down
-                {
-                    soldier->switchState(stateWalkDown);
-                }
-            }
-            else
-            {
-                //left
-                if (direction.x < 0)
-                {
-                    soldier->switchState(stateWalkLeft);
-                }
-                //right
-                else
-                {
-                    soldier->switchState(stateWalkRight);
-                }
-            }
-            return;
-        }
         default:
             while (!canPut(position + Vec2(col * soldierSize, -row * soldierSize)))
             {
@@ -227,7 +192,7 @@ void MoveController::moveSoldiers()
          
             Vec2 move = soldier->getUnitSpeed() * interval * direction;
             // if the distance of this move is longer than destination
-            if (move.length() > distance)
+            if (move.length() >= distance)
             {
                 soldier->moveTo(destination);
                 soldier->setGetDestination(true);
@@ -287,7 +252,7 @@ void MoveController::moveSoldiers()
 
             Vec2 move = enemy->getUnitSpeed() * interval * direction;
             // if the distance of this move is longer than destination
-            if (move.length() > distance)
+            if (move.length() >= distance)
             {
                 enemy->moveTo(destination);
                 enemy->setGetDestination(true);
