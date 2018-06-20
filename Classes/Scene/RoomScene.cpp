@@ -512,7 +512,7 @@ bool RoomScene::initForServer()
                         if(type==Widget::TouchEventType::ENDED)
                         {
                             if (player_list.size() == 1) {
-                                start_game_button->setTitleText("Nobody together？");
+                                start_game_button->setTitleText("Nobody together?");
                                 start_game_button->setTitleFontSize(20);
                             }
                             else {
@@ -544,16 +544,16 @@ bool RoomScene::initForServer()
                         GameAudio::getInstance()->playEffect("Sound/button.mp3");
                         if(type==Widget::TouchEventType::ENDED)
                         {
-                            if (player_list.size() == 1) {
-                                start_game_button->setTitleText("Nobody together？");
+                            if (player_list.size() == 1) 
+							{
+                                start_game_button->setTitleText("Nobody together?");
                                 start_game_button->setTitleFontSize(20);
                             }
-                            else {
+                            else 
+							{
                                 client->sendMessage(START_GAME, "start_game");
                             }
                         }
-
-
 
 					});
 				}

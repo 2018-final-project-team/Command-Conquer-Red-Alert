@@ -253,7 +253,10 @@ int Client::client(void)
         
         ipindex = i;
         
-        usleep(100000);
+
+		Sleep(50);
+
+        
         
         c.close();
         t.join();

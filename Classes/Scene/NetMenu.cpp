@@ -44,7 +44,7 @@
 #include "Scene/NetMenu.h"
 #include "Scene/SearchScene.h"
 #include "ui/CocosGUI.h"
-#include "Scene/LoginScene.h"
+#include "Scene/WelcomeScene.h"
 #include "Settings.h"
 #include "Util/GameAudio.h"
 
@@ -314,7 +314,7 @@ bool NetMenu::init()
     return_button->addTouchEventListener([](Ref* pSender, Widget::TouchEventType type) {
         if (type == Widget::TouchEventType::ENDED) {
 			GameAudio::getInstance()->playEffect("Sound/button.mp3");
-			Director::getInstance()->pushScene(TransitionFade::create(1, LoginScene::createScene()));
+			Director::getInstance()->pushScene(TransitionFade::create(1, WelcomeScene::createScene()));
         }
     });
     this->addChild(return_button, 1);
