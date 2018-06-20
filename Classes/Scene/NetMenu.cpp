@@ -127,8 +127,11 @@ bool NetMenu::init()
 			{
 				if (type != Widget::TouchEventType::ENDED)
                 {
-                    GameAudio::getInstance()->playEffect("Sound/button.mp3");
                     return;
+                }
+                else
+                {
+                    GameAudio::getInstance()->playEffect("Sound/button.mp3");
                 }
 				IP = IPInput->getString();
 				//log("IP    IP   %c", IP[0]);
