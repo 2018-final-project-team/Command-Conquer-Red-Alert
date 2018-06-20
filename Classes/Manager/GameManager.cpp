@@ -905,7 +905,7 @@ void Manager::doCommands()
         if (set_enemy_position)
         {
 			readMoveCommand();
-            Vec2 destination = _destination;
+            Vec2 destination = _destinationForMessage;
 			int index = _index;
             Unit* enemy = _gameScene->getEnemySoldiers()->at(index);
             enemy->setDestination(destination);
@@ -1022,5 +1022,5 @@ void Manager::readMoveCommand()
 	// std::cout << positionY << std::endl;
 	_index = stringToNum<int>(index);
 	_playerName = playerName;
-	_destination = Vec2(positionX, positionY);
+	_destinationForMessage = Vec2(positionX, positionY);
 }

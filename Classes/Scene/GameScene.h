@@ -29,12 +29,14 @@ public:
 
 	cocos2d::TMXTiledMap*      _tileMap;
 
-	Client*                   _client;              ///服务端指针
-	std::string               _localPlayerName;     ///本地玩家的名字
+	Client*                    _client;              ///服务端指针
+	std::string                _localPlayerName;     ///本地玩家的名字
 
     Manager * _manager;
     
     Panel * panel;
+
+	std::queue<std::string>    _commands;             ///每次读取的命令
 
 private:
 	cocos2d::TMXLayer* _barrier;

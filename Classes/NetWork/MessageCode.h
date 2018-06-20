@@ -113,5 +113,12 @@
             #define DEAD_MESSAGE    "j"
        		/** @} */
 
+/**
+			* @name 在游戏内广播Unit移动消息
+			* @{
+			*/
+			#define MOVE_UNIT    "k"
+			/** @} */
+
 
 #endif /* MessageCode_h */

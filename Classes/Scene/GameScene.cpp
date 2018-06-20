@@ -661,6 +661,8 @@ void GameScene::update(float time)
 
 	_manager->getMoveController()->moveSoldiers();
 
+	_manager->doCommands();
+
 	scrollMap();
 
 }

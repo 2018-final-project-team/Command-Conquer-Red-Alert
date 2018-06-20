@@ -240,7 +240,7 @@ void MoveController::moveSoldiers()
         {
             //log("route size %d", soldier->_route.size());
             soldier->setDestination(soldier->_route.front());
-            _gameScene->_client->sendMessage("movetopositon", "todo");
+            _gameScene->_client->sendMessage(MOVE_UNIT, getMoveMessage(soldier));
             (soldier->_route).erase((soldier->_route).begin());
             soldier->setGetDestination(false);
             Vec2 direction= (soldier->getDestination() - soldier->getPosition());
@@ -502,6 +502,10 @@ std::string MoveController::getMoveMessage(Unit* u)
 	ssIndex.width(2);
 	ssIndex << index;
 	std::string sIndex = ssIndex.str();
+	if (sIndex[0] == '\0')
+	{
+		sIndex[0] = '0';
+	}
 	
 	ssX << u->getPositionX();
 	std::string sX = ssX.str();

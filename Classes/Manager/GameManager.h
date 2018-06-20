@@ -27,7 +27,7 @@ public:
 	bool _isWaitToCreateCar;
 private:
 
-	Vec2            _destination;          /// Unit的目的地
+	cocos2d::Vec2   _destinationForMessage;   /// Unit的目的地
 	std::string     _command;              /// 读取的远程信息
 	int             _index;                /// 需要移动的Unit在对应Vector中的索引
 	std::string     _playerName;           /// 人物Name
