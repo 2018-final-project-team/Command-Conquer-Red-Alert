@@ -977,6 +977,7 @@ void Manager::doCommands()
 			(_gameScene->_gameListener->clone(), soldier);
 
 			soldier->setPosition(_positionForMessage);
+			soldier->setDestination(_positionForMessage);
 			soldier->_bloodBarPt->setVisible(false);
 			soldier->_bloodBarAsEnemyPt->setVisible(true);
 			_gameScene->addChild(soldier, 1);

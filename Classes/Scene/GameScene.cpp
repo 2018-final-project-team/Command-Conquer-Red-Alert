@@ -584,8 +584,10 @@ void GameScene::dataInit()
     }
     else
     {
-        baseCar->setPosition(Vec2(visibleSize.width / 2 - MAPX, visibleSize.height / 2 - MAPY));
-        baseCar->setDestination(Vec2(visibleSize.width / 2 - MAPX, visibleSize.height / 2 - MAPY));
+        baseCar->setPosition(Vec2(visibleSize.width / 2 - MAPX + visibleSize.width, 
+			visibleSize.height / 2 - MAPY + visibleSize.height));
+        baseCar->setDestination(Vec2(visibleSize.width / 2 - MAPX + visibleSize.width, 
+			visibleSize.height / 2 - MAPY + visibleSize.height));
     }
     baseCar->setGetDestination(true);
 	baseCar->_bloodBarPt->setVisible(false);
