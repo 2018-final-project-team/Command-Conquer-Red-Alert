@@ -14,7 +14,6 @@ static std::string splayerName;
 static Client* clients;
 //a static pointer which is gong to be used to make LevelData oject reference count nonzero
 static LevelData* ptr = NULL;
-static Panel* ptr_panel = NULL;
 
 USING_NS_CC;
 using namespace ui;
@@ -29,7 +28,7 @@ static void problemLoading(const char* filename)
 Scene* GameScene::createScene(LevelData &data, Client* client, std::string playerName)
 {
 	auto scene = Scene::createWithPhysics();
-	
+
 	scene->getPhysicsWorld()->setGravity(Vec2(0, 0));
 
 	data.retain();
@@ -54,8 +53,15 @@ bool GameScene::init()
 	{
 		return false;
 	}
-
-
+	memset(fog, 0, sizeof(fog));
+	//大黑快快
+	this->addChild(drawNode,3);
+	//绿点点
+	this->addChild(drawNode2, 6);
+	//黑快快
+	this->addChild(drawNode3, 7);
+	//白边边
+	this->addChild(drawNode4, 8);
 	_thisScene = this;
 	_client = clients;
 	_inputData = ptr;
@@ -120,7 +126,23 @@ bool GameScene::init()
 		small_map = Sprite::create("GameItem/Map/small_map2.png");
 	}
     small_map->setPosition(Point(visibleSize.width - small_mapX / 2, visibleSize.height - small_mapX / 2));
-	this->addChild(small_map, 3);
+	Vec2 p1[4];
+	p1[0] = Vec2(visibleSize.width - small_mapX-1, visibleSize.height - small_mapY-1);
+	p1[1] = Vec2(visibleSize.width - small_mapX , visibleSize.height - small_mapY-1 );
+	p1[2] = Vec2(visibleSize.width - small_mapX, visibleSize.height);
+	p1[3] = Vec2(visibleSize.width - small_mapX-1, visibleSize.height);
+	drawNode4->drawPolygon(p1, 4, Color4F(1, 1, 1, 1), 1, Color4F(1, 1, 1, 1));
+
+	Vec2 p2[4];
+	p2[0] = Vec2(visibleSize.width - small_mapX - 1, visibleSize.height - small_mapY - 1);
+	p2[1] = Vec2(visibleSize.width, visibleSize.height - small_mapY - 1);
+	p2[2] = Vec2(visibleSize.width, visibleSize.height - small_mapY);
+	p2[3] = Vec2(visibleSize.width - small_mapX - 1, visibleSize.height - small_mapY);
+	drawNode4->drawPolygon(p2, 4, Color4F(1, 1, 1, 1), 1, Color4F(1, 1, 1, 1));
+
+
+
+	this->addChild(small_map, 5);
 
 
     //DrawNode
@@ -133,8 +155,7 @@ bool GameScene::init()
 	//auto _panelSize = panel->getContentSize();   //为什么是0，0？
 	//log("%f %f %f %f",_panelSize.width,_panelSize.height,panel->getAnchorPoint().x,panel->getAnchorPoint().y);
 	panel->setPosition(visibleSize.width - 112, visibleSize.height - 400);
-	this->addChild(panel, 3);
-	ptr_panel = panel;
+	this->addChild(panel, 5);
 	//log("the tag of panel is:%d", panel->getTag());
 
 //===============================监听地图精灵=====================================
@@ -154,7 +175,6 @@ bool GameScene::init()
                 Y = MAPY - visibleSize.height;
             //direction to move sprites
             Vec2 direction = Point(-X, -Y) - _tileMap->getPosition();
-            log("%f %f", -X, -Y);
 
 			_tileMap->setPosition(Point(-X, -Y));
             moveSpritesWithMap(direction);
@@ -265,49 +285,43 @@ bool GameScene::init()
                     return;
 				case BASE_CAR_TAG:       //if there is any definition in the case
                 {                        // you must use {} to contain it
-					if (_soldiers.contains(static_cast<Unit*>(target)))
+					if (!static_cast<Unit*>(target)->getIsSelected())    //第一次单击选中基地车，第二次单击展开
 					{
-						if (!static_cast<Unit*>(target)->getIsSelected())    //第一次单击选中基地车，第二次单击展开
+						for (Unit* unit : _selectedSoldiers)
 						{
-							for (Unit* unit : _selectedSoldiers)
-							{
-								unit->setIsSelected(false);
-							}
-							_selectedSoldiers.clear();
-							_selectedSoldiers.pushBack((static_cast<Unit*>(target)));
-							(static_cast<Unit*>(target))->setIsSelected(true);
-							break;
+							unit->setIsSelected(false);
 						}
-						else
-						{
-							//基地车展开成基地
-							//移除基地车
-							for (Unit* unit : _selectedSoldiers)
-							{
-								unit->setIsSelected(false);
-							}
-							_selectedSoldiers.clear();
-							Vec2 position = target->getPosition();
-							_client->sendMessage(REMOVE_UNIT, _manager->getRemoveUnitMessage(static_cast<Unit*>(target)));
-							_soldiers.eraseObject(static_cast<Unit*>(target), false);
-							this->removeChild(target);
-							//创建基地
-							Building* base = Building::create(BASE_TAG);
-							_gameEventDispatcher->addEventListenerWithSceneGraphPriority
-							(_gameListener->clone(), base);
-							base->setPosition(position);
-							this->addChild(base, 2);
-							_isBaseExist = true;
-							_buildings.pushBack(base);
-							_client->sendMessage(CREATE_BUILDING, _manager->getCreateBuildingMessage(position, BASE_TAG));
-							//刷新Panel
-							panel->setCurButton(panel->getCurCategoryTag());
-							break;
-						}
+						_selectedSoldiers.clear();
+						_selectedSoldiers.pushBack((static_cast<Unit*>(target)));
+						(static_cast<Unit*>(target))->setIsSelected(true);
+						break;
 					}
-					_manager->setEnemy(static_cast<Unit*>(target));
-					break;
-					
+					else
+					{
+						//基地车展开成基地
+						//移除基地车
+						for (Unit* unit : _selectedSoldiers)
+						{
+							unit->setIsSelected(false);
+						}
+						_selectedSoldiers.clear();
+						Vec2 position = target->getPosition();
+						_client->sendMessage(REMOVE_UNIT, _manager->getRemoveUnitMessage(static_cast<Unit*>(target)));
+						_soldiers.eraseObject(static_cast<Unit*>(target), false);
+						this->removeChild(target);
+						//创建基地
+						Building* base = Building::create(BASE_TAG);
+						_gameEventDispatcher->addEventListenerWithSceneGraphPriority
+						(_gameListener->clone(), base);
+						base->setPosition(position);
+						this->addChild(base, 2);
+						_isBaseExist = true;
+						_buildings.pushBack(base);
+						_client->sendMessage(CREATE_BUILDING, _manager->getCreateBuildingMessage(position, BASE_TAG));
+						//刷新Panel
+						panel->setCurButton(panel->getCurCategoryTag());
+						break;
+					}
                 }
 
                 default:
@@ -584,9 +598,9 @@ void GameScene::dataInit()
     }
     else
     {
-        baseCar->setPosition(Vec2(visibleSize.width / 2 - MAPX + visibleSize.width, 
+		baseCar->setPosition(Vec2(visibleSize.width / 2 - MAPX + visibleSize.width,
 			visibleSize.height / 2 - MAPY + visibleSize.height));
-        baseCar->setDestination(Vec2(visibleSize.width / 2 - MAPX + visibleSize.width, 
+		baseCar->setDestination(Vec2(visibleSize.width / 2 - MAPX + visibleSize.width,
 			visibleSize.height / 2 - MAPY + visibleSize.height));
     }
     baseCar->setGetDestination(true);
@@ -722,7 +736,8 @@ void GameScene::update(float time)
 	_manager->doCommands();
 
 	scrollMap();
-
+	showOnSmallMap();
+	makeFog();
 }
 
 /*update by czd */
@@ -786,6 +801,143 @@ void GameScene::scrollMap()
             moveSpritesWithMap(Vec2(0, -MAPY + visibleSize.height - mapPosition.y));
 		}
 	}
+}
+//==========================战争迷雾======================================
+void GameScene::makeFog() {
+	Vec2 visibleSize = Director::getInstance()->getVisibleSize();
+	int temp = 50;
+	drawNode->clear();
+	drawNode3->clear();
+	for (int i = 0; i < temp; i++) {
+		for (int j = 0; j < temp; j++) {
+			if (fog[i][j] == 0) {
+				Vec2 black = Point(i * 76.8, j * 76.8);
+				Vec2 screenBlack = this->_tileMap->convertToWorldSpace(black);
+				Vec2 point1[4];
+				point1[0] = Vec2(screenBlack.x, screenBlack.y);
+				point1[1] = Vec2(screenBlack.x, screenBlack.y+76.8);
+				point1[2] = Vec2(screenBlack.x+76.8, screenBlack.y+76.8);
+				point1[3] = Vec2(screenBlack.x+76.8, screenBlack.y);
+				drawNode->drawPolygon(point1, 4, Color4F(0, 0, 0, 1), 1, Color4F(0, 0, 0, 1));
+
+				//小地图上的黑块
+				Vec2 black2 = Point(i * 6, j * 6);
+				Vec2 point2[4];
+				point2[0] = Vec2(black2.x, black2.y)+Vec2(visibleSize.x-small_mapX, visibleSize.y - small_mapY);
+				point2[1] = Vec2(black2.x, black2.y + 6) + Vec2(visibleSize.x - small_mapX, visibleSize.y - small_mapY);
+				point2[2] = Vec2(black2.x + 6, black2.y + 6) + Vec2(visibleSize.x - small_mapX, visibleSize.y - small_mapY);
+				point2[3] = Vec2(black2.x + 6, black2.y) + Vec2(visibleSize.x - small_mapX, visibleSize.y - small_mapY);
+				drawNode3->drawPolygon(point2, 4, Color4F(0, 0, 0, 1), 1, Color4F(0, 0, 0, 1));
+
+			}
+		}
+	}
+	for (auto& soldier : _soldiers) {
+		Vec2 pos = soldier->getPosition();
+		Vec2 truePos = this->_tileMap->convertToNodeSpace(pos);
+		int x = truePos.x / 76.8;
+		int y = truePos.y / 76.8;
+		fog[x - 1][y - 1] = 1; fog[x - 1][y] = 1;fog[x - 1][y + 1] = 1;
+		fog[x ][y - 1] = 1; fog[x ][y] = 1; fog[x ][y + 1] = 1;
+		fog[x + 1][y - 1] = 1; fog[x + 1][y] = 1; fog[x + 1][y + 1] = 1;
+	}
+	for (auto& soldier : _buildings) {
+		Vec2 pos = soldier->getPosition();
+		Vec2 truePos = this->_tileMap->convertToNodeSpace(pos);
+		int x = truePos.x / 76.8;
+		int y = truePos.y / 76.8;
+		fog[x - 2][y - 2] = 1; fog[x - 2][y-1] = 1; fog[x - 2][y ] = 1; fog[x - 2][y+1] = 1; fog[x - 2][y+2] = 1;
+		fog[x - 1][y - 2] = 1; fog[x - 1][y - 1] = 1; fog[x - 1][y] = 1; fog[x - 1][y + 1] = 1; fog[x - 1][y + 2] = 1;
+		fog[x - 0][y - 2] = 1; fog[x - 0][y - 1] = 1; fog[x - 0][y] = 1; fog[x - 0][y + 1] = 1; fog[x - 0][y + 2] = 1;
+		fog[x +1][y - 2] = 1; fog[x +1][y - 1] = 1; fog[x +1][y] = 1; fog[x +1][y + 1] = 1; fog[x +1][y + 2] = 1;
+		fog[x +2 ][y - 2] = 1; fog[x + 2][y - 1] = 1; fog[x + 2][y] = 1; fog[x + 2][y + 1] = 1; fog[x + 2][y + 2] = 1;
+	}
+
+}
+
+
+
+
+
+//========================显示小点点在小地图上==========================
+void GameScene::showOnSmallMap() {
+	auto visibleSize = Director::getInstance()->getVisibleSize();
+	// my soldiers	
+	drawNode2->clear();
+	for (auto& soldier : _soldiers) {
+		Vec2 pos = soldier->getPosition();
+		Vec2 truePos = this->_tileMap->convertToNodeSpace(pos);
+		float X = truePos.x / 3840 * small_mapX;
+		float Y = truePos.y / 3840 * small_mapY;
+		X = visibleSize.width - small_mapX + X;
+		Y = visibleSize.height - small_mapY + Y;
+
+		Vec2 point1[4];
+		point1[0] = Vec2(X-1, Y-1);
+		point1[1] = Vec2(X+1 , Y - 1);
+		point1[2] = Vec2(X+1, Y + 1);
+		point1[3] = Vec2(X - 1, Y + 1);
+		drawNode2->drawPolygon(point1, 4, Color4F(0, 1, 0, 1), 1, Color4F(0, 1, 0, 1));
+	}
+	// my buildings
+	for (auto& building : _buildings) {
+		Vec2 pos = building->getPosition();
+		Vec2 truePos = this->_tileMap->convertToNodeSpace(pos);
+		float X = truePos.x / 3840 * small_mapX;
+		float Y = truePos.y / 3840 * small_mapY;
+		X = visibleSize.width - small_mapX + X;
+		Y = visibleSize.height - small_mapY + Y;
+		//drawNode2->clear();
+		Vec2 point1[4];
+		point1[0] = Vec2(X - 2, Y - 2);
+		point1[1] = Vec2(X + 2, Y - 2);
+		point1[2] = Vec2(X + 2, Y + 2);
+		point1[3] = Vec2(X - 2, Y + 2);
+		drawNode2->drawPolygon(point1, 4, Color4F(0, 1, 0, 1), 1, Color4F(0, 1, 0, 1));
+	}
+
+	//for (auto& soldier : _enemySoldiers) {
+	//	Vec2 pos = soldier->getPosition();
+	//	Vec2 truePos = this->_tileMap->convertToNodeSpace(pos);
+	//	int i = truePos.x / 76.8;
+	//	int j = truePos.y / 76.8;
+	//	if (fog[i][j] == 1) {
+	//		float X = truePos.x / 3840 * small_mapX;
+	//		float Y = truePos.y / 3840 * small_mapY;
+	//		X = visibleSize.width - small_mapX + X;
+	//		Y = visibleSize.height - small_mapY + Y;
+	//		//drawNode2->clear();
+	//		Vec2 point1[4];
+	//		point1[0] = Vec2(X - 1, Y - 1);
+	//		point1[1] = Vec2(X + 1, Y - 1);
+	//		point1[2] = Vec2(X + 1, Y + 1);
+	//		point1[3] = Vec2(X - 1, Y + 1);
+	//		drawNode2->drawPolygon(point1, 4, Color4F(1, 0, 0, 1), 1, Color4F(1, 0, 0, 1));
+	//	}
+
+	//}
+
+	//for (auto& building : _enemyBuildings) {
+	//	Vec2 pos = building->getPosition();
+	//	Vec2 truePos = this->_tileMap->convertToNodeSpace(pos);
+	//	int i = truePos.x / 76.8;
+	//	int j = truePos.y / 76.8;
+	//	if (fog[i][j] == 1) {
+	//		float X = truePos.x / 3840 * small_mapX;
+	//		float Y = truePos.y / 3840 * small_mapY;
+	//		X = visibleSize.width - small_mapX + X;
+	//		Y = visibleSize.height - small_mapY + Y;
+	//		//drawNode2->clear();
+	//		Vec2 point1[4];
+	//		point1[0] = Vec2(X - 2, Y - 2);
+	//		point1[1] = Vec2(X + 2, Y - 2);
+	//		point1[2] = Vec2(X + 2, Y + 2);
+	//		point1[3] = Vec2(X - 2, Y + 2);
+	//		drawNode2->drawPolygon(point1, 4, Color4F(1, 0, 0, 1), 1, Color4F(1, 0, 0, 1));
+	//	}
+	//}
+
+
 }
 
 void GameScene::moveSpritesWithMap(cocos2d::Vec2 direction)
@@ -919,9 +1071,6 @@ void GameScene::sellBuildingCallBack()
         _sellBuilding = nullptr;
         _isSellMenuExit = false;
 
-		//刷新Panel
-		ptr_panel->setCurButton(ptr_panel->getCurCategoryTag());
-
         return;
     }
         
@@ -980,9 +1129,6 @@ void GameScene::sellBuildingCallBack()
     removeChild(_sellBuildingMenu);
     _sellBuilding = nullptr;
     _isSellMenuExit = false;
-
-	//刷新Panel
-	ptr_panel->setCurButton(ptr_panel->getCurCategoryTag());
 
 }
 

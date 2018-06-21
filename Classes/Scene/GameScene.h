@@ -323,7 +323,19 @@ public:
     */
     bool inDiamond(cocos2d::Point center, float width, 
         float height, cocos2d::Point position);
-
+	/*
+	@brief 把士兵显示在小地图上
+	*/
+	void GameScene::showOnSmallMap();
+	DrawNode* drawNode = DrawNode::create();
+	DrawNode* drawNode2 = DrawNode::create();
+	DrawNode* drawNode3 = DrawNode::create();
+	DrawNode* drawNode4 = DrawNode::create();
+	/*
+	brief 战争迷雾
+	*/
+	int fog[400][400];
+	void GameScene::makeFog();
 };
 
 #endif // __Welcome_SCENE_H__
