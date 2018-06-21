@@ -42,6 +42,10 @@ void GameAudio::playEffect(const char * name)
     {
         audioEngine->playEffect(name);
     }
+	if (!isEffectOn)
+	{
+		stopEffect();
+	}
 }
 
 void GameAudio::stopEffect()

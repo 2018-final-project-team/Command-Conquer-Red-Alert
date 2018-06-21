@@ -1,4 +1,4 @@
-/*
+﻿/*
 *  @file     SettingsScene.cpp
 *  @brief    设置场景类，可设置音乐、音效的打开/关闭
 *  @author   王亮
@@ -109,6 +109,7 @@ void SettingsScene::onEnter()
 
 void SettingsScene::menuOkCallback(cocos2d::Ref * pSender)
 {
+	GameAudio::getInstance()->playEffect("Sound/button.mp3");
     Director::getInstance()->popScene();
 }
 

@@ -13,10 +13,15 @@
 
 class LoginScene :public cocos2d::Layer
 {
+public:
+	std::string username;
+
 private:
 
     cocos2d::Sprite* usernameBG;
     cocos2d::ui::TextField* usernameInput;
+	
+	
 
     void createBackground();
     void createLoginButton();
@@ -30,6 +35,7 @@ public:
 
     static cocos2d::Scene * createScene();
     virtual bool init();
+	
     CREATE_FUNC(LoginScene);
 
 };

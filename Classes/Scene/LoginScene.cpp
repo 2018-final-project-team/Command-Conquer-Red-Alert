@@ -45,7 +45,7 @@ void LoginScene::createBackground()
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    Sprite * bg = Sprite::create("Scene/bg03.png");
+    Sprite * bg = Sprite::create("background.png");
     //set transparent
     bg->setOpacity(255);
     bg->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
@@ -66,8 +66,12 @@ void LoginScene::createLoginButton()
 
     loginButton->addTouchEventListener([=](Ref* sender, ui::Widget::TouchEventType type)
     {
-        if (type != ui::Widget::TouchEventType::ENDED) return;
-        auto username = usernameInput->getString();
+        if (type == ui::Widget::TouchEventType::ENDED)
+        {
+            GameAudio::getInstance()->playEffect("Sound/button.mp3");
+            return;
+        }
+		username = usernameInput->getString();
         if (username.empty())
         {
             MessageBox("Username can't be empty", "Alert");
@@ -77,7 +81,7 @@ void LoginScene::createLoginButton()
             username.substr(0, 16);
             UserDefault::getInstance()->setStringForKey("username", username);
 
-            Director::getInstance()->replaceScene(TransitionFade::create(1.2f, WelcomeScene::createScene()));
+            Director::getInstance()->replaceScene(TransitionFade::create(1.2f, WelcomeScene::createScene(username)));
         }
     });
     addChild(loginButton);

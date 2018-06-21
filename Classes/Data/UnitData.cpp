@@ -86,6 +86,15 @@ Unit * Unit::create(Tag unitTag)
 		temp->_bloodBarPt->setPercentage(100);
 		temp->addChild(temp->_bloodBarPt);
 
+		//红色血条
+		temp->_bloodBarAsEnemyPt = ProgressTimer::create(Sprite::create("GameItem/BloodBar/SoldierBloodBarEnemy.png"));
+		temp->_bloodBarAsEnemyPt->setPosition(Vec2(temp->getContentSize().width / 2, temp->getContentSize().height + 10));
+		temp->_bloodBarAsEnemyPt->setType(ProgressTimer::Type::BAR);
+		temp->_bloodBarAsEnemyPt->setMidpoint(Vec2(0, 0.5));
+		temp->_bloodBarAsEnemyPt->setPercentage(100);
+		temp->_bloodBarAsEnemyPt->setVisible(false);       //默认不显示
+		temp->addChild(temp->_bloodBarAsEnemyPt);
+
 		temp->_ring = Sprite::create("GameItem/ring/ring.png");
 		temp->_ring->setScale(temp->getContentSize().width / 30);
 		temp->_ring->setPosition(Vec2(temp->getContentSize().width / 2, 3));
@@ -190,6 +199,15 @@ Unit * Unit::create(Tag unitTag)
     temp->_bloodBarPt->setPercentage(100);
     temp->addChild(temp->_bloodBarPt);
 
+	//红色血条
+	temp->_bloodBarAsEnemyPt = ProgressTimer::create(Sprite::create("GameItem/BloodBar/SoldierBloodBarEnemy.png"));
+	temp->_bloodBarAsEnemyPt->setPosition(Vec2(temp->getContentSize().width / 2, temp->getContentSize().height + 10));
+	temp->_bloodBarAsEnemyPt->setType(ProgressTimer::Type::BAR);
+	temp->_bloodBarAsEnemyPt->setMidpoint(Vec2(0, 0.5));
+	temp->_bloodBarAsEnemyPt->setPercentage(100);
+	temp->_bloodBarAsEnemyPt->setVisible(false);       //默认不显示
+	temp->addChild(temp->_bloodBarAsEnemyPt);
+
 	temp->_ring = Sprite::create("GameItem/ring/ring.png");
 	temp->_ring->setScale(temp->getContentSize().width / 30);
 	temp->_ring->setPosition(Vec2(temp->getContentSize().width / 2, 1));
@@ -216,7 +234,14 @@ void Unit::decreaseHP(int num)
     _HP -= num;
 
     auto progressTo = ProgressTo::create(0.5f, 100 * _HP / _FullHP);
-    _bloodBarPt->runAction(progressTo);
+	if (_bloodBarPt->isVisible())
+	{
+		_bloodBarPt->runAction(progressTo);
+	}
+	else
+	{
+		_bloodBarAsEnemyPt->runAction(progressTo);
+	}
 }
 
 void Unit::attack(Unit * enemy)

@@ -70,6 +70,7 @@ class Unit : public cocos2d::Sprite{
 public:
 	cocos2d::Sprite* _bloodBox;              //血槽Sprite
 	cocos2d::ProgressTimer* _bloodBarPt;     //血条ProgressTimer
+	cocos2d::ProgressTimer* _bloodBarAsEnemyPt;  //作为敌方单位时显示的红色血条ProgressTimer
 	cocos2d::Sprite* _ring;                  //被选中时脚下的光环
 
 	//最后一次动作状态，用于更新默认状态的静态图片

@@ -26,12 +26,24 @@ public:
 	bool _isWaitToCreateSoldier;
 	bool _isWaitToCreateCar;
 private:
+
+	cocos2d::Vec2   _destinationForMessage;   /// Unit的目的地
+	std::string     _command;              /// 读取的远程信息
+	int             _index;                /// 需要移动的Unit在对应Vector中的索引
+	int             _playerId;             /// 人物Id
+	Tag             _tagForMessage;        ///建造建筑或Unit的Tag
+    cocos2d::Vec2   _positionForMessage;  ///建造建筑的位置
+	Building*       _buildingForMessage;
+	Unit*           _unitForMessage;
+
+
 	Panel* _panel;
     GameScene* _gameScene;
     MoveController* _moveController;
 
     std::queue<Tag> _carQueue;               // 待建车队列
     std::queue<Tag> _soldierQueue;           // 待建士兵队列 
+
 
 //========CreateController===========
 	CC_SYNTHESIZE(clock_t, _timeToCreateBuilding, TimeToCreateBuilding);               // 单位毫秒
@@ -148,6 +160,36 @@ public:
     cocos2d::Point getPutSoldierPosition();
 
     cocos2d::Point getPutCarPosition();
+
+    // 执行命令.
+    void doCommands();
+
+	//提取移动命令
+	void readMoveCommand();
+
+	//生成建造建筑命令
+	std::string getCreateBuildingMessage(cocos2d::Vec2 pos, Tag tag);
+
+	//提取建造建筑的命令
+	void readCreateBuildingCommand();
+
+	//生成创造Unit命令
+	std::string getCreateUnitMessage(Tag tag, cocos2d::Vec2 pos);
+
+	//提取创造Unit命令
+	void readCreateUnitCommand();
+
+	//生成移除建筑命令
+	std::string Manager::getRemoveBuildingMessage(Building* b);
+
+	//提取移除建筑命令
+	void Manager::readRemoveBuildingCommand();
+
+	//生成移除Unit命令
+	std::string Manager::getRemoveUnitMessage(Unit* u);
+
+	//提取移除Unit命令
+	void Manager::readRemoveUnitCommand();
 
 };
 

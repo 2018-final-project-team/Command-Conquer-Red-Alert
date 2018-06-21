@@ -1,11 +1,20 @@
-#include "Scene/WelcomeScene.h"  
+﻿#include "Scene/WelcomeScene.h"  
 #include "Scene/GameScene.h"  
-#include "ui\CocosGUI.h"
+#include "ui/CocosGUI.h"
 #include "Panel/Panel.h"
+
 #define small_mapX 300
 #define small_mapY 300
 #define MINLENTH 15
 #define SPEED 20
+
+
+static int _mapIndex = 1;
+static std::string splayerName;
+static Client* clients;
+//a static pointer which is gong to be used to make LevelData oject reference count nonzero
+static LevelData* ptr = NULL;
+static Panel* ptr_panel = NULL;
 
 USING_NS_CC;
 using namespace ui;
@@ -17,14 +26,19 @@ static void problemLoading(const char* filename)
 	printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in WelcomeScene.cpp\n");
 }
 
-Scene* GameScene::createScene()
+Scene* GameScene::createScene(LevelData &data, Client* client, std::string playerName)
 {
 	auto scene = Scene::createWithPhysics();
-
-	//调试用
-	scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 	
 	scene->getPhysicsWorld()->setGravity(Vec2(0, 0));
+
+	data.retain();
+
+	_mapIndex = data.getmapIndex();
+	clients = client;
+	splayerName = playerName;
+	//Make LevelData oject reference count nonzero
+	ptr = &data;
 
 	auto layer = GameScene::create();
 
@@ -41,21 +55,70 @@ bool GameScene::init()
 		return false;
 	}
 
-	this->dataInit();
+
+	_thisScene = this;
+	_client = clients;
+	_inputData = ptr;
+	_localPlayerName = splayerName;
+	_playerList = ptr->player_list;
+    for (auto& playerData : _playerList)
+    {
+        if (_localPlayerName == playerData.player_name)
+        {
+            _localPlayerID = playerData.player_id;
+        }
+    }
+
+
+	//_enemySoldiers.pushBack(Unit::create(BASE_CAR_TAG));
+
 
     auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	//===================Load map=========================
-	_tileMap = TMXTiledMap::create("GameItem/Map/mapbeautiful1.tmx");
+	if (_inputData->getmapIndex() == 1)
+	{
+		_tileMap = TMXTiledMap::create("GameItem/Map/mapbeautiful1.tmx");
+	}
+	else if (_inputData->getmapIndex() == 2)
+	{
+		_tileMap = TMXTiledMap::create("GameItem/Map/mapbeautiful2.tmx");
+	}
+	
     MAPX = _tileMap->getMapSize().width * _tileMap->getTileSize().width;
     MAPY = _tileMap->getMapSize().height * _tileMap->getTileSize().height;
+    switch (_localPlayerID)
+    {
+    case 1:
+        _tileMap->setPosition(Vec2::ZERO);
+        break;
+    case 2:
+        _tileMap->setPosition(Vec2(visibleSize.width - MAPX, visibleSize.height - MAPY));
+        break;
+    case 3:
+        _tileMap->setPosition(Vec2(0, visibleSize.height - MAPY));
+        break;
+    case 4:
+        _tileMap->setPosition(Vec2(visibleSize.width - MAPX, 0));
+        break;
+    }
 	this->addChild(_tileMap);
 
 	_barrier = _tileMap->getLayer("barrier");
 
+
+	this->dataInit();
+
 	/*update by czd*/
-	Sprite* small_map = Sprite::create("GameItem/Map/small_map1.png"); 
+	if (_inputData->getmapIndex() == 1)
+	{
+		small_map = Sprite::create("GameItem/Map/small_map1.png");
+	}
+	else if (_inputData->getmapIndex() == 2)
+	{
+		small_map = Sprite::create("GameItem/Map/small_map2.png");
+	}
     small_map->setPosition(Point(visibleSize.width - small_mapX / 2, visibleSize.height - small_mapX / 2));
 	this->addChild(small_map, 3);
 
@@ -71,6 +134,7 @@ bool GameScene::init()
 	//log("%f %f %f %f",_panelSize.width,_panelSize.height,panel->getAnchorPoint().x,panel->getAnchorPoint().y);
 	panel->setPosition(visibleSize.width - 112, visibleSize.height - 400);
 	this->addChild(panel, 3);
+	ptr_panel = panel;
 	//log("the tag of panel is:%d", panel->getTag());
 
 //===============================监听地图精灵=====================================
@@ -201,39 +265,49 @@ bool GameScene::init()
                     return;
 				case BASE_CAR_TAG:       //if there is any definition in the case
                 {                        // you must use {} to contain it
-					if (!static_cast<Unit*>(target)->getIsSelected())    //第一次单击选中基地车，第二次单击展开
+					if (_soldiers.contains(static_cast<Unit*>(target)))
 					{
-						for (Unit* unit : _selectedSoldiers)
+						if (!static_cast<Unit*>(target)->getIsSelected())    //第一次单击选中基地车，第二次单击展开
 						{
-							unit->setIsSelected(false);
+							for (Unit* unit : _selectedSoldiers)
+							{
+								unit->setIsSelected(false);
+							}
+							_selectedSoldiers.clear();
+							_selectedSoldiers.pushBack((static_cast<Unit*>(target)));
+							(static_cast<Unit*>(target))->setIsSelected(true);
+							break;
 						}
-						_selectedSoldiers.clear();
-						_selectedSoldiers.pushBack((static_cast<Unit*>(target)));
-						(static_cast<Unit*>(target))->setIsSelected(true);
-						break;
-					}
-					else
-					{
-						//基地车展开成基地
-						//移除基地车
-						for (Unit* unit : _selectedSoldiers)
+						else
 						{
-							unit->setIsSelected(false);
+							//基地车展开成基地
+							//移除基地车
+							for (Unit* unit : _selectedSoldiers)
+							{
+								unit->setIsSelected(false);
+							}
+							_selectedSoldiers.clear();
+							Vec2 position = target->getPosition();
+							_client->sendMessage(REMOVE_UNIT, _manager->getRemoveUnitMessage(static_cast<Unit*>(target)));
+							_soldiers.eraseObject(static_cast<Unit*>(target), false);
+							this->removeChild(target);
+							//创建基地
+							Building* base = Building::create(BASE_TAG);
+							_gameEventDispatcher->addEventListenerWithSceneGraphPriority
+							(_gameListener->clone(), base);
+							base->setPosition(position);
+							this->addChild(base, 2);
+							_isBaseExist = true;
+							_buildings.pushBack(base);
+							_client->sendMessage(CREATE_BUILDING, _manager->getCreateBuildingMessage(position, BASE_TAG));
+							//刷新Panel
+							panel->setCurButton(panel->getCurCategoryTag());
+							break;
 						}
-						_selectedSoldiers.clear();
-						Vec2 position = target->getPosition();
-						_soldiers.eraseObject(static_cast<Unit*>(target), false);
-						this->removeChild(target);
-						//创建基地
-						Building* base = Building::create(BASE_TAG);
-						_gameEventDispatcher->addEventListenerWithSceneGraphPriority
-						(_gameListener->clone(), base);
-						base->setPosition(position);
-						this->addChild(base, 2);
-						_isBaseExist = true;
-						_buildings.pushBack(base);
-						break;
 					}
+					_manager->setEnemy(static_cast<Unit*>(target));
+					break;
+					
                 }
 
                 default:
@@ -482,6 +556,8 @@ void GameScene::onExit()
 
 void GameScene::dataInit()
 {
+    auto visibleSize = Director::getInstance()->getVisibleSize();
+
     _cursorPosition = 0.5 * Director::getInstance()->getVisibleSize();
 
 	_isPowerEnough = false;
@@ -498,6 +574,26 @@ void GameScene::dataInit()
     _dogNum = 0;
 
 	_carFactoryPosition = _barracksPosition = Vec2::ZERO;
+
+    //To Do :id
+    auto baseCar = Unit::create(BASE_CAR_TAG);
+    if (_localPlayerID == 1)
+    {
+        baseCar->setPosition(Vec2(MAPX - visibleSize.width / 2, MAPY - visibleSize.height / 2));
+        baseCar->setDestination(Vec2(MAPX - visibleSize.width / 2, MAPY - visibleSize.height / 2));
+    }
+    else
+    {
+        baseCar->setPosition(Vec2(visibleSize.width / 2 - MAPX + visibleSize.width, 
+			visibleSize.height / 2 - MAPY + visibleSize.height));
+        baseCar->setDestination(Vec2(visibleSize.width / 2 - MAPX + visibleSize.width, 
+			visibleSize.height / 2 - MAPY + visibleSize.height));
+    }
+    baseCar->setGetDestination(true);
+	baseCar->_bloodBarPt->setVisible(false);
+	baseCar->_bloodBarAsEnemyPt->setVisible(true);
+    this->addChild(baseCar, 1);
+    _enemySoldiers.pushBack(baseCar);
 
 	_isBaseExist = false;
 }
@@ -623,6 +719,8 @@ void GameScene::update(float time)
 
 	_manager->getMoveController()->moveSoldiers();
 
+	_manager->doCommands();
+
 	scrollMap();
 
 }
@@ -715,6 +813,10 @@ void GameScene::moveSpritesWithMap(cocos2d::Vec2 direction)
     for (auto& soldier : _enemySoldiers)
     {
         soldier->setPosition(soldier->getPosition() + direction);
+        if (!soldier->getGetDestination())
+        {
+            soldier->setDestination(soldier->getDestination() + direction);
+        }
     }
     // enemy buildings
     for (auto& building : _enemyBuildings)
@@ -791,6 +893,8 @@ void GameScene::sellBuildingCallBack()
         return;
     }
 
+	_client->sendMessage(REMOVE_BUILDING, _manager->getRemoveBuildingMessage(_sellBuilding));
+
     // if is the base
     if (_sellBuilding->getBuildingTag() == BASE_TAG)
     {
@@ -809,10 +913,14 @@ void GameScene::sellBuildingCallBack()
         this->addChild(baseCar, 1);
         _isBaseExist = false;
         _soldiers.pushBack(baseCar);
+		_client->sendMessage(CREATE_UNIT, _manager->getCreateUnitMessage(BASE_CAR_TAG, position));
 
         removeChild(_sellBuildingMenu);
         _sellBuilding = nullptr;
         _isSellMenuExit = false;
+
+		//刷新Panel
+		ptr_panel->setCurButton(ptr_panel->getCurCategoryTag());
 
         return;
     }
@@ -872,6 +980,9 @@ void GameScene::sellBuildingCallBack()
     removeChild(_sellBuildingMenu);
     _sellBuilding = nullptr;
     _isSellMenuExit = false;
+
+	//刷新Panel
+	ptr_panel->setCurButton(ptr_panel->getCurCategoryTag());
 
 }
 

@@ -1,4 +1,4 @@
-/*
+﻿/*
 *  @file     GameManager.cpp
 *  @brief    游戏的控制类
 */
@@ -151,12 +151,15 @@ void Manager::waitCreateSoldier()
             Unit* soldier = Unit::create(_soldierTag);
             _gameScene->_gameEventDispatcher->addEventListenerWithSceneGraphPriority
                     (_gameScene->_gameListener->clone(), soldier);
-            
+			_gameScene->_client->sendMessage(CREATE_UNIT, getCreateUnitMessage(_soldierTag, _gameScene->getBarracksPosition()));
 			soldier->setPosition(_gameScene->getBarracksPosition());
+			_gameScene->getSoldiers()->pushBack(soldier);
             _gameScene->addChild(soldier, 1);
             // 走出兵营
             soldier->setDestination(getPutSoldierPosition());
             soldier->setGetDestination(false);
+            //To Do:
+            _gameScene->_client->sendMessage(MOVE_UNIT, _moveController->getMoveMessage(soldier, getPutSoldierPosition()));
             Vec2 direction = (soldier->getDestination() - soldier->getPosition());
             //change state of unit
             if (fabs(direction.x) < fabs(direction.y))
@@ -184,7 +187,7 @@ void Manager::waitCreateSoldier()
                 }
             }
 
-            _gameScene->getSoldiers()->pushBack(soldier);
+            
             _soldierQueue.pop();
             _isWaitToCreateSoldier = false;
 
@@ -255,12 +258,17 @@ void Manager::waitCreateCar()
             Unit* car = Unit::create(_carTag);
             _gameScene->_gameEventDispatcher->addEventListenerWithSceneGraphPriority
             (_gameScene->_gameListener->clone(), car);
+			_gameScene->_client->sendMessage(CREATE_UNIT, getCreateUnitMessage(_carTag, _gameScene->getCarFactoryPosition()));
 
             car->setPosition(_gameScene->getCarFactoryPosition());
+			_gameScene->getSoldiers()->pushBack(car);
+
             _gameScene->addChild(car, 1);
             // 开出车厂
             car->setDestination(getPutCarPosition());
             car->setGetDestination(false);
+            //To Do:
+            _gameScene->_client->sendMessage(MOVE_UNIT, _moveController->getMoveMessage(car, getPutCarPosition()));
             Vec2 direction = (car->getDestination() - car->getPosition());
             //change state of unit
             if (fabs(direction.x) < fabs(direction.y))
@@ -288,7 +296,7 @@ void Manager::waitCreateCar()
                 }
             }
 
-            _gameScene->getSoldiers()->pushBack(car);
+            
             _carQueue.pop();
             _isWaitToCreateCar = false;
 
@@ -337,6 +345,8 @@ void Manager::createBuilding(cocos2d::Vec2 position)
         _gameScene->_gameEventDispatcher->addEventListenerWithSceneGraphPriority
                 (_gameScene->_gameListener->clone(), building);
         building->setPosition(position);
+        //To Do:
+        _gameScene->_client->sendMessage(CREATE_BUILDING, getCreateBuildingMessage(position, _buildingTag));
         _gameScene->addChild(building, 2);
         switch (_buildingTag)
         {
@@ -880,4 +890,364 @@ cocos2d::Point Manager::getPutCarPosition()
 void Manager::setPanel(Panel* p)
 {
 	_panel = p;
+}
+
+void Manager::doCommands()
+{
+    std::string tempCommand;
+    while ((tempCommand = _gameScene->_client->executeOrder()) != "no")
+    {
+        _gameScene->_commands.push(tempCommand);
+    }
+
+    while (_gameScene->_commands.size() != 0)
+    {
+        _command = _gameScene->_commands.front();
+        _gameScene->_commands.pop();
+
+        //To Do:
+
+        if (_command[0] == MOVE_UNIT[0])
+        {
+			readMoveCommand();
+			if (_playerId == _gameScene->_localPlayerID)
+			{
+				continue;
+			}
+            Vec2 destination = _destinationForMessage;
+			int index = _index;
+            Unit* enemy = _gameScene->getEnemySoldiers()->at(index);
+            enemy->setDestination(destination);
+            enemy->setGetDestination(false);
+            Vec2 direction = (destination - enemy->getPosition());
+            //change state of unit
+            if (fabs(direction.x) < fabs(direction.y))
+            {
+                if (direction.y > 0)           //up
+                {
+                    enemy->switchState(stateWalkUp);
+                }
+                else                          //down
+                {
+                    enemy->switchState(stateWalkDown);
+                }
+            }
+            else
+            {
+                //left
+                if (direction.x < 0)
+                {
+                    enemy->switchState(stateWalkLeft);
+                }
+                //right
+                else
+                {
+                    enemy->switchState(stateWalkRight);
+                }
+            }
+        }
+		else if (_command[0] == CREATE_BUILDING[0])
+		{
+			readCreateBuildingCommand();
+			if (_playerId == _gameScene->_localPlayerID)
+			{
+				continue;
+			}
+			Vec2 position = _positionForMessage;
+			Tag buildingTag = _tagForMessage;
+			Building* building = Building::create(buildingTag);
+			_gameScene->_gameEventDispatcher->addEventListenerWithSceneGraphPriority
+			(_gameScene->_gameListener->clone(), building);
+			building->setPosition(position);
+			building->_bloodBarPt->setVisible(false);
+			building->_bloodBarAsEnemyPt->setVisible(true);
+			_gameScene->addChild(building, 2);
+			_gameScene->getEnemyBuildings()->pushBack(building);
+
+		}
+		else if (_command[0] == CREATE_UNIT[0])
+		{
+			readCreateUnitCommand();
+			if (_playerId == _gameScene->_localPlayerID)
+			{
+				continue;
+			}
+			Unit* soldier = Unit::create(_tagForMessage);
+			_gameScene->_gameEventDispatcher->addEventListenerWithSceneGraphPriority
+			(_gameScene->_gameListener->clone(), soldier);
+
+			soldier->setPosition(_positionForMessage);
+			soldier->setDestination(_positionForMessage);
+			soldier->_bloodBarPt->setVisible(false);
+			soldier->_bloodBarAsEnemyPt->setVisible(true);
+			_gameScene->addChild(soldier, 1);
+
+			_gameScene->getEnemySoldiers()->pushBack(soldier);
+		}
+		else if (_command[0] == REMOVE_BUILDING[0])
+		{
+			readRemoveBuildingCommand();
+			if (_playerId == _gameScene->_localPlayerID)
+			{
+				continue;
+			}
+			_gameScene->removeChild(_gameScene->getEnemyBuildings()->at(_index));
+			_gameScene->getEnemyBuildings()->erase(_index);
+		}
+		else if (_command[0] == REMOVE_UNIT[0])
+		{
+			readRemoveUnitCommand();
+			if (_playerId == _gameScene->_localPlayerID)
+			{
+				continue;
+			}
+			_gameScene->removeChild(_gameScene->getEnemySoldiers()->at(_index));
+			_gameScene->getEnemySoldiers()->erase(_index);
+		}
+		else
+		{
+			continue;
+		}
+       
+    }
+}
+
+template <class Type>
+Type stringToNum(const std::string& str) {
+	std::istringstream iss(str);
+	Type num;
+	iss >> num;
+	return num;
+}
+
+void Manager::readMoveCommand()
+{
+	auto leftBracket = _command.find('(');
+	auto comma = _command.find(',');
+	auto rightBracket = _command.find(')');
+
+	std::string index(_command.begin() + 1, _command.begin() + 3);
+	std::string playerId(_command.begin() + 3, _command.begin() + leftBracket);
+	std::string spositionX(_command.begin() + 1 + leftBracket, _command.begin() + comma);
+	std::string spositionY(_command.begin() + 1 + comma, _command.begin() + rightBracket);
+
+	//std::cout << playerName << std::endl;
+
+	float positionX = stringToNum<float>(spositionX);
+	float positionY = stringToNum<float>(spositionY);
+	//std::cout << positionX << std::endl;
+	// std::cout << positionY << std::endl;
+	_index = stringToNum<int>(index);
+	_playerId = stringToNum<int>(playerId);
+	_destinationForMessage = Vec2(positionX, positionY);
+	_destinationForMessage = _gameScene->_tileMap->convertToWorldSpace(_destinationForMessage);
+}
+
+
+std::string Manager::getCreateBuildingMessage(cocos2d::Vec2 pos, Tag tag)
+{
+	//格式：玩家id + Tag + (X,Y)
+	std::stringstream ssPlayerId;
+	std::stringstream ssTag;
+	std::stringstream ssX;
+	std::stringstream ssY;
+
+	std::string s1 = "(";
+	std::string s2 = ",";
+	std::string s3 = ")";
+
+	ssPlayerId.fill(0);
+	ssPlayerId.width(2);
+	ssPlayerId << _gameScene->_localPlayerID;
+	std::string sId = ssPlayerId.str();
+	if (sId[0] == '\0')
+	{
+		sId[0] = '0';
+	}
+
+	ssTag.fill(0);
+	ssTag.width(2);
+	ssTag << static_cast<int>(tag);
+	std::string sTag = ssTag.str();
+	if (sTag[0] == '\0')
+	{
+		sTag[0] = '0';
+	}
+
+	pos = _gameScene->_tileMap->convertToNodeSpace(pos);
+
+	ssX << pos.x;
+	std::string sX = ssX.str();
+
+	ssY << pos.y;
+	std::string sY = ssY.str();
+
+	return sId + sTag + s1 + sX + s2 + sY + s3;
+}
+
+void Manager::readCreateBuildingCommand()
+{
+	auto leftBracket = _command.find('(');
+	auto comma = _command.find(',');
+	auto rightBracket = _command.find(')');
+
+	std::string sPlayerId(_command.begin() + 1, _command.begin() + 3);
+	std::string sTag(_command.begin() + 3, _command.begin() + leftBracket);
+	std::string spositionX(_command.begin() + 1 + leftBracket, _command.begin() + comma);
+	std::string spositionY(_command.begin() + 1 + comma, _command.begin() + rightBracket);
+
+	//std::cout << playerName << std::endl;
+
+	float positionX = stringToNum<float>(spositionX);
+	float positionY = stringToNum<float>(spositionY);
+	//std::cout << positionX << std::endl;
+	// std::cout << positionY << std::endl;
+	
+	_playerId = stringToNum<int>(sPlayerId);
+	int numTag = stringToNum<int>(sTag);
+	_tagForMessage = static_cast<Tag>(numTag);
+	_positionForMessage = Vec2(positionX, positionY);
+	_positionForMessage = _gameScene->_tileMap->convertToWorldSpace(_positionForMessage);
+}
+
+
+std::string Manager::getCreateUnitMessage(Tag tag, Vec2 pos)
+{
+	//格式：玩家id + Tag + 出生点位置（兵营/车厂）
+	std::stringstream ssPlayerId;
+	std::stringstream ssTag;
+	std::stringstream ssX;
+	std::stringstream ssY;
+
+	std::string s1 = "(";
+	std::string s2 = ",";
+	std::string s3 = ")";
+
+	ssPlayerId.fill(0);
+	ssPlayerId.width(2);
+	ssPlayerId << _gameScene->_localPlayerID;
+	std::string sId = ssPlayerId.str();
+	if (sId[0] == '\0')
+	{
+		sId[0] = '0';
+	}
+
+	ssTag.fill(0);
+	ssTag.width(2);
+	ssTag << static_cast<int>(tag);
+	std::string sTag = ssTag.str();
+	if (sTag[0] == '\0')
+	{
+		sTag[0] = '0';
+	}
+
+	pos = _gameScene->_tileMap->convertToNodeSpace(pos);
+
+	ssX << pos.x;
+	std::string sX = ssX.str();
+
+	ssY << pos.y;
+	std::string sY = ssY.str();
+
+	return sId + sTag + s1 + sX + s2 + sY + s3;
+}
+
+
+void Manager::readCreateUnitCommand()
+{
+	auto leftBracket = _command.find('(');
+	auto comma = _command.find(',');
+	auto rightBracket = _command.find(')');
+
+	std::string sPlayerId(_command.begin() + 1, _command.begin() + 3);
+	std::string sTag(_command.begin() + 3, _command.begin() + 5);
+	std::string spositionX(_command.begin() + 1 + leftBracket, _command.begin() + comma);
+	std::string spositionY(_command.begin() + 1 + comma, _command.begin() + rightBracket);
+
+	float positionX = stringToNum<float>(spositionX);
+	float positionY = stringToNum<float>(spositionY);
+
+	_playerId = stringToNum<int>(sPlayerId);
+	int numTag = stringToNum<int>(sTag);
+	_tagForMessage = static_cast<Tag>(numTag);
+	_positionForMessage = Vec2(positionX, positionY);
+	_positionForMessage = _gameScene->_tileMap->convertToWorldSpace(_positionForMessage);
+}
+
+std::string Manager::getRemoveBuildingMessage(Building* b)
+{
+	//格式：索引 + 玩家id
+	auto index = _gameScene->getBuildings()->getIndex(b);
+
+	std::stringstream ssIndex;
+	std::stringstream ssPlayerId;
+
+	ssIndex.fill(0);            //位宽为2，左侧补零
+	ssIndex.width(2);
+	ssIndex << index;
+	std::string sIndex = ssIndex.str();
+	if (sIndex[0] == '\0')
+	{
+		sIndex[0] = '0';
+	}
+
+
+	ssPlayerId.fill(0);
+	ssPlayerId.width(2);
+	ssPlayerId << _gameScene->_localPlayerID;
+	std::string sId = ssPlayerId.str();
+	if (sId[0] == '\0')
+	{
+		sId[0] = '0';
+	}
+
+	return sIndex + sId;
+}
+
+void Manager::readRemoveBuildingCommand()
+{
+	std::string index(_command.begin() + 1, _command.begin() + 3);
+	std::string playerId(_command.begin() + 3, _command.begin() + 5);
+
+	_index = stringToNum<int>(index);
+	_playerId = stringToNum<int>(playerId);
+}
+
+std::string Manager::getRemoveUnitMessage(Unit* u)
+{
+	//格式：索引 + 玩家id
+	auto index = _gameScene->getSoldiers()->getIndex(u);
+
+	std::stringstream ssIndex;
+	std::stringstream ssPlayerId;
+
+	ssIndex.fill(0);            //位宽为2，左侧补零
+	ssIndex.width(2);
+	ssIndex << index;
+	std::string sIndex = ssIndex.str();
+	if (sIndex[0] == '\0')
+	{
+		sIndex[0] = '0';
+	}
+
+
+	ssPlayerId.fill(0);
+	ssPlayerId.width(2);
+	ssPlayerId << _gameScene->_localPlayerID;
+	std::string sId = ssPlayerId.str();
+	if (sId[0] == '\0')
+	{
+		sId[0] = '0';
+	}
+
+	return sIndex + sId;
+}
+
+void Manager::readRemoveUnitCommand()
+{
+	std::string index(_command.begin() + 1, _command.begin() + 3);
+	std::string playerId(_command.begin() + 3, _command.begin() + 5);
+
+	_index = stringToNum<int>(index);
+	_playerId = stringToNum<int>(playerId);
 }

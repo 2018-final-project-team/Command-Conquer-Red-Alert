@@ -7,6 +7,9 @@
 #include "../Data/UnitData.h"
 #include <time.h>
 #include <algorithm>
+#include <sstream>
+#include <string>
+
 
 USING_NS_CC;
 
@@ -135,38 +138,6 @@ void MoveController::setDestination(cocos2d::Vec2 position)
         {
         case TANK_TAG:
             continue;
-        case BASE_CAR_TAG:
-        {
-            soldier->setDestination(position);
-            soldier->setGetDestination(false);
-            Vec2 direction = (soldier->getDestination() - soldier->getPosition());
-            //change state of unit
-            if (fabs(direction.x) < fabs(direction.y))
-            {
-                if (direction.y > 0)           //up
-                {
-                    soldier->switchState(stateWalkUp);
-                }
-                else                          //down
-                {
-                    soldier->switchState(stateWalkDown);
-                }
-            }
-            else
-            {
-                //left
-                if (direction.x < 0)
-                {
-                    soldier->switchState(stateWalkLeft);
-                }
-                //right
-                else
-                {
-                    soldier->switchState(stateWalkRight);
-                }
-            }
-            return;
-        }
         default:
             while (!canPut(position + Vec2(col * soldierSize, -row * soldierSize)))
             {
@@ -204,8 +175,11 @@ void MoveController::moveSoldiers()
     clock_t nowT = clock();
     float interval = nowT - preT;
     preT = nowT;
-    for (auto& soldier : *(_gameScene->getSoldiers()))
+    //my soldiers
+    Unit* soldier;
+    for (int i = 0; i < _gameScene->getSoldiers()->size(); ++i)
     {
+        soldier = _gameScene->getSoldiers()->at(i);
         if (!soldier->getGetDestination())
         {
             Vec2 nowPosition = soldier->getPosition();
@@ -218,7 +192,7 @@ void MoveController::moveSoldiers()
          
             Vec2 move = soldier->getUnitSpeed() * interval * direction;
             // if the distance of this move is longer than destination
-            if (move.length() > distance)
+            if (move.length() >= distance)
             {
                 soldier->moveTo(destination);
                 soldier->setGetDestination(true);
@@ -231,6 +205,7 @@ void MoveController::moveSoldiers()
         {
             //log("route size %d", soldier->_route.size());
             soldier->setDestination(soldier->_route.front());
+            _gameScene->_client->sendMessage(MOVE_UNIT, getMoveMessage(soldier, soldier->_route.front()));
             (soldier->_route).erase((soldier->_route).begin());
             soldier->setGetDestination(false);
             Vec2 direction= (soldier->getDestination() - soldier->getPosition());
@@ -260,6 +235,31 @@ void MoveController::moveSoldiers()
                     soldier->switchState(stateWalkRight);
                 }
             }
+        }
+    }
+    //enemy
+    for (auto& enemy : *(_gameScene->getEnemySoldiers()))
+    {
+        if (!enemy->getGetDestination())
+        {
+            Vec2 nowPosition = enemy->getPosition();
+            Vec2 destination = enemy->getDestination();
+            Vec2 direction = destination - nowPosition;
+            direction.normalize();
+            float distance = destination.distance(nowPosition);
+            //log("now position %f %f", nowPosition.x, nowPosition.y);
+            //log("destination %f %f", destination.x, destination.y);
+
+            Vec2 move = enemy->getUnitSpeed() * interval * direction;
+            // if the distance of this move is longer than destination
+            if (move.length() >= distance)
+            {
+                enemy->moveTo(destination);
+                enemy->setGetDestination(true);
+                enemy->switchState(stateNone);
+                continue;
+            }
+            enemy->moveTo(move + nowPosition);
         }
     }
 }
@@ -333,8 +333,8 @@ void MoveController::findRroute(Unit *soldier, std::vector<Point> &route)
     int distance = 100;
     //don't    
     //know
-    float directX[8] = { 0.7*distance ,0.7* distance ,-0.7* distance ,-0.7* distance ,0,0,-1 * distance ,distance };
-    float directY[8] = { 0.7* distance ,-0.7* distance ,0.7* distance ,-0.7* distance,distance,-1 * distance,0 ,0 };
+    float directX[8] = { static_cast<float>(0.7*distance) ,static_cast<float>(0.7* distance) ,static_cast<float>(-0.7* distance) ,static_cast<float>(-0.7* distance) ,0,0,static_cast<float>(-1 * distance) ,static_cast<float>(distance) };
+    float directY[8] = { static_cast<float>(0.7* distance) ,static_cast<float>(-0.7* distance) ,static_cast<float>(0.7* distance) ,static_cast<float>(-0.7* distance),static_cast<float>(distance),static_cast<float>(-1 * distance),0 ,0 };
     int is_not_find = 1;
     //whats
     if (is_find(nowPosition, nowDestination))
@@ -448,4 +448,48 @@ bool MoveController::canPut(cocos2d::Point position)
     }
     // yes you can put soldier here   
     return true;
+}
+
+std::string MoveController::getMoveMessage(Unit* u, cocos2d::Vec2 des)
+{
+	//格式：索引 + 玩家id + (X,Y)
+	auto index = _gameScene->getSoldiers()->getIndex(u);
+
+	std::stringstream ssIndex;
+	std::stringstream ssPlayerId;
+	std::stringstream ssX;
+	std::stringstream ssY;
+
+	std::string s1 = "(";
+	std::string s2 = ",";
+	std::string s3 = ")";
+
+	ssIndex.fill(0);            //位宽为2，左侧补零
+	ssIndex.width(2);
+	ssIndex << index;
+	std::string sIndex = ssIndex.str();
+	if (sIndex[0] == '\0')
+	{
+		sIndex[0] = '0';
+	}
+
+
+	ssPlayerId.fill(0);            
+	ssPlayerId.width(2);
+	ssPlayerId << _gameScene->_localPlayerID;
+	std::string sId = ssPlayerId.str();
+	if (sId[0] == '\0')
+	{
+		sId[0] = '0';
+	}
+
+	auto mapPosition = _gameScene->_tileMap->convertToNodeSpace(des);
+	
+	ssX << mapPosition.x;
+	std::string sX = ssX.str();
+
+	ssY << mapPosition.y;
+	std::string sY = ssY.str();
+
+	return sIndex + sId + s1 + sX + s2 + sY + s3;
 }
