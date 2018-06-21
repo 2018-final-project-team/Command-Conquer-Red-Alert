@@ -157,7 +157,7 @@ bool RoomScene::initForClient()
 	auto mengjun_button = Button::create("mengjun.png");
 
 	sulian_button->setScale(0.8);
-	mengjun_button->setScale(0.5);
+	mengjun_button->setScale(0.8);
 
 	//Add role select button and back button
 	blackLayer->addChild(sulian_button);
@@ -468,7 +468,7 @@ bool RoomScene::initForServer()
 			blackLayer->addChild(back_button);
 
 			sulian_button->setScale(0.8);
-			mengjun_button->setScale(0.5);
+			mengjun_button->setScale(0.8);
 
 			sulian_button->setPosition(Vec2(origin.x + visibleSize.width / 2 - selector->getContentSize().width / 4, origin.y + blackLayer->getContentSize().height / 2.3f));
 
@@ -511,7 +511,9 @@ bool RoomScene::initForServer()
 					start_game_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
                         if(type==Widget::TouchEventType::ENDED)
                         {
-                            if (player_list.size() == 1) {
+                            GameAudio::getInstance()->playEffect("Sound/button.mp3");
+                            if (player_list.size() == 1)
+                            {
                                 start_game_button->setTitleText("Nobody together?");
                                 start_game_button->setTitleFontSize(20);
                             }
@@ -526,7 +528,8 @@ bool RoomScene::initForServer()
 
 			//Choose black role
 			mengjun_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
-				if (type == Widget::TouchEventType::ENDED) {
+				if (type == Widget::TouchEventType::ENDED)
+                {
 					// the transition effect
 					GameAudio::getInstance()->playEffect("Sound/bell.mp3");
 
@@ -540,12 +543,12 @@ bool RoomScene::initForServer()
 					_game_data = playerData;
 
 					start_game_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
-
-                        GameAudio::getInstance()->playEffect("Sound/button.mp3");
                         if(type==Widget::TouchEventType::ENDED)
                         {
-                            if (player_list.size() == 1) 
-							{
+                            GameAudio::getInstance()->playEffect("Sound/button.mp3");
+
+                            if (player_list.size() == 1)
+                            {
                                 start_game_button->setTitleText("Nobody together?");
                                 start_game_button->setTitleFontSize(20);
                             }
@@ -613,9 +616,20 @@ void RoomScene::update(float delta)
 
 
 		auto player_icon = Sprite::create(StringUtils::format("%s.png", _owner_player_data->player_role.c_str()));
+        if(strcmp(_owner_player_data->player_role.c_str(),"sulian")==0)
+        {
+            player_icon->setScale(0.5);
+            CCLOG("SERVER scale");
+        }
+        else
+        {
+            player_icon->setScale(0.5);
+            CCLOG("SERVER scale");
+
+        }
 		board->addChild(player_icon);
 		player_icon->setPosition(Vec2(board->getContentSize().width - serial_num->getContentSize().width * 1, board->getContentSize().height / 2));
-        player_icon->setScale(0.5);
+        
         
 		board->setTitleText(show_string);
 
@@ -658,7 +672,6 @@ void RoomScene::update(float delta)
 		if (temp[0] == ANSWER_FOR_PLAYERS_IN_ROOM[0] && roomMode == CLIENT_MODE)
 		{
 			std::string players_in_room;
-			int i = player_list.size();
 			if (player_list.size() == 0)
 			{
 				player_count++;
@@ -692,8 +705,21 @@ void RoomScene::update(float delta)
 
 
 				auto player_icon = Sprite::create(StringUtils::format("%s.png", player.player_role.c_str()));
+                if(strcmp(_owner_player_data->player_role.c_str(),"sulian")==0)
+                {
+                    player_icon->setScale(0.5);
+                    CCLOG("Answer Scale");
+
+                }
+                else
+                {
+                    player_icon->setScale(0.5);
+                    CCLOG("Answer Scale");
+
+                }
 				board->addChild(player_icon);
 				player_icon->setPosition(Vec2(board->getContentSize().width - serial_num->getContentSize().width * 1, board->getContentSize().height / 2));
+                
 
 				board->setTitleText(show_string);
 				board->setTitleFontSize(30);
@@ -745,6 +771,14 @@ void RoomScene::update(float delta)
 					chat_bar->setVisible(false);
 					chatMessage[temp[1] - '0'] = chat_bar;
 					auto player_icon = Sprite::create(StringUtils::format("%s.png", player.player_role.c_str()));
+                    if(strcmp(_owner_player_data->player_role.c_str(),"sulian")==0)
+                    {
+                        player_icon->setScale(0.5);
+                    }
+                    else
+                    {
+                        player_icon->setScale(0.5);
+                    }
 					board->addChild(player_icon);
 					player_icon->setPosition(Vec2(board->getContentSize().width - serial_num->getContentSize().width * 1, board->getContentSize().height / 2));
 
@@ -822,6 +856,16 @@ void RoomScene::update(float delta)
 			chat_bar->setVisible(false);
 			chatMessage[player_count] = chat_bar;
 			auto player_icon = Sprite::create(StringUtils::format("%s.png", player.player_role.c_str()));
+            if(strcmp(_owner_player_data->player_role.c_str(),"sulian")==0)
+            {
+                player_icon->setScale(0.5);
+                CCLOG("JoinRoom Scale");
+            }
+            else
+            {
+                player_icon->setScale(0.5);
+                CCLOG("JoinRoom Scale");
+            }
 			board->addChild(player_icon);
 			player_icon->setPosition(Vec2(board->getContentSize().width - serial_num->getContentSize().width * 1, board->getContentSize().height / 2));
 
@@ -842,7 +886,7 @@ void RoomScene::textFieldEvent(Ref *pSender, cocos2d::ui::TextField::EventType t
 	case cocos2d::ui::TextField::EventType::ATTACH_WITH_IME:
 	{
 		cocos2d::ui::TextField* textField = dynamic_cast<cocos2d::ui::TextField*>(pSender);
-		Size screenSize = CCDirector::getInstance()->getWinSize();
+		Size screenSize = Director::getInstance()->getWinSize();
 
 		//_pleaseStartButton->setVisible(true);
 	}

@@ -145,13 +145,13 @@ void SearchScene::update(float delta)
 					room_owner.push_back(owner_name);
 
 					auto board = Button::create("PlayerBar.png", "PlayerBar.png");
-					/*auto in_button = Button::create("button_normal", "button_selected");
-                    in_button->setTitleText("Connect");*/
-					auto in_button = Button::create("RoomList_connect.png");
+					auto in_button = Button::create("button_normal.png", "button_selected.png");
+                    in_button->setTitleText("Connect");
 					board->addChild(in_button);
 
 					in_button->setPosition(Vec2(board->getContentSize().width / 6 * 5, board->getContentSize().height / 2));
-					in_button->setScale(0.8f, 0.7f);
+                    in_button->setTitleFontSize(25);
+					in_button->setScale(0.7);
 
 					button_list.pushBack(in_button);
 					std::string button_owner_name = owner_name;
