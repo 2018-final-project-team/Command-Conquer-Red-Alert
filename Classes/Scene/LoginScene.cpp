@@ -45,7 +45,7 @@ void LoginScene::createBackground()
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    Sprite * bg = Sprite::create("Scene/bg03.png");
+    Sprite * bg = Sprite::create("background.png");
     //set transparent
     bg->setOpacity(255);
     bg->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
@@ -66,7 +66,7 @@ void LoginScene::createLoginButton()
 
     loginButton->addTouchEventListener([=](Ref* sender, ui::Widget::TouchEventType type)
     {
-        if (type != ui::Widget::TouchEventType::ENDED)
+        if (type == ui::Widget::TouchEventType::ENDED)
         {
             GameAudio::getInstance()->playEffect("Sound/button.mp3");
             return;
