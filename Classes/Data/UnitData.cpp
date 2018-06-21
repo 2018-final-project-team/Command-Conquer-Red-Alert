@@ -234,8 +234,14 @@ void Unit::decreaseHP(int num)
     _HP -= num;
 
     auto progressTo = ProgressTo::create(0.5f, 100 * _HP / _FullHP);
-    _bloodBarPt->runAction(progressTo);
-	_bloodBarAsEnemyPt->runAction(progressTo);
+	if (_bloodBarPt->isVisible())
+	{
+		_bloodBarPt->runAction(progressTo);
+	}
+	else
+	{
+		_bloodBarAsEnemyPt->runAction(progressTo);
+	}
 }
 
 void Unit::attack(Unit * enemy)

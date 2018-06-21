@@ -14,6 +14,7 @@ static std::string splayerName;
 static Client* clients;
 //a static pointer which is gong to be used to make LevelData oject reference count nonzero
 static LevelData* ptr = NULL;
+static Panel* ptr_panel = NULL;
 
 USING_NS_CC;
 using namespace ui;
@@ -133,6 +134,7 @@ bool GameScene::init()
 	//log("%f %f %f %f",_panelSize.width,_panelSize.height,panel->getAnchorPoint().x,panel->getAnchorPoint().y);
 	panel->setPosition(visibleSize.width - 112, visibleSize.height - 400);
 	this->addChild(panel, 3);
+	ptr_panel = panel;
 	//log("the tag of panel is:%d", panel->getTag());
 
 //===============================监听地图精灵=====================================
@@ -263,43 +265,49 @@ bool GameScene::init()
                     return;
 				case BASE_CAR_TAG:       //if there is any definition in the case
                 {                        // you must use {} to contain it
-					if (!static_cast<Unit*>(target)->getIsSelected())    //第一次单击选中基地车，第二次单击展开
+					if (_soldiers.contains(static_cast<Unit*>(target)))
 					{
-						for (Unit* unit : _selectedSoldiers)
+						if (!static_cast<Unit*>(target)->getIsSelected())    //第一次单击选中基地车，第二次单击展开
 						{
-							unit->setIsSelected(false);
+							for (Unit* unit : _selectedSoldiers)
+							{
+								unit->setIsSelected(false);
+							}
+							_selectedSoldiers.clear();
+							_selectedSoldiers.pushBack((static_cast<Unit*>(target)));
+							(static_cast<Unit*>(target))->setIsSelected(true);
+							break;
 						}
-						_selectedSoldiers.clear();
-						_selectedSoldiers.pushBack((static_cast<Unit*>(target)));
-						(static_cast<Unit*>(target))->setIsSelected(true);
-						break;
-					}
-					else
-					{
-						//基地车展开成基地
-						//移除基地车
-						for (Unit* unit : _selectedSoldiers)
+						else
 						{
-							unit->setIsSelected(false);
+							//基地车展开成基地
+							//移除基地车
+							for (Unit* unit : _selectedSoldiers)
+							{
+								unit->setIsSelected(false);
+							}
+							_selectedSoldiers.clear();
+							Vec2 position = target->getPosition();
+							_client->sendMessage(REMOVE_UNIT, _manager->getRemoveUnitMessage(static_cast<Unit*>(target)));
+							_soldiers.eraseObject(static_cast<Unit*>(target), false);
+							this->removeChild(target);
+							//创建基地
+							Building* base = Building::create(BASE_TAG);
+							_gameEventDispatcher->addEventListenerWithSceneGraphPriority
+							(_gameListener->clone(), base);
+							base->setPosition(position);
+							this->addChild(base, 2);
+							_isBaseExist = true;
+							_buildings.pushBack(base);
+							_client->sendMessage(CREATE_BUILDING, _manager->getCreateBuildingMessage(position, BASE_TAG));
+							//刷新Panel
+							panel->setCurButton(panel->getCurCategoryTag());
+							break;
 						}
-						_selectedSoldiers.clear();
-						Vec2 position = target->getPosition();
-						_client->sendMessage(REMOVE_UNIT, _manager->getRemoveUnitMessage(static_cast<Unit*>(target)));
-						_soldiers.eraseObject(static_cast<Unit*>(target), false);
-						this->removeChild(target);
-						//创建基地
-						Building* base = Building::create(BASE_TAG);
-						_gameEventDispatcher->addEventListenerWithSceneGraphPriority
-						(_gameListener->clone(), base);
-						base->setPosition(position);
-						this->addChild(base, 2);
-						_isBaseExist = true;
-						_buildings.pushBack(base);
-						_client->sendMessage(CREATE_BUILDING, _manager->getCreateBuildingMessage(position, BASE_TAG));
-						//刷新Panel
-						panel->setCurButton(panel->getCurCategoryTag());
-						break;
 					}
+					_manager->setEnemy(static_cast<Unit*>(target));
+					break;
+					
                 }
 
                 default:
@@ -909,6 +917,9 @@ void GameScene::sellBuildingCallBack()
         _sellBuilding = nullptr;
         _isSellMenuExit = false;
 
+		//刷新Panel
+		ptr_panel->setCurButton(ptr_panel->getCurCategoryTag());
+
         return;
     }
         
@@ -967,6 +978,9 @@ void GameScene::sellBuildingCallBack()
     removeChild(_sellBuildingMenu);
     _sellBuilding = nullptr;
     _isSellMenuExit = false;
+
+	//刷新Panel
+	ptr_panel->setCurButton(ptr_panel->getCurCategoryTag());
 
 }
 
