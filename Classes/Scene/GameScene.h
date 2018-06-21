@@ -334,8 +334,9 @@ public:
 	/*
 	brief 战争迷雾
 	*/
-	int fog[400][400];
+	int fog[40][40];
 	void GameScene::makeFog();
+	bool hasFog;
 };
 
 #endif // __Welcome_SCENE_H__

@@ -53,6 +53,7 @@ bool GameScene::init()
 	{
 		return false;
 	}
+	hasFog = true;
 	memset(fog, 0, sizeof(fog));
 	//大黑快快
 	this->addChild(drawNode,3);
@@ -805,55 +806,68 @@ void GameScene::scrollMap()
 //==========================战争迷雾======================================
 void GameScene::makeFog() {
 	Vec2 visibleSize = Director::getInstance()->getVisibleSize();
-	int temp = 50;
+	int temp = 20;
 	drawNode->clear();
 	drawNode3->clear();
-	for (int i = 0; i < temp; i++) {
-		for (int j = 0; j < temp; j++) {
-			if (fog[i][j] == 0) {
-				Vec2 black = Point(i * 76.8, j * 76.8);
-				Vec2 screenBlack = this->_tileMap->convertToWorldSpace(black);
-				Vec2 point1[4];
-				point1[0] = Vec2(screenBlack.x, screenBlack.y);
-				point1[1] = Vec2(screenBlack.x, screenBlack.y+76.8);
-				point1[2] = Vec2(screenBlack.x+76.8, screenBlack.y+76.8);
-				point1[3] = Vec2(screenBlack.x+76.8, screenBlack.y);
-				drawNode->drawPolygon(point1, 4, Color4F(0, 0, 0, 1), 1, Color4F(0, 0, 0, 1));
+	if (hasFog) {
+		for (int i = 0; i < temp; i++) {
 
-				//小地图上的黑块
-				Vec2 black2 = Point(i * 6, j * 6);
-				Vec2 point2[4];
-				point2[0] = Vec2(black2.x, black2.y)+Vec2(visibleSize.x-small_mapX, visibleSize.y - small_mapY);
-				point2[1] = Vec2(black2.x, black2.y + 6) + Vec2(visibleSize.x - small_mapX, visibleSize.y - small_mapY);
-				point2[2] = Vec2(black2.x + 6, black2.y + 6) + Vec2(visibleSize.x - small_mapX, visibleSize.y - small_mapY);
-				point2[3] = Vec2(black2.x + 6, black2.y) + Vec2(visibleSize.x - small_mapX, visibleSize.y - small_mapY);
-				drawNode3->drawPolygon(point2, 4, Color4F(0, 0, 0, 1), 1, Color4F(0, 0, 0, 1));
+			for (int j = 0; j < temp; j++) {
+				if (fog[i][j] == 0) {
+					Vec2 black = Point(i * 192, j * 192);
+					Vec2 screenBlack = this->_tileMap->convertToWorldSpace(black);
+					Vec2 point1[4];
+					point1[0] = Vec2(screenBlack.x, screenBlack.y);
+					point1[1] = Vec2(screenBlack.x, screenBlack.y + 192);
+					point1[2] = Vec2(screenBlack.x + 192, screenBlack.y + 192);
+					point1[3] = Vec2(screenBlack.x + 192, screenBlack.y);
+					drawNode->drawPolygon(point1, 4, Color4F(0, 0, 0, 1), 1, Color4F(0, 0, 0, 1));
 
+					//小地图上的黑块
+					Vec2 black2 = Point(i * 15, j * 15);
+					Vec2 point2[4];
+					point2[0] = Vec2(black2.x, black2.y) + Vec2(visibleSize.x - small_mapX, visibleSize.y - small_mapY);
+					point2[1] = Vec2(black2.x, black2.y + 15) + Vec2(visibleSize.x - small_mapX, visibleSize.y - small_mapY);
+					point2[2] = Vec2(black2.x + 15, black2.y + 15) + Vec2(visibleSize.x - small_mapX, visibleSize.y - small_mapY);
+					point2[3] = Vec2(black2.x + 15, black2.y) + Vec2(visibleSize.x - small_mapX, visibleSize.y - small_mapY);
+					drawNode3->drawPolygon(point2, 4, Color4F(0, 0, 0, 1), 1, Color4F(0, 0, 0, 1));
+
+				}
 			}
 		}
-	}
-	for (auto& soldier : _soldiers) {
-		Vec2 pos = soldier->getPosition();
-		Vec2 truePos = this->_tileMap->convertToNodeSpace(pos);
-		int x = truePos.x / 76.8;
-		int y = truePos.y / 76.8;
-		fog[x - 1][y - 1] = 1; fog[x - 1][y] = 1;fog[x - 1][y + 1] = 1;
-		fog[x ][y - 1] = 1; fog[x ][y] = 1; fog[x ][y + 1] = 1;
-		fog[x + 1][y - 1] = 1; fog[x + 1][y] = 1; fog[x + 1][y + 1] = 1;
-	}
-	for (auto& soldier : _buildings) {
-		Vec2 pos = soldier->getPosition();
-		Vec2 truePos = this->_tileMap->convertToNodeSpace(pos);
-		int x = truePos.x / 76.8;
-		int y = truePos.y / 76.8;
-		fog[x - 2][y - 2] = 1; fog[x - 2][y-1] = 1; fog[x - 2][y ] = 1; fog[x - 2][y+1] = 1; fog[x - 2][y+2] = 1;
-		fog[x - 1][y - 2] = 1; fog[x - 1][y - 1] = 1; fog[x - 1][y] = 1; fog[x - 1][y + 1] = 1; fog[x - 1][y + 2] = 1;
-		fog[x - 0][y - 2] = 1; fog[x - 0][y - 1] = 1; fog[x - 0][y] = 1; fog[x - 0][y + 1] = 1; fog[x - 0][y + 2] = 1;
-		fog[x +1][y - 2] = 1; fog[x +1][y - 1] = 1; fog[x +1][y] = 1; fog[x +1][y + 1] = 1; fog[x +1][y + 2] = 1;
-		fog[x +2 ][y - 2] = 1; fog[x + 2][y - 1] = 1; fog[x + 2][y] = 1; fog[x + 2][y + 1] = 1; fog[x + 2][y + 2] = 1;
-	}
 
+		for (auto& soldier : _soldiers) {
+			Vec2 pos = soldier->getPosition();
+			Vec2 truePos = this->_tileMap->convertToNodeSpace(pos);
+			int x = truePos.x / 192;
+			int y = truePos.y / 192;
+			if (fog[x][y] == 0) {
+				
+				 fog[x - 1][y - 1] = 1; fog[x - 1][y] = 1; fog[x - 1][y + 1] = 1;
+				 fog[x - 0][y - 1] = 1; fog[x - 0][y] = 1; fog[x - 0][y + 1] = 1;
+				fog[x + 1][y - 1] = 1; fog[x + 1][y] = 1; fog[x + 1][y + 1] = 1; 
+				
+			}
+
+
+		}
+		for (auto& soldier : _buildings) {
+			Vec2 pos = soldier->getPosition();
+			Vec2 truePos = this->_tileMap->convertToNodeSpace(pos);
+			int x = truePos.x / 192;
+			int y = truePos.y / 192;
+			if (fog[x][y] == 0) {
+				fog[x - 2][y - 2] = 1; fog[x - 2][y - 1] = 1; fog[x - 2][y] = 1; fog[x - 2][y + 1] = 1; fog[x - 2][y + 2] = 1;
+				fog[x - 1][y - 2] = 1; fog[x - 1][y - 1] = 1; fog[x - 1][y] = 1; fog[x - 1][y + 1] = 1; fog[x - 1][y + 2] = 1;
+				fog[x - 0][y - 2] = 1; fog[x - 0][y - 1] = 1; fog[x - 0][y] = 1; fog[x - 0][y + 1] = 1; fog[x - 0][y + 2] = 1;
+				fog[x + 1][y - 2] = 1; fog[x + 1][y - 1] = 1; fog[x + 1][y] = 1; fog[x + 1][y + 1] = 1; fog[x + 1][y + 2] = 1;
+				fog[x + 2][y - 2] = 1; fog[x + 2][y - 1] = 1; fog[x + 2][y] = 1; fog[x + 2][y + 1] = 1; fog[x + 2][y + 2] = 1;
+			}
+
+		}
+	}
 }
+
 
 
 
