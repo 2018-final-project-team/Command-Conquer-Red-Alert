@@ -738,7 +738,12 @@ void GameScene::update(float time)
 
 	scrollMap();
 	showOnSmallMap();
-	makeFog();
+	drawNode->clear();
+	drawNode3->clear();
+	if (hasFog) {
+		makeFog();
+	}
+	
 }
 
 /*update by czd */
@@ -806,30 +811,28 @@ void GameScene::scrollMap()
 //==========================战争迷雾======================================
 void GameScene::makeFog() {
 	Vec2 visibleSize = Director::getInstance()->getVisibleSize();
-	int temp = 20;
-	drawNode->clear();
-	drawNode3->clear();
-	if (hasFog) {
+	int temp = 10;
+	
 		for (int i = 0; i < temp; i++) {
 
 			for (int j = 0; j < temp; j++) {
 				if (fog[i][j] == 0) {
-					Vec2 black = Point(i * 192, j * 192);
+					Vec2 black = Point(i * 384, j * 384);
 					Vec2 screenBlack = this->_tileMap->convertToWorldSpace(black);
 					Vec2 point1[4];
 					point1[0] = Vec2(screenBlack.x, screenBlack.y);
-					point1[1] = Vec2(screenBlack.x, screenBlack.y + 192);
-					point1[2] = Vec2(screenBlack.x + 192, screenBlack.y + 192);
-					point1[3] = Vec2(screenBlack.x + 192, screenBlack.y);
+					point1[1] = Vec2(screenBlack.x, screenBlack.y + 384);
+					point1[2] = Vec2(screenBlack.x + 384, screenBlack.y + 384);
+					point1[3] = Vec2(screenBlack.x + 384, screenBlack.y);
 					drawNode->drawPolygon(point1, 4, Color4F(0, 0, 0, 1), 1, Color4F(0, 0, 0, 1));
 
 					//小地图上的黑块
-					Vec2 black2 = Point(i * 15, j * 15);
+					Vec2 black2 = Point(i * 30, j * 30);
 					Vec2 point2[4];
 					point2[0] = Vec2(black2.x, black2.y) + Vec2(visibleSize.x - small_mapX, visibleSize.y - small_mapY);
-					point2[1] = Vec2(black2.x, black2.y + 15) + Vec2(visibleSize.x - small_mapX, visibleSize.y - small_mapY);
-					point2[2] = Vec2(black2.x + 15, black2.y + 15) + Vec2(visibleSize.x - small_mapX, visibleSize.y - small_mapY);
-					point2[3] = Vec2(black2.x + 15, black2.y) + Vec2(visibleSize.x - small_mapX, visibleSize.y - small_mapY);
+					point2[1] = Vec2(black2.x, black2.y + 30) + Vec2(visibleSize.x - small_mapX, visibleSize.y - small_mapY);
+					point2[2] = Vec2(black2.x + 30, black2.y + 30) + Vec2(visibleSize.x - small_mapX, visibleSize.y - small_mapY);
+					point2[3] = Vec2(black2.x + 30, black2.y) + Vec2(visibleSize.x - small_mapX, visibleSize.y - small_mapY);
 					drawNode3->drawPolygon(point2, 4, Color4F(0, 0, 0, 1), 1, Color4F(0, 0, 0, 1));
 
 				}
@@ -839,8 +842,8 @@ void GameScene::makeFog() {
 		for (auto& soldier : _soldiers) {
 			Vec2 pos = soldier->getPosition();
 			Vec2 truePos = this->_tileMap->convertToNodeSpace(pos);
-			int x = truePos.x / 192;
-			int y = truePos.y / 192;
+			int x = truePos.x / 384;
+			int y = truePos.y / 384;
 			if (fog[x][y] == 0) {
 				
 				 fog[x - 1][y - 1] = 1; fog[x - 1][y] = 1; fog[x - 1][y + 1] = 1;
@@ -854,18 +857,18 @@ void GameScene::makeFog() {
 		for (auto& soldier : _buildings) {
 			Vec2 pos = soldier->getPosition();
 			Vec2 truePos = this->_tileMap->convertToNodeSpace(pos);
-			int x = truePos.x / 192;
-			int y = truePos.y / 192;
+			int x = truePos.x / 384;
+			int y = truePos.y / 384;
 			if (fog[x][y] == 0) {
-				fog[x - 2][y - 2] = 1; fog[x - 2][y - 1] = 1; fog[x - 2][y] = 1; fog[x - 2][y + 1] = 1; fog[x - 2][y + 2] = 1;
-				fog[x - 1][y - 2] = 1; fog[x - 1][y - 1] = 1; fog[x - 1][y] = 1; fog[x - 1][y + 1] = 1; fog[x - 1][y + 2] = 1;
-				fog[x - 0][y - 2] = 1; fog[x - 0][y - 1] = 1; fog[x - 0][y] = 1; fog[x - 0][y + 1] = 1; fog[x - 0][y + 2] = 1;
-				fog[x + 1][y - 2] = 1; fog[x + 1][y - 1] = 1; fog[x + 1][y] = 1; fog[x + 1][y + 1] = 1; fog[x + 1][y + 2] = 1;
-				fog[x + 2][y - 2] = 1; fog[x + 2][y - 1] = 1; fog[x + 2][y] = 1; fog[x + 2][y + 1] = 1; fog[x + 2][y + 2] = 1;
+				fog[x - 1][y - 1] = 1; fog[x - 1][y] = 1; fog[x - 1][y + 1] = 1;
+				fog[x - 0][y - 1] = 1; fog[x - 0][y] = 1; fog[x - 0][y + 1] = 1;
+				fog[x + 1][y - 1] = 1; fog[x + 1][y] = 1; fog[x + 1][y + 1] = 1;
 			}
 
 		}
-	}
+
+		
+	
 }
 
 
@@ -910,46 +913,43 @@ void GameScene::showOnSmallMap() {
 		drawNode2->drawPolygon(point1, 4, Color4F(0, 1, 0, 1), 1, Color4F(0, 1, 0, 1));
 	}
 
-	//for (auto& soldier : _enemySoldiers) {
-	//	Vec2 pos = soldier->getPosition();
-	//	Vec2 truePos = this->_tileMap->convertToNodeSpace(pos);
-	//	int i = truePos.x / 76.8;
-	//	int j = truePos.y / 76.8;
-	//	if (fog[i][j] == 1) {
-	//		float X = truePos.x / 3840 * small_mapX;
-	//		float Y = truePos.y / 3840 * small_mapY;
-	//		X = visibleSize.width - small_mapX + X;
-	//		Y = visibleSize.height - small_mapY + Y;
-	//		//drawNode2->clear();
-	//		Vec2 point1[4];
-	//		point1[0] = Vec2(X - 1, Y - 1);
-	//		point1[1] = Vec2(X + 1, Y - 1);
-	//		point1[2] = Vec2(X + 1, Y + 1);
-	//		point1[3] = Vec2(X - 1, Y + 1);
-	//		drawNode2->drawPolygon(point1, 4, Color4F(1, 0, 0, 1), 1, Color4F(1, 0, 0, 1));
-	//	}
+	for (auto& soldier : _enemySoldiers) {
+		Vec2 pos = soldier->getPosition();
+		Vec2 truePos = this->_tileMap->convertToNodeSpace(pos);
 
-	//}
+		/*if (fog[i][j] == 1) {*/
+			float X = truePos.x / 3840 * small_mapX;
+			float Y = truePos.y / 3840 * small_mapY;
+			X = visibleSize.width - small_mapX + X;
+			Y = visibleSize.height - small_mapY + Y;
+			//drawNode2->clear();
+			Vec2 point1[4];
+			point1[0] = Vec2(X - 1, Y - 1);
+			point1[1] = Vec2(X + 1, Y - 1);
+			point1[2] = Vec2(X + 1, Y + 1);
+			point1[3] = Vec2(X - 1, Y + 1);
+			drawNode2->drawPolygon(point1, 4, Color4F(1, 0, 0, 1), 1, Color4F(1, 0, 0, 1));
+		/*}*/
 
-	//for (auto& building : _enemyBuildings) {
-	//	Vec2 pos = building->getPosition();
-	//	Vec2 truePos = this->_tileMap->convertToNodeSpace(pos);
-	//	int i = truePos.x / 76.8;
-	//	int j = truePos.y / 76.8;
-	//	if (fog[i][j] == 1) {
-	//		float X = truePos.x / 3840 * small_mapX;
-	//		float Y = truePos.y / 3840 * small_mapY;
-	//		X = visibleSize.width - small_mapX + X;
-	//		Y = visibleSize.height - small_mapY + Y;
-	//		//drawNode2->clear();
-	//		Vec2 point1[4];
-	//		point1[0] = Vec2(X - 2, Y - 2);
-	//		point1[1] = Vec2(X + 2, Y - 2);
-	//		point1[2] = Vec2(X + 2, Y + 2);
-	//		point1[3] = Vec2(X - 2, Y + 2);
-	//		drawNode2->drawPolygon(point1, 4, Color4F(1, 0, 0, 1), 1, Color4F(1, 0, 0, 1));
-	//	}
-	//}
+	}
+
+	for (auto& building : _enemyBuildings) {
+		Vec2 pos = building->getPosition();
+		Vec2 truePos = this->_tileMap->convertToNodeSpace(pos);
+		/*if (fog[i][j] == 1) {*/
+			float X = truePos.x / 3840 * small_mapX;
+			float Y = truePos.y / 3840 * small_mapY;
+			X = visibleSize.width - small_mapX + X;
+			Y = visibleSize.height - small_mapY + Y;
+			//drawNode2->clear();
+			Vec2 point1[4];
+			point1[0] = Vec2(X - 2, Y - 2);
+			point1[1] = Vec2(X + 2, Y - 2);
+			point1[2] = Vec2(X + 2, Y + 2);
+			point1[3] = Vec2(X - 2, Y + 2);
+			drawNode2->drawPolygon(point1, 4, Color4F(1, 0, 0, 1), 1, Color4F(1, 0, 0, 1));
+		/*}*/
+	}
 
 
 }
