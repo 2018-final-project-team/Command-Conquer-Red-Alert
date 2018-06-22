@@ -29,7 +29,7 @@ static void problemLoading(const char* filename)
 Scene* GameScene::createScene(LevelData &data, Client* client, std::string playerName)
 {
 	auto scene = Scene::createWithPhysics();
-	
+
 	scene->getPhysicsWorld()->setGravity(Vec2(0, 0));
 
 	data.retain();
@@ -54,8 +54,16 @@ bool GameScene::init()
 	{
 		return false;
 	}
-
-
+	hasFog = true;
+	memset(fog, 0, sizeof(fog));
+	//大黑快快
+	this->addChild(drawNode,3);
+	//绿点点
+	this->addChild(drawNode2, 6);
+	//黑快快
+	this->addChild(drawNode3, 7);
+	//白边边
+	this->addChild(drawNode4, 8);
 	_thisScene = this;
 	_client = clients;
 	_inputData = ptr;
@@ -120,7 +128,23 @@ bool GameScene::init()
 		small_map = Sprite::create("GameItem/Map/small_map2.png");
 	}
     small_map->setPosition(Point(visibleSize.width - small_mapX / 2, visibleSize.height - small_mapX / 2));
-	this->addChild(small_map, 3);
+	Vec2 p1[4];
+	p1[0] = Vec2(visibleSize.width - small_mapX-1, visibleSize.height - small_mapY-1);
+	p1[1] = Vec2(visibleSize.width - small_mapX , visibleSize.height - small_mapY-1 );
+	p1[2] = Vec2(visibleSize.width - small_mapX, visibleSize.height);
+	p1[3] = Vec2(visibleSize.width - small_mapX-1, visibleSize.height);
+	drawNode4->drawPolygon(p1, 4, Color4F(1, 1, 1, 1), 1, Color4F(1, 1, 1, 1));
+
+	Vec2 p2[4];
+	p2[0] = Vec2(visibleSize.width - small_mapX - 1, visibleSize.height - small_mapY - 1);
+	p2[1] = Vec2(visibleSize.width, visibleSize.height - small_mapY - 1);
+	p2[2] = Vec2(visibleSize.width, visibleSize.height - small_mapY);
+	p2[3] = Vec2(visibleSize.width - small_mapX - 1, visibleSize.height - small_mapY);
+	drawNode4->drawPolygon(p2, 4, Color4F(1, 1, 1, 1), 1, Color4F(1, 1, 1, 1));
+
+
+
+	this->addChild(small_map, 5);
 
 
     //DrawNode
@@ -133,7 +157,7 @@ bool GameScene::init()
 	//auto _panelSize = panel->getContentSize();   //为什么是0，0？
 	//log("%f %f %f %f",_panelSize.width,_panelSize.height,panel->getAnchorPoint().x,panel->getAnchorPoint().y);
 	panel->setPosition(visibleSize.width - 112, visibleSize.height - 400);
-	this->addChild(panel, 3);
+	this->addChild(panel, 5);
 	ptr_panel = panel;
 	//log("the tag of panel is:%d", panel->getTag());
 
@@ -154,7 +178,6 @@ bool GameScene::init()
                 Y = MAPY - visibleSize.height;
             //direction to move sprites
             Vec2 direction = Point(-X, -Y) - _tileMap->getPosition();
-            log("%f %f", -X, -Y);
 
 			_tileMap->setPosition(Point(-X, -Y));
             moveSpritesWithMap(direction);
@@ -235,6 +258,7 @@ bool GameScene::init()
                 case CAR_FACTORY_TAG:
                 case BASE_TAG:
                 case BARRACKS_TAG:
+				case SATELLITE_TAG:
                     for (auto& building : _buildings)
                     {
                         if (building == target)
@@ -317,13 +341,6 @@ bool GameScene::init()
                     {
                         log("can put");
                         _manager->getMoveController()->setDestination(_touchEnd);
-
-
-						////测试移动动画
-						//for (auto& soldier : _selectedSoldiers)
-						//{
-						//	soldier->switchState(stateWalkLeft);
-						//}
                     }
                     break;
 
@@ -445,7 +462,7 @@ bool GameScene::init()
 	}
 	else
 	{
-		float x = origin.x + visibleSize.width - backItem->getContentSize().width / 2;
+		float x = origin.x + backItem->getContentSize().width / 2;
 		float y = origin.y + visibleSize.height - backItem->getContentSize().height / 2;
 		backItem->setPosition(Vec2(x, y));
 	}
@@ -568,6 +585,7 @@ void GameScene::dataInit()
 	_mineNum = 0;
 	_powerPlantNum = 0;
 	_carFactoryNum = 0;
+	_satelliteNum = 0;
 
     _tankNum = 0;
     _infantryNum = 0;
@@ -584,9 +602,9 @@ void GameScene::dataInit()
     }
     else
     {
-        baseCar->setPosition(Vec2(visibleSize.width / 2 - MAPX + visibleSize.width, 
+		baseCar->setPosition(Vec2(visibleSize.width / 2 - MAPX + visibleSize.width,
 			visibleSize.height / 2 - MAPY + visibleSize.height));
-        baseCar->setDestination(Vec2(visibleSize.width / 2 - MAPX + visibleSize.width, 
+		baseCar->setDestination(Vec2(visibleSize.width / 2 - MAPX + visibleSize.width,
 			visibleSize.height / 2 - MAPY + visibleSize.height));
     }
     baseCar->setGetDestination(true);
@@ -722,7 +740,22 @@ void GameScene::update(float time)
 	_manager->doCommands();
 
 	scrollMap();
+	showOnSmallMap();
+	drawNode->clear();
+	drawNode3->clear();
 
+	if (_satelliteNum && _isPowerEnough)    //如果拥有卫星建筑且电量充足，则消除迷雾
+	{
+		hasFog = false;
+	}
+	else
+	{
+		hasFog = true;
+	}
+	if (hasFog) {
+		makeFog();
+	}
+	
 }
 
 /*update by czd */
@@ -786,6 +819,151 @@ void GameScene::scrollMap()
             moveSpritesWithMap(Vec2(0, -MAPY + visibleSize.height - mapPosition.y));
 		}
 	}
+}
+//==========================战争迷雾======================================
+void GameScene::makeFog() {
+	Vec2 visibleSize = Director::getInstance()->getVisibleSize();
+	int temp = 10;
+	
+		for (int i = 0; i < temp; i++) {
+
+			for (int j = 0; j < temp; j++) {
+				if (fog[i][j] == 0) {
+					Vec2 black = Point(i * 384, j * 384);
+					Vec2 screenBlack = this->_tileMap->convertToWorldSpace(black);
+					Vec2 point1[4];
+					point1[0] = Vec2(screenBlack.x, screenBlack.y);
+					point1[1] = Vec2(screenBlack.x, screenBlack.y + 384);
+					point1[2] = Vec2(screenBlack.x + 384, screenBlack.y + 384);
+					point1[3] = Vec2(screenBlack.x + 384, screenBlack.y);
+					drawNode->drawPolygon(point1, 4, Color4F(0, 0, 0, 1), 1, Color4F(0, 0, 0, 1));
+
+					//小地图上的黑块
+					Vec2 black2 = Point(i * 30, j * 30);
+					Vec2 point2[4];
+					point2[0] = Vec2(black2.x, black2.y) + Vec2(visibleSize.x - small_mapX, visibleSize.y - small_mapY);
+					point2[1] = Vec2(black2.x, black2.y + 30) + Vec2(visibleSize.x - small_mapX, visibleSize.y - small_mapY);
+					point2[2] = Vec2(black2.x + 30, black2.y + 30) + Vec2(visibleSize.x - small_mapX, visibleSize.y - small_mapY);
+					point2[3] = Vec2(black2.x + 30, black2.y) + Vec2(visibleSize.x - small_mapX, visibleSize.y - small_mapY);
+					drawNode3->drawPolygon(point2, 4, Color4F(0, 0, 0, 1), 1, Color4F(0, 0, 0, 1));
+
+				}
+			}
+		}
+
+		for (auto& soldier : _soldiers) {
+			Vec2 pos = soldier->getPosition();
+			Vec2 truePos = this->_tileMap->convertToNodeSpace(pos);
+			int x = truePos.x / 384;
+			int y = truePos.y / 384;
+			if (fog[x][y] == 0) {
+				
+				 fog[x - 1][y - 1] = 1; fog[x - 1][y] = 1; fog[x - 1][y + 1] = 1;
+				 fog[x - 0][y - 1] = 1; fog[x - 0][y] = 1; fog[x - 0][y + 1] = 1;
+				fog[x + 1][y - 1] = 1; fog[x + 1][y] = 1; fog[x + 1][y + 1] = 1; 
+				
+			}
+
+
+		}
+		for (auto& soldier : _buildings) {
+			Vec2 pos = soldier->getPosition();
+			Vec2 truePos = this->_tileMap->convertToNodeSpace(pos);
+			int x = truePos.x / 384;
+			int y = truePos.y / 384;
+			if (fog[x][y] == 0) {
+				fog[x - 1][y - 1] = 1; fog[x - 1][y] = 1; fog[x - 1][y + 1] = 1;
+				fog[x - 0][y - 1] = 1; fog[x - 0][y] = 1; fog[x - 0][y + 1] = 1;
+				fog[x + 1][y - 1] = 1; fog[x + 1][y] = 1; fog[x + 1][y + 1] = 1;
+			}
+
+		}
+
+		
+	
+}
+
+
+
+
+
+
+//========================显示小点点在小地图上==========================
+void GameScene::showOnSmallMap() {
+	auto visibleSize = Director::getInstance()->getVisibleSize();
+	// my soldiers	
+	drawNode2->clear();
+	for (auto& soldier : _soldiers) {
+		Vec2 pos = soldier->getPosition();
+		Vec2 truePos = this->_tileMap->convertToNodeSpace(pos);
+		float X = truePos.x / 3840 * small_mapX;
+		float Y = truePos.y / 3840 * small_mapY;
+		X = visibleSize.width - small_mapX + X;
+		Y = visibleSize.height - small_mapY + Y;
+
+		Vec2 point1[4];
+		point1[0] = Vec2(X-1, Y-1);
+		point1[1] = Vec2(X+1 , Y - 1);
+		point1[2] = Vec2(X+1, Y + 1);
+		point1[3] = Vec2(X - 1, Y + 1);
+		drawNode2->drawPolygon(point1, 4, Color4F(0, 1, 0, 1), 1, Color4F(0, 1, 0, 1));
+	}
+	// my buildings
+	for (auto& building : _buildings) {
+		Vec2 pos = building->getPosition();
+		Vec2 truePos = this->_tileMap->convertToNodeSpace(pos);
+		float X = truePos.x / 3840 * small_mapX;
+		float Y = truePos.y / 3840 * small_mapY;
+		X = visibleSize.width - small_mapX + X;
+		Y = visibleSize.height - small_mapY + Y;
+		//drawNode2->clear();
+		Vec2 point1[4];
+		point1[0] = Vec2(X - 2, Y - 2);
+		point1[1] = Vec2(X + 2, Y - 2);
+		point1[2] = Vec2(X + 2, Y + 2);
+		point1[3] = Vec2(X - 2, Y + 2);
+		drawNode2->drawPolygon(point1, 4, Color4F(0, 1, 0, 1), 1, Color4F(0, 1, 0, 1));
+	}
+
+	for (auto& soldier : _enemySoldiers) {
+		Vec2 pos = soldier->getPosition();
+		Vec2 truePos = this->_tileMap->convertToNodeSpace(pos);
+
+		/*if (fog[i][j] == 1) {*/
+			float X = truePos.x / 3840 * small_mapX;
+			float Y = truePos.y / 3840 * small_mapY;
+			X = visibleSize.width - small_mapX + X;
+			Y = visibleSize.height - small_mapY + Y;
+			//drawNode2->clear();
+			Vec2 point1[4];
+			point1[0] = Vec2(X - 1, Y - 1);
+			point1[1] = Vec2(X + 1, Y - 1);
+			point1[2] = Vec2(X + 1, Y + 1);
+			point1[3] = Vec2(X - 1, Y + 1);
+			drawNode2->drawPolygon(point1, 4, Color4F(1, 0, 0, 1), 1, Color4F(1, 0, 0, 1));
+		/*}*/
+
+	}
+
+	for (auto& building : _enemyBuildings) {
+		Vec2 pos = building->getPosition();
+		Vec2 truePos = this->_tileMap->convertToNodeSpace(pos);
+		/*if (fog[i][j] == 1) {*/
+			float X = truePos.x / 3840 * small_mapX;
+			float Y = truePos.y / 3840 * small_mapY;
+			X = visibleSize.width - small_mapX + X;
+			Y = visibleSize.height - small_mapY + Y;
+			//drawNode2->clear();
+			Vec2 point1[4];
+			point1[0] = Vec2(X - 2, Y - 2);
+			point1[1] = Vec2(X + 2, Y - 2);
+			point1[2] = Vec2(X + 2, Y + 2);
+			point1[3] = Vec2(X - 2, Y + 2);
+			drawNode2->drawPolygon(point1, 4, Color4F(1, 0, 0, 1), 1, Color4F(1, 0, 0, 1));
+		/*}*/
+	}
+
+
 }
 
 void GameScene::moveSpritesWithMap(cocos2d::Vec2 direction)
@@ -974,6 +1152,12 @@ void GameScene::sellBuildingCallBack()
         addPower(buildingData::carFactoryCostPower);
         addMoney(buildingData::carFactoryCostMoney);
         break;
+
+	case SATELLITE_TAG:
+		decreaseSatellite();
+		addPower(buildingData::satelliteCostPower);
+		addMoney(buildingData::satelliteCostMoney);
+		break;
 
     }
 

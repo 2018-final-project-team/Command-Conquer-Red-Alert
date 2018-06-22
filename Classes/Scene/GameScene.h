@@ -110,6 +110,8 @@ public:
 
 	CC_SYNTHESIZE(int, _carFactoryNum, CarFactoryNum);
 
+	CC_SYNTHESIZE(int, _satelliteNum, SatelliteNum);
+
     // 待造坦克数
     CC_SYNTHESIZE(int, _tankNum, TankNum);
     // 待造狗数
@@ -232,6 +234,18 @@ public:
 	void decreaseCarFactory() { _carFactoryNum--; }
 
 	/*
+	* @brief 卫星数量加一
+	* @return void
+	*/
+	void addSatellite() { _satelliteNum++; }
+
+	/*
+	* @brief 卫星数量减一
+	* @return void
+	*/
+	void decreaseSatellite() { _satelliteNum--; }
+
+	/*
 	* @brief 兵营数量加一
 	* @return void
 	*/
@@ -323,7 +337,20 @@ public:
     */
     bool inDiamond(cocos2d::Point center, float width, 
         float height, cocos2d::Point position);
-
+	/*
+	@brief 把士兵显示在小地图上
+	*/
+	void GameScene::showOnSmallMap();
+	DrawNode* drawNode = DrawNode::create();
+	DrawNode* drawNode2 = DrawNode::create();
+	DrawNode* drawNode3 = DrawNode::create();
+	DrawNode* drawNode4 = DrawNode::create();
+	/*
+	brief 战争迷雾
+	*/
+	int fog[40][40];
+	void GameScene::makeFog();
+	bool hasFog;
 };
 
 #endif // __Welcome_SCENE_H__
