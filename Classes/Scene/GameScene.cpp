@@ -14,6 +14,7 @@ static std::string splayerName;
 static Client* clients;
 //a static pointer which is gong to be used to make LevelData oject reference count nonzero
 static LevelData* ptr = NULL;
+static Panel* ptr_panel = NULL;
 
 USING_NS_CC;
 using namespace ui;
@@ -157,6 +158,7 @@ bool GameScene::init()
 	//log("%f %f %f %f",_panelSize.width,_panelSize.height,panel->getAnchorPoint().x,panel->getAnchorPoint().y);
 	panel->setPosition(visibleSize.width - 112, visibleSize.height - 400);
 	this->addChild(panel, 5);
+	ptr_panel = panel;
 	//log("the tag of panel is:%d", panel->getTag());
 
 //===============================监听地图精灵=====================================
@@ -256,6 +258,7 @@ bool GameScene::init()
                 case CAR_FACTORY_TAG:
                 case BASE_TAG:
                 case BARRACKS_TAG:
+				case SATELLITE_TAG:
                     for (auto& building : _buildings)
                     {
                         if (building == target)
@@ -286,43 +289,49 @@ bool GameScene::init()
                     return;
 				case BASE_CAR_TAG:       //if there is any definition in the case
                 {                        // you must use {} to contain it
-					if (!static_cast<Unit*>(target)->getIsSelected())    //第一次单击选中基地车，第二次单击展开
+					if (_soldiers.contains(static_cast<Unit*>(target)))
 					{
-						for (Unit* unit : _selectedSoldiers)
+						if (!static_cast<Unit*>(target)->getIsSelected())    //第一次单击选中基地车，第二次单击展开
 						{
-							unit->setIsSelected(false);
+							for (Unit* unit : _selectedSoldiers)
+							{
+								unit->setIsSelected(false);
+							}
+							_selectedSoldiers.clear();
+							_selectedSoldiers.pushBack((static_cast<Unit*>(target)));
+							(static_cast<Unit*>(target))->setIsSelected(true);
+							break;
 						}
-						_selectedSoldiers.clear();
-						_selectedSoldiers.pushBack((static_cast<Unit*>(target)));
-						(static_cast<Unit*>(target))->setIsSelected(true);
-						break;
-					}
-					else
-					{
-						//基地车展开成基地
-						//移除基地车
-						for (Unit* unit : _selectedSoldiers)
+						else
 						{
-							unit->setIsSelected(false);
+							//基地车展开成基地
+							//移除基地车
+							for (Unit* unit : _selectedSoldiers)
+							{
+								unit->setIsSelected(false);
+							}
+							_selectedSoldiers.clear();
+							Vec2 position = target->getPosition();
+							_client->sendMessage(REMOVE_UNIT, _manager->getRemoveUnitMessage(static_cast<Unit*>(target)));
+							_soldiers.eraseObject(static_cast<Unit*>(target), false);
+							this->removeChild(target);
+							//创建基地
+							Building* base = Building::create(BASE_TAG);
+							_gameEventDispatcher->addEventListenerWithSceneGraphPriority
+							(_gameListener->clone(), base);
+							base->setPosition(position);
+							this->addChild(base, 2);
+							_isBaseExist = true;
+							_buildings.pushBack(base);
+							_client->sendMessage(CREATE_BUILDING, _manager->getCreateBuildingMessage(position, BASE_TAG));
+							//刷新Panel
+							panel->setCurButton(panel->getCurCategoryTag());
+							break;
 						}
-						_selectedSoldiers.clear();
-						Vec2 position = target->getPosition();
-						_client->sendMessage(REMOVE_UNIT, _manager->getRemoveUnitMessage(static_cast<Unit*>(target)));
-						_soldiers.eraseObject(static_cast<Unit*>(target), false);
-						this->removeChild(target);
-						//创建基地
-						Building* base = Building::create(BASE_TAG);
-						_gameEventDispatcher->addEventListenerWithSceneGraphPriority
-						(_gameListener->clone(), base);
-						base->setPosition(position);
-						this->addChild(base, 2);
-						_isBaseExist = true;
-						_buildings.pushBack(base);
-						_client->sendMessage(CREATE_BUILDING, _manager->getCreateBuildingMessage(position, BASE_TAG));
-						//刷新Panel
-						panel->setCurButton(panel->getCurCategoryTag());
-						break;
 					}
+					_manager->setEnemy(static_cast<Unit*>(target));
+					break;
+					
                 }
 
                 default:
@@ -332,13 +341,6 @@ bool GameScene::init()
                     {
                         log("can put");
                         _manager->getMoveController()->setDestination(_touchEnd);
-
-
-						////测试移动动画
-						//for (auto& soldier : _selectedSoldiers)
-						//{
-						//	soldier->switchState(stateWalkLeft);
-						//}
                     }
                     break;
 
@@ -460,7 +462,7 @@ bool GameScene::init()
 	}
 	else
 	{
-		float x = origin.x + visibleSize.width - backItem->getContentSize().width / 2;
+		float x = origin.x + backItem->getContentSize().width / 2;
 		float y = origin.y + visibleSize.height - backItem->getContentSize().height / 2;
 		backItem->setPosition(Vec2(x, y));
 	}
@@ -583,6 +585,7 @@ void GameScene::dataInit()
 	_mineNum = 0;
 	_powerPlantNum = 0;
 	_carFactoryNum = 0;
+	_satelliteNum = 0;
 
     _tankNum = 0;
     _infantryNum = 0;
@@ -740,6 +743,15 @@ void GameScene::update(float time)
 	showOnSmallMap();
 	drawNode->clear();
 	drawNode3->clear();
+
+	if (_satelliteNum && _isPowerEnough)    //如果拥有卫星建筑且电量充足，则消除迷雾
+	{
+		hasFog = false;
+	}
+	else
+	{
+		hasFog = true;
+	}
 	if (hasFog) {
 		makeFog();
 	}
@@ -1019,7 +1031,7 @@ bool GameScene::isCollision(cocos2d::Vec2 position)
     }
     for (auto &building : *(this->getBuildings())) {
         auto X = position.x - building->getPositionX() + 100;
-        auto Y = position.y - building->getPositionY();
+        auto Y = position.y - building->getPositionY() + 30;
         if (Y > -0.5*X && Y < 0.5*X && 0.5*X - 100 < Y && Y < 100 - 0.5*X)
         {
             return true;
@@ -1085,6 +1097,9 @@ void GameScene::sellBuildingCallBack()
         _sellBuilding = nullptr;
         _isSellMenuExit = false;
 
+		//刷新Panel
+		ptr_panel->setCurButton(ptr_panel->getCurCategoryTag());
+
         return;
     }
         
@@ -1138,11 +1153,20 @@ void GameScene::sellBuildingCallBack()
         addMoney(buildingData::carFactoryCostMoney);
         break;
 
+	case SATELLITE_TAG:
+		decreaseSatellite();
+		addPower(buildingData::satelliteCostPower);
+		addMoney(buildingData::satelliteCostMoney);
+		break;
+
     }
 
     removeChild(_sellBuildingMenu);
     _sellBuilding = nullptr;
     _isSellMenuExit = false;
+
+	//刷新Panel
+	ptr_panel->setCurButton(ptr_panel->getCurCategoryTag());
 
 }
 

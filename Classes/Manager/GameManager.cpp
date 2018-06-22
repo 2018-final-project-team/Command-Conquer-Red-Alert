@@ -86,7 +86,20 @@ void Manager::clickCreateBuildingByTag(Tag building_tag, clock_t start_time)
                 _waitTimeToCreateBuilding = buildingData::NotEnoughPower::carFactoryWait;
             }
             break;
+		case SATELLITE_TAG:
+			costMoney = buildingData::satelliteCostMoney;
+			if (_gameScene->getIsPowerEnough())
+			{
+				_waitTimeToCreateBuilding = buildingData::EnoughPower::satelliteWait;
+			}
+			else
+			{
+				_waitTimeToCreateBuilding = buildingData::NotEnoughPower::satelliteWait;
+			}
+			break;
         }
+		
+
 
         // 图标处会判断钱是否足够
         _isWaitToCreateBuilding = true;
@@ -370,6 +383,10 @@ void Manager::createBuilding(cocos2d::Vec2 position)
             _gameScene->setCarFactoryPosition(building->getPosition());
             costPower = buildingData::carFactoryCostPower;
             break;
+		case SATELLITE_TAG:
+			_gameScene->addSatellite();
+			costPower = buildingData::satelliteCostPower;
+			break;
         }
         _gameScene->getBuildings()->pushBack(building);
         _canCreateBuilding = false;

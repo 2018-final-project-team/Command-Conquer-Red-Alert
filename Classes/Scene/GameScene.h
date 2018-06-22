@@ -110,6 +110,8 @@ public:
 
 	CC_SYNTHESIZE(int, _carFactoryNum, CarFactoryNum);
 
+	CC_SYNTHESIZE(int, _satelliteNum, SatelliteNum);
+
     // 待造坦克数
     CC_SYNTHESIZE(int, _tankNum, TankNum);
     // 待造狗数
@@ -230,6 +232,18 @@ public:
 	* @return void
 	*/
 	void decreaseCarFactory() { _carFactoryNum--; }
+
+	/*
+	* @brief 卫星数量加一
+	* @return void
+	*/
+	void addSatellite() { _satelliteNum++; }
+
+	/*
+	* @brief 卫星数量减一
+	* @return void
+	*/
+	void decreaseSatellite() { _satelliteNum--; }
 
 	/*
 	* @brief 兵营数量加一

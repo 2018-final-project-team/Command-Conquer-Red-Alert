@@ -24,6 +24,8 @@ namespace buildingData
     const int barracksCostPower = 300;
     const int carFactoryCostMoney = 500;
     const int carFactoryCostPower = 500;
+	const int satelliteCostMoney = 300;
+	const int satelliteCostPower = 200;
 
     namespace EnoughPower
     {
@@ -31,6 +33,7 @@ namespace buildingData
         const int mineWait = 5 * 1000;
         const int barracksWait = 5 * 1000;
         const int carFactoryWait = 5 * 1000;
+		const int satelliteWait = 3 * 1000;
     }
 
     namespace NotEnoughPower
@@ -39,6 +42,7 @@ namespace buildingData
         const int mineWait = 10 * 1000;
         const int barracksWait = 10 * 1000;
         const int carFactoryWait = 10 * 1000;
+		const int satelliteWait = 6 * 1000;
     }
 
 }

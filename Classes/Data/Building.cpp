@@ -27,26 +27,37 @@ Building* Building::create(Tag tag)
     temp->setPhysicsBody(body);
 
     //定义一个存放建筑物的字符串数组
-    std::string picTable[5] = { "GameItem/Building/Base200.png","GameItem/Building/Power200.png","GameItem/Building/Mine200.png","GameItem/Building/Barracks150.png","GameItem/Building/CarFactory200.png" };
+    std::string picTable[6] = { "GameItem/Building/Base200.png","GameItem/Building/Power200.png","GameItem/Building/Mine200.png","GameItem/Building/Barracks150.png","GameItem/Building/CarFactory200.png","GameItem/Building/Satellite200.png" };
     //初始化安装建筑物时金钱的消耗
-    int sValue[5] = { 500,500,500,500,500 };
+    int sValue[6] = { 500,500,500,500,500,300 };
     //初始化建筑物的血量
-    int sHP[5] = { 2000,500,500,500,500 };
+    int sHP[6] = { 2000,500,500,500,500,500 };
+
+	int index;
+	if (tag != SATELLITE_TAG)
+	{
+		index = tag;
+	}
+	else
+	{
+		index = tag - 8;
+	}
     
     
     //初始化建筑物精灵对象
-    temp->initWithFile(picTable[tag].c_str());
+    temp->initWithFile(picTable[index].c_str());
     //自动释放
     temp->autorelease();
     //拿到当前建筑物的_tag
     temp->_buildingTag = tag;
     //设置精灵自身Tag
     temp->setTag(tag);
+
     //设置血量
-	temp->_FullHp = sHP[tag];
+	temp->_FullHp = sHP[index];
 	temp->_hp = temp->_FullHp;
     //根据_tag设置安装各建筑物时需要的金钱
-    temp->_value = sValue[tag];
+    temp->_value = sValue[index];
     //卖掉建筑物时得到的金钱
     temp->_sellValue = temp->_value / 2;
 
