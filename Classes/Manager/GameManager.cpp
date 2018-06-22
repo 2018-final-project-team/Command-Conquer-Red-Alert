@@ -4,6 +4,7 @@
 */
 
 #include "GameManager.h"
+#include "Scene/EndingScene.h"
 
 USING_NS_CC;
 
@@ -1028,6 +1029,22 @@ void Manager::doCommands()
 			}
 			_gameScene->removeChild(_gameScene->getEnemySoldiers()->at(_index));
 			_gameScene->getEnemySoldiers()->erase(_index);
+		}
+		else if (_command[0] == DEAD_MESSAGE[0])
+		{
+			std::string sId(_command.begin() + 1, _command.begin() + 1);
+			std::stringstream ssId;
+			ssId << sId;
+			int id;
+			ssId >> id;
+			if (id != _gameScene->_localPlayerID)
+			{
+				_gameScene->_loserCnt++;
+				if (_gameScene->_loserCnt == _gameScene->_inputData->player_list.size() - 1)
+				{
+					Director::getInstance()->replaceScene(TransitionFade::create(1, EndingScene::createScene(true)));
+				}
+			}
 		}
 		else
 		{

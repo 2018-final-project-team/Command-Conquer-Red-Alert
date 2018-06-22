@@ -2,6 +2,7 @@
 #include "Scene/GameScene.h"  
 #include "ui/CocosGUI.h"
 #include "Panel/Panel.h"
+#include "Scene/EndingScene.h"
 
 #define small_mapX 300
 #define small_mapY 300
@@ -728,6 +729,13 @@ void GameScene::update(float time)
 {
     Layer::update(time);
 
+	//如果己方单位以全部被消灭，则广播自己死亡的消息
+	if (_soldiers.size() == 0 && _buildings.size() == 0)
+	{
+		_client->sendMessage(DEAD_MESSAGE, std::to_string(_localPlayerID));
+		Director::getInstance()->replaceScene(TransitionFade::create(1, EndingScene::createScene(false)));
+	}
+
 	_manager->attack();
 	_manager->addMoneyUpdate();
 
@@ -755,7 +763,6 @@ void GameScene::update(float time)
 	if (hasFog) {
 		makeFog();
 	}
-	
 }
 
 /*update by czd */

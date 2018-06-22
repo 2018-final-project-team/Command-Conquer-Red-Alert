@@ -263,7 +263,7 @@ void WelcomeScene::menuCloseCallback(Ref* pSender)
 void WelcomeScene::menuNetCallback(Ref *pSender)
 {
 	GameAudio::getInstance()->playEffect("Sound/button.mp3");
-	Director::getInstance()->pushScene(TransitionFade::create(1, NetMenu::createScene(_userName)));
+	Director::getInstance()->replaceScene(TransitionFade::create(1, NetMenu::createScene(_userName)));
 }
 
 void WelcomeScene::menuSettingsCallback(cocos2d::Ref * pSender) {

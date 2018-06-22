@@ -18,7 +18,6 @@ class Panel;     //解决头文件互相包含时带来的问题
 
 class GameScene : public cocos2d::Layer
 {
-	int cnt = 0;
 public:
 	cocos2d::Sprite*           small_map;
 
@@ -33,6 +32,8 @@ public:
 	std::string                _localPlayerName;     ///本地玩家的名字
     int                        _localPlayerID;
 
+	int _loserCnt = 0;                  //已经失败的玩家数量
+
     Manager * _manager;
     
     Panel * panel;
@@ -40,6 +41,7 @@ public:
 	std::queue<std::string>    _commands;             ///每次读取的命令
 
 private:
+	
 	cocos2d::TMXLayer* _barrier;
     int MAPX;
     int MAPY;
