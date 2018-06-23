@@ -98,6 +98,17 @@ void Manager::clickCreateBuildingByTag(Tag building_tag, clock_t start_time)
 				_waitTimeToCreateBuilding = buildingData::NotEnoughPower::satelliteWait;
 			}
 			break;
+		case DEFENSE_BUILDING_TAG:
+			costMoney = buildingData::defenseBuildingCostMoney;
+			if (_gameScene->getIsPowerEnough())
+			{
+				_waitTimeToCreateBuilding = buildingData::EnoughPower::defenseBuildingWait;
+			}
+			else
+			{
+				_waitTimeToCreateBuilding = buildingData::NotEnoughPower::defenseBuildingWait;
+			}
+			break;
         }
 		
 
@@ -355,7 +366,17 @@ void Manager::createBuilding(cocos2d::Vec2 position)
     if (_canCreateBuilding)
     {
         int costPower;
-        Building* building = Building::create(_buildingTag);
+
+		Building* building;
+		if (_buildingTag == DEFENSE_BUILDING_TAG)
+		{
+			building = DefenseBuilding::create(_buildingTag);
+		}
+		else
+		{
+			building = Building::create(_buildingTag);
+		}
+        
         _gameScene->_gameEventDispatcher->addEventListenerWithSceneGraphPriority
                 (_gameScene->_gameListener->clone(), building);
         building->setPosition(position);
@@ -388,6 +409,8 @@ void Manager::createBuilding(cocos2d::Vec2 position)
 			_gameScene->addSatellite();
 			costPower = buildingData::satelliteCostPower;
 			break;
+		case DEFENSE_BUILDING_TAG:
+			costPower = buildingData::defenseBuildingCostPower;
         }
         _gameScene->getBuildings()->pushBack(building);
         _canCreateBuilding = false;
@@ -981,7 +1004,17 @@ void Manager::doCommands()
 			}
 			Vec2 position = _positionForMessage;
 			Tag buildingTag = _tagForMessage;
-			Building* building = Building::create(buildingTag);
+
+			Building* building;
+			if (buildingTag == DEFENSE_BUILDING_TAG)
+			{
+				building = DefenseBuilding::create(buildingTag);
+			}
+			else
+			{
+				building = Building::create(buildingTag);
+			}
+
 			_gameScene->_gameEventDispatcher->addEventListenerWithSceneGraphPriority
 			(_gameScene->_gameListener->clone(), building);
 			building->setPosition(position);

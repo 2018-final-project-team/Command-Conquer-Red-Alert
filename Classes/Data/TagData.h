@@ -18,7 +18,9 @@ typedef enum
 
     BASE_CAR_TAG = 12,
 
-	SATELLITE_TAG=13
+	SATELLITE_TAG=13,
+
+	DEFENSE_BUILDING_TAG=14
 }Tag;
 
 #endif // TagData.h

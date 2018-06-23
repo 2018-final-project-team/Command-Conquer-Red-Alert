@@ -8,6 +8,8 @@
 #include "cocos2d.h"
 #include "string"
 #include "TagData.h"
+#include "Data/Building.h"
+#include "Data/DefenseBuilding.h"
 
 
 //TODO: 加入动画和图片素材，之后实现。
@@ -137,6 +139,8 @@ public:
     /*
      */
     void getInjuredBy(Unit *);
+
+	void getInjuredBy(DefenseBuilding * enemy);
 
 	void decreaseHP(int num);
     /*

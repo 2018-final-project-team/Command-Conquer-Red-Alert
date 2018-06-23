@@ -10,6 +10,7 @@
 #include "cocos2d.h"
 #include "Data/Building.h"
 #include "Panel/Icon.h"
+#include "Data/DefenseBuilding.h"
 
 class GameScene;
 
@@ -27,6 +28,7 @@ public:
 	Icon* _barracksIcon;
 	Icon* _carFactoryIcon;
 	Icon* _satelliteIcon;
+	Icon* _defenseBuildingIcon;
 	Icon* _infantryIcon;
 	Icon* _dogIcon;
 	Icon* _tankIcon;
@@ -34,7 +36,7 @@ public:
 
 private:
 	//初始化金钱的消耗
-	int sValue[8] = { 500,500,500,500,50,50,200,300 };
+	int sValue[9] = { 500,500,500,500,50,50,200,300,200 };
 
 	bool _clickToPlaceBuilding;
     int _canToBuild;
