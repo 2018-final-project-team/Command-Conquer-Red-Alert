@@ -39,6 +39,10 @@ private:
 	Unit*           _unitForMessage;
 
 
+    int _isUnitDied[5][100];
+    int _isBuildingDied[5][100];
+
+
 	Panel* _panel;
     GameScene* _gameScene;
     MoveController* _moveController;
@@ -206,7 +210,7 @@ public:
     void readAttackCommand();
 
     //生成death命令
-    std::string getDeathMessage(int _playerId, int enemyId, int enemyIndex);
+    std::string getDeathMessage(int enemyId, int enemyIndex);
 
     //提取death命令
     void readDeathCommand();

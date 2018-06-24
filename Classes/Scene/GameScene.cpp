@@ -725,15 +725,21 @@ Vector<Unit*>* GameScene::getEnemySoldiersByID(int id)
     {
     case 1:
         return &_enemySoldiers1;
+        break;
     case 2:
         return &_enemySoldiers2;
+        break;
     case 3:
         return &_enemySoldiers3;
+        break;
     case 4:
         return &_enemySoldiers4;
+        break;
     default:
         return nullptr;
+        break;
     }
+    return nullptr;
 }
 
 Vector<Building*>* GameScene::getEnemyBuildingsByID(int id)
@@ -742,15 +748,20 @@ Vector<Building*>* GameScene::getEnemyBuildingsByID(int id)
     {
     case 1:
         return &_enemyBuildings1;
+        break;
     case 2:
         return &_enemyBuildings2;
+        break;
     case 3:
         return &_enemyBuildings3;
+        break;
     case 4:
         return &_enemyBuildings4;
+        break;
     default:
         return nullptr;
     }
+    return nullptr;
 }
 
 void GameScene::addMoney(int money)
@@ -1000,12 +1011,25 @@ bool GameScene::isCollision(cocos2d::Vec2 position)
     {
         return true;
     }
-    for (auto &building : *(this->getBuildings())) {
+    for (auto &building : *(this->getBuildings())) 
+    {
         auto X = position.x - building->getPositionX() + 100;
         auto Y = position.y - building->getPositionY() + 30;
         if (Y > -0.5*X && Y < 0.5*X && 0.5*X - 100 < Y && Y < 100 - 0.5*X)
         {
             return true;
+        }
+    }
+    for (int i = 1; i <= 4; ++i)
+    {
+        for (auto &building : *(getEnemyBuildingsByID(i)))
+        {
+            auto X = position.x - building->getPositionX() + 100;
+            auto Y = position.y - building->getPositionY() + 30;
+            if (Y > -0.5*X && Y < 0.5*X && 0.5*X - 100 < Y && Y < 100 - 0.5*X)
+            {
+                return true;
+            }
         }
     }
     position.x = static_cast<int>(mapPosition.x / tileSize.width);
