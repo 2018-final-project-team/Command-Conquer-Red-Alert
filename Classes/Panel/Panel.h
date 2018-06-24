@@ -26,7 +26,6 @@ public:
 	Icon* _mineIcon;
 	Icon* _barracksIcon;
 	Icon* _carFactoryIcon;
-	Icon* _satelliteIcon;
 	Icon* _infantryIcon;
 	Icon* _dogIcon;
 	Icon* _tankIcon;
@@ -34,7 +33,7 @@ public:
 
 private:
 	//初始化金钱的消耗
-	int sValue[8] = { 500,500,500,500,50,50,200,300 };
+	int sValue[8] = { 500,500,500,500,50,50,200 };
 
 	bool _clickToPlaceBuilding;
     int _canToBuild;

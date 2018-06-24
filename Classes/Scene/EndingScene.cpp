@@ -9,15 +9,12 @@
 
 USING_NS_CC;
 
-static bool IsWin;
 
-Scene* EndingScene::createScene(bool isWin)
+Scene* EndingScene::createScene()
 {
 	auto scene = Scene::create();
 
 	auto layer = EndingScene::create();
-
-	IsWin = isWin;
 
 	scene->addChild(layer);
 
@@ -33,8 +30,6 @@ bool EndingScene::init()
 	{
 		return false;
 	}
-
-	_isWin = IsWin;
 
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -95,7 +90,7 @@ bool EndingScene::init()
 	{
 		label = Label::createWithTTF("Congradulations", "fonts/Marker Felt.ttf", 40);
 	}
-	else if (!isWinner())
+	else if (isLoser())
 	{
 		label = Label::createWithTTF("Defeated", "fonts/Marker Felt.ttf", 40);
 	}
@@ -184,5 +179,10 @@ void EndingScene::menuWelcomeCallback(Ref *pSender)
 
 bool EndingScene::isWinner()
 {
-	return _isWin;
+	return false;
+}
+
+bool EndingScene::isLoser()
+{
+	return true;
 }

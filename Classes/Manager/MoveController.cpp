@@ -209,7 +209,7 @@ void MoveController::moveSoldiers()
             (soldier->_route).erase((soldier->_route).begin());
             soldier->setGetDestination(false);
             Vec2 direction= (soldier->getDestination() - soldier->getPosition());
-            log("destination %f %f", soldier->getDestination().x, soldier->getDestination().y);
+            //log("destination %f %f", soldier->getDestination().x, soldier->getDestination().y);
             //change state of unit
             if (fabs(direction.x) < fabs(direction.y))
             {
@@ -238,28 +238,31 @@ void MoveController::moveSoldiers()
         }
     }
     //enemy
-    for (auto& enemy : *(_gameScene->getEnemySoldiers()))
+    for (int i = 1; i <= 4; ++i)
     {
-        if (!enemy->getGetDestination())
+        for (auto& enemy : *(_gameScene->getEnemySoldiersByID(i)))
         {
-            Vec2 nowPosition = enemy->getPosition();
-            Vec2 destination = enemy->getDestination();
-            Vec2 direction = destination - nowPosition;
-            direction.normalize();
-            float distance = destination.distance(nowPosition);
-            //log("now position %f %f", nowPosition.x, nowPosition.y);
-            //log("destination %f %f", destination.x, destination.y);
-
-            Vec2 move = enemy->getUnitSpeed() * interval * direction;
-            // if the distance of this move is longer than destination
-            if (move.length() >= distance)
+            if (!enemy->getGetDestination())
             {
-                enemy->moveTo(destination);
-                enemy->setGetDestination(true);
-                enemy->switchState(stateNone);
-                continue;
+                Vec2 nowPosition = enemy->getPosition();
+                Vec2 destination = enemy->getDestination();
+                Vec2 direction = destination - nowPosition;
+                direction.normalize();
+                float distance = destination.distance(nowPosition);
+                //log("enemy now position %f %f", nowPosition.x, nowPosition.y);
+                //log("enemy destination %f %f", destination.x, destination.y);
+
+                Vec2 move = enemy->getUnitSpeed() * interval * direction;
+                // if the distance of this move is longer than destination
+                if (move.length() >= distance)
+                {
+                    enemy->moveTo(destination);
+                    enemy->setGetDestination(true);
+                    enemy->switchState(stateNone);
+                    continue;
+                }
+                enemy->moveTo(move + nowPosition);
             }
-            enemy->moveTo(move + nowPosition);
         }
     }
 }
@@ -446,6 +449,33 @@ bool MoveController::canPut(cocos2d::Point position)
             return false;
         }
     }
+    for (int i = 1; i <= 4; ++i)
+    {
+        for (auto& building : *(_gameScene->getEnemyBuildingsByID(i)))
+        {
+            Rect rect = Rect(building->getPositionX() - building->getContentSize().width / 2,
+                building->getPositionY() - building->getContentSize().height / 2,
+                building->getContentSize().width, building->getContentSize().height);
+            if (rect.containsPoint(position))
+            {
+                return false;
+            }
+        }
+        for (auto& soldier : *(_gameScene->getEnemySoldiersByID(i)))
+        {
+            //log("soldier position %f %f", soldier->getPosition().x, soldier->getPosition().y);
+            Rect rect = Rect(soldier->getPositionX() - soldier->getContentSize().width / 2,
+                soldier->getPositionY() - soldier->getContentSize().height / 2,
+                soldier->getContentSize().width, soldier->getContentSize().height);
+            //log("%f %f %f %f", rect.getMinX(), rect.getMinY(), rect.size.width, rect.size.height);
+            //log("put position %f %f", position.x, position.y);
+            if (rect.containsPoint(position))
+            {
+                return false;
+            }
+        }
+    }
+    
     // yes you can put soldier here   
     return true;
 }

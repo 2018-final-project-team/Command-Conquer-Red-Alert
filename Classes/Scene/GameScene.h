@@ -18,6 +18,7 @@ class Panel;     //解决头文件互相包含时带来的问题
 
 class GameScene : public cocos2d::Layer
 {
+	int cnt = 0;
 public:
 	cocos2d::Sprite*           small_map;
 
@@ -32,8 +33,6 @@ public:
 	std::string                _localPlayerName;     ///本地玩家的名字
     int                        _localPlayerID;
 
-	int _loserCnt = 0;                  //已经失败的玩家数量
-
     Manager * _manager;
     
     Panel * panel;
@@ -41,7 +40,6 @@ public:
 	std::queue<std::string>    _commands;             ///每次读取的命令
 
 private:
-	
 	cocos2d::TMXLayer* _barrier;
     int MAPX;
     int MAPY;
@@ -54,12 +52,20 @@ private:
 	cocos2d::Point _cursorPosition;
 	void scrollMap();
 
-	cocos2d::Vector<Unit*> _selectedSoldiers;
+	cocos2d::Vector<Unit*> _selectedSoldiers;      //被选中的士兵.
 
-	cocos2d::Vector<Unit*> _enemySoldiers;
+    cocos2d::Vector<Unit*>     _enemySoldiers1;        //第一个敌人的士兵队列.
+    cocos2d::Vector<Building*> _enemyBuildings1;       //第一个敌人的建筑队列.
+    cocos2d::Vector<Unit*>     _enemySoldiers2;        //第二个敌人的士兵队列.
+    cocos2d::Vector<Building*> _enemyBuildings2;       //第二个敌人的建筑队列.
+    cocos2d::Vector<Unit*>     _enemySoldiers3;        //第三个敌人的士兵队列.
+    cocos2d::Vector<Building*> _enemyBuildings3;       //第三个敌人的建筑队列.
+    cocos2d::Vector<Unit*>     _enemySoldiers4;        //第四个敌人的士兵队列.
+    cocos2d::Vector<Building*> _enemyBuildings4;       //第四个敌人的建筑队列.
+
+    //my soldiers and buildings
 	cocos2d::Vector<Unit*> _soldiers;
 	cocos2d::Vector<Building*> _buildings;
-    cocos2d::Vector<Building*> _enemyBuildings;
 
 	cocos2d::Point _touchBegan;
 	cocos2d::Point _touchEnd;
@@ -112,8 +118,6 @@ public:
 
 	CC_SYNTHESIZE(int, _carFactoryNum, CarFactoryNum);
 
-	CC_SYNTHESIZE(int, _satelliteNum, SatelliteNum);
-
     // 待造坦克数
     CC_SYNTHESIZE(int, _tankNum, TankNum);
     // 待造狗数
@@ -143,6 +147,10 @@ public:
 
 	void menuBackCallback(Ref *pSender);
 
+    void pushEnemyUnitByID(Unit* u, int id);
+
+    void pushEnemyBuildingByID(Building* b, int id);
+
 	/**
 	* @brief getSelectedSoldiers
 	* @return the address of _selectedSoldiers
@@ -159,7 +167,7 @@ public:
     * @brief getEnemySoldiers
     * @return the address of enemy_soldiers
     */
-    cocos2d::Vector<Unit*> * getEnemySoldiers() { return &_enemySoldiers; }
+    cocos2d::Vector<Unit*> * getEnemySoldiersByID(int id);
 
 	/**
 	* @brief getBuildings
@@ -171,8 +179,7 @@ public:
     * @brief getEnemyBuildings
     * @return the address of enemy_soldiers
     */
-    cocos2d::Vector<Building*> * getEnemyBuildings() { return &_enemyBuildings; }
-
+    cocos2d::Vector<Building*> * getEnemyBuildingsByID(int id);
 	/**
 	* @brief addMoney
 	* @param 增加的钱
@@ -234,18 +241,6 @@ public:
 	* @return void
 	*/
 	void decreaseCarFactory() { _carFactoryNum--; }
-
-	/*
-	* @brief 卫星数量加一
-	* @return void
-	*/
-	void addSatellite() { _satelliteNum++; }
-
-	/*
-	* @brief 卫星数量减一
-	* @return void
-	*/
-	void decreaseSatellite() { _satelliteNum--; }
 
 	/*
 	* @brief 兵营数量加一
@@ -339,20 +334,7 @@ public:
     */
     bool inDiamond(cocos2d::Point center, float width, 
         float height, cocos2d::Point position);
-	/*
-	@brief 把士兵显示在小地图上
-	*/
-	void GameScene::showOnSmallMap();
-	DrawNode* drawNode = DrawNode::create();
-	DrawNode* drawNode2 = DrawNode::create();
-	DrawNode* drawNode3 = DrawNode::create();
-	DrawNode* drawNode4 = DrawNode::create();
-	/*
-	brief 战争迷雾
-	*/
-	int fog[40][40];
-	void GameScene::makeFog();
-	bool hasFog;
+
 };
 
 #endif // __Welcome_SCENE_H__

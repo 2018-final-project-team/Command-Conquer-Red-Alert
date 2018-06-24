@@ -10,11 +10,8 @@
 
 class EndingScene : public cocos2d::Layer
 {
-private:
-	bool _isWin;
-
 public:
-	static cocos2d::Scene* createScene(bool isWin);
+	static cocos2d::Scene* createScene();
 
 	virtual bool init();
 
@@ -24,6 +21,8 @@ public:
 	void menuWelcomeCallback(cocos2d::Ref *pSender);
 	
 	bool isWinner();
+
+	bool isLoser();
 
 	CREATE_FUNC(EndingScene);
 };

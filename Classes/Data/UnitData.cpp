@@ -15,7 +15,7 @@ USING_NS_CC;
 
 
 //创建单位,创建时按照typedef enum将对应值传入即可
-Unit * Unit::create(Tag unitTag)
+Unit * Unit::create(Tag unitTag, int id)
 {
     //创建精灵
     Unit * temp = new Unit();
@@ -28,6 +28,8 @@ Unit * Unit::create(Tag unitTag)
     temp -> setPhysicsBody(body);
 
 	temp->setLastTurn(stateWalkRight);
+
+    temp->setID(id);
 
 	//=======================如果创建的是基地车===========================
 	if (unitTag == BASE_CAR_TAG)
@@ -135,7 +137,7 @@ Unit * Unit::create(Tag unitTag)
     int slocklimit[3] = { 50, 50, 50 };
     
     //初始化攻击区域
-    int satklimit[3] = { 120, 45, 180 };
+    int satklimit[3] = { 120, 75, 180 };
 
     //初始化单位名字
     std::string sunitname[3] = { "infantry","dog","tank" };
@@ -250,9 +252,12 @@ void Unit::attack(Unit * enemy)
     //==========TO DO:音效=====================
 	GameAudio::getInstance()->playEffect("Sound/Explosion.mp3");
 }
+
 void Unit::attack(Building * enemy)
 {
-	
+    enemy->setHP(enemy->getHP() - _ATK);
+    //==========TO DO:音效=====================
+    GameAudio::getInstance()->playEffect("Sound/Explosion.mp3");
 }
 
 
