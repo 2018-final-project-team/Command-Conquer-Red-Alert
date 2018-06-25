@@ -9,7 +9,7 @@
 #include "math.h"
 #include "Util/GameAnimation.h"
 #include "Util/GameAudio.h"
-#include "Building.h"
+
 
 USING_NS_CC;
 
@@ -229,6 +229,11 @@ void Unit::moveTo(Vec2 destination)
 void Unit::getInjuredBy(Unit * enemy)
 {
     decreaseHP(enemy->_ATK);
+}
+
+void Unit::getInjuredBy(DefenseBuilding * enemy)
+{
+	decreaseHP(enemy->getDefenseATK());
 }
 
 void Unit::decreaseHP(int num)
