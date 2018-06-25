@@ -139,7 +139,7 @@ public:
 
     virtual void onEnter();
 
-	virtual void onExit();
+    virtual void onExitTransitionDidStart();
 
 	// 初始化数据
 	void dataInit();

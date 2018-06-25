@@ -84,6 +84,9 @@ public:
     
     //单位tag（步兵，狗，矿车，坦克）
     CC_SYNTHESIZE(Tag, _unitTag, UnitTag);
+
+    //单位id
+    CC_SYNTHESIZE(int, _id, ID);
     
     //当前血量
     CC_SYNTHESIZE(int, _HP, UnitHP);

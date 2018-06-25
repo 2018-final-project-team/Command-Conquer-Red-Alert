@@ -55,7 +55,7 @@ public:
 	cocos2d::ProgressTimer* _bloodBarAsEnemyPt;     //红色血条ProgressTimer
 
 	//建筑物的tag（基地、电厂、矿场、兵营、战车工厂）
-	CC_SYNTHESIZE(Tag, _buildingTag, BuildingTag);
+    CC_SYNTHESIZE(Tag, _buildingTag, BuildingTag);
 
     //id of buildings
     CC_SYNTHESIZE(int, _id, ID);

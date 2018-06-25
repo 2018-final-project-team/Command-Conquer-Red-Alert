@@ -168,7 +168,7 @@ void Manager::waitCreateSoldier()
     {
         if (clock() - _timeToCreateSoldier > _waitTimeToCreateSoldier)
         {
-            Unit* soldier = Unit::create(_soldierTag);
+            Unit* soldier = Unit::create(_soldierTag, _gameScene->_localPlayerID);
             _gameScene->_gameEventDispatcher->addEventListenerWithSceneGraphPriority
                     (_gameScene->_gameListener->clone(), soldier);
 			_gameScene->_client->sendMessage(CREATE_UNIT, getCreateUnitMessage(_soldierTag, _gameScene->getBarracksPosition()));
@@ -275,7 +275,7 @@ void Manager::waitCreateCar()
     {
         if (clock() - _timeToCreateCar > _waitTimeToCreateCar)
         {
-            Unit* car = Unit::create(_carTag);
+            Unit* car = Unit::create(_carTag, _gameScene->_localPlayerID);
             _gameScene->_gameEventDispatcher->addEventListenerWithSceneGraphPriority
             (_gameScene->_gameListener->clone(), car);
 			_gameScene->_client->sendMessage(CREATE_UNIT, getCreateUnitMessage(_carTag, _gameScene->getCarFactoryPosition()));
@@ -361,7 +361,7 @@ void Manager::createBuilding(cocos2d::Vec2 position)
     if (_canCreateBuilding)
     {
         int costPower;
-        Building* building = Building::create(_buildingTag);
+        Building* building = Building::create(_buildingTag, _gameScene->_localPlayerID);
         _gameScene->_gameEventDispatcher->addEventListenerWithSceneGraphPriority
                 (_gameScene->_gameListener->clone(), building);
         building->setPosition(position);
@@ -801,7 +801,7 @@ void Manager::doCommands()
 			}
             Vec2 destination = _destinationForMessage;
 			int index = _index;
-            Unit* enemy = _gameScene->getEnemySoldiers()->at(index);
+            Unit* enemy = _gameScene->getEnemySoldiersByID(_playerId)->at(index);
             enemy->setDestination(destination);
             enemy->setGetDestination(false);
             Vec2 direction = (destination - enemy->getPosition());
@@ -840,14 +840,14 @@ void Manager::doCommands()
 			}
 			Vec2 position = _positionForMessage;
 			Tag buildingTag = _tagForMessage;
-			Building* building = Building::create(buildingTag);
+			Building* building = Building::create(buildingTag, _playerId);
 			_gameScene->_gameEventDispatcher->addEventListenerWithSceneGraphPriority
 			(_gameScene->_gameListener->clone(), building);
 			building->setPosition(position);
 			building->_bloodBarPt->setVisible(false);
 			building->_bloodBarAsEnemyPt->setVisible(true);
 			_gameScene->addChild(building, 2);
-			_gameScene->getEnemyBuildings()->pushBack(building);
+			_gameScene->pushEnemyBuildingByID(building, _playerId);
 
 		}
 		else if (_command[0] == CREATE_UNIT[0])
@@ -857,7 +857,7 @@ void Manager::doCommands()
 			{
 				continue;
 			}
-			Unit* soldier = Unit::create(_tagForMessage);
+			Unit* soldier = Unit::create(_tagForMessage, _playerId);
 			_gameScene->_gameEventDispatcher->addEventListenerWithSceneGraphPriority
 			(_gameScene->_gameListener->clone(), soldier);
 
@@ -867,7 +867,7 @@ void Manager::doCommands()
 			soldier->_bloodBarAsEnemyPt->setVisible(true);
 			_gameScene->addChild(soldier, 1);
 
-			_gameScene->getEnemySoldiers()->pushBack(soldier);
+			_gameScene->pushEnemyUnitByID(soldier, _playerId);
 		}
 		else if (_command[0] == REMOVE_BUILDING[0])
 		{
@@ -876,8 +876,8 @@ void Manager::doCommands()
 			{
 				continue;
 			}
-			_gameScene->removeChild(_gameScene->getEnemyBuildings()->at(_index));
-			_gameScene->getEnemyBuildings()->erase(_index);
+			_gameScene->removeChild(_gameScene->getEnemyBuildingsByID(_playerId)->at(_index));
+			_gameScene->getEnemyBuildingsByID(_playerId)->erase(_index);
 		}
 		else if (_command[0] == REMOVE_UNIT[0])
 		{
@@ -886,8 +886,8 @@ void Manager::doCommands()
 			{
 				continue;
 			}
-			_gameScene->removeChild(_gameScene->getEnemySoldiers()->at(_index));
-			_gameScene->getEnemySoldiers()->erase(_index);
+			_gameScene->removeChild(_gameScene->getEnemySoldiersByID(_playerId)->at(_index));
+			_gameScene->getEnemySoldiersByID(_playerId)->erase(_index);
 		}
         else if (_command[0] == ATTACK_UNIT[0])
         {
@@ -1001,6 +1001,7 @@ void Manager::doCommands()
                 if (_gameScene->_localPlayerID == enemy->getID())
                 {
                     _gameScene->getBuildings()->erase(_enemyIndex);
+                    buildingDied(enemy->getBuildingTag());
                 }
                 else
                 {
@@ -1015,6 +1016,13 @@ void Manager::doCommands()
                 {
                     _selectedBuilding = nullptr;
                     _selectedBuildingId = _selectedBuildingIndex = 0;
+                }
+            }
+            else
+            {
+                if (enemy->getBuildingTag() == POWER_PLANT_TAG)
+                {
+                    resetPower();
                 }
             }
         }
