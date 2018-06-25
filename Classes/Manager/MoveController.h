@@ -10,7 +10,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "Scene\GameScene.h"
+#include "Scene/GameScene.h"
 #include "NetWork/MessageCode.h" 
 
 class GameScene;

@@ -1,4 +1,4 @@
-﻿#ifndef __Game_SCENE_H__
+#ifndef __Game_SCENE_H__
 #define __Game_SCENE_H__
 
 const clock_t addMoneyDelay = 1000 * 10;
@@ -354,7 +354,7 @@ public:
 	/*
 	@brief 把士兵显示在小地图上
 	*/
-	void GameScene::showOnSmallMap();
+	void showOnSmallMap();
 	DrawNode* drawNode = DrawNode::create();
 	DrawNode* drawNode2 = DrawNode::create();
 	DrawNode* drawNode3 = DrawNode::create();
@@ -363,7 +363,7 @@ public:
 	brief 战争迷雾
 	*/
 	int fog[40][40];
-	void GameScene::makeFog();
+	void makeFog();
 	bool hasFog;
 };
 

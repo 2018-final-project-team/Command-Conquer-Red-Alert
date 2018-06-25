@@ -193,16 +193,16 @@ public:
 	void readCreateUnitCommand();
 
 	//生成移除建筑命令
-	std::string Manager::getRemoveBuildingMessage(Building* b);
+    std::string getRemoveBuildingMessage(Building* b);
 
 	//提取移除建筑命令
-	void Manager::readRemoveBuildingCommand();
+    void readRemoveBuildingCommand();
 
 	//生成移除Unit命令
-	std::string Manager::getRemoveUnitMessage(Unit* u);
+    std::string getRemoveUnitMessage(Unit* u);
 
 	//提取移除Unit命令
-	void Manager::readRemoveUnitCommand();
+    void readRemoveUnitCommand();
     
     //生成attack命令
     std::string getAttackMessage(Unit* u, int enemyId, int enemyIndex);

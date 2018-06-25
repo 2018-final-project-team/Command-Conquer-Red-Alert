@@ -57,7 +57,7 @@ void LoginScene::createLoginButton()
 {
     Size visibleSize = Director::getInstance()->getVisibleSize();
 
-    auto loginButton = ui::Button::create("RoomScene/button_normal.png", "RoomScene/button_selected.png");
+    auto loginButton = ui::Button::create("button_normal.png", "button_selected.png");
     loginButton->setTitleText("Login");
 	loginButton->setTitleFontName(Settings::Font::Type::official);
     loginButton->setTitleFontSize(Settings::Font::Size::label);
