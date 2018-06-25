@@ -33,6 +33,12 @@ bool Manager::initWithGameScene(GameScene* gameScene)
     _selectedEnemy = nullptr;
     _selectedBuilding = nullptr;
 
+    _selectedEnemyId = _selectedEnemyIndex = 0;
+    _selectedBuildingId = _selectedBuildingIndex = 0;
+
+    std::memset(_isUnitDied, 0, sizeof(_isUnitDied));
+    std::memset(_isBuildingDied, 0, sizeof(_isBuildingDied));
+
     return true;
 }
 
@@ -400,12 +406,44 @@ void Manager::setEnemy(Unit* enemy)
 {
     _selectedEnemy = enemy;
     _selectedBuilding = nullptr;
+    //移动攻击.
+    if (_gameScene->getSelectedSoldiers()->size() > 0)
+    {
+        Vec2 direction = _gameScene->getSelectedSoldiers()->front()->getPosition()
+            - enemy->getPosition();
+        direction.normalize();
+        _moveController->setDestination(enemy->getPosition() + direction * 30);
+    }
+
+    if (_gameScene->getSoldiers()->contains(_selectedEnemy))
+    {
+        _selectedEnemyId = _gameScene->_localPlayerID;
+        _selectedEnemyIndex = _gameScene->getSoldiers()->getIndex(_selectedEnemy);
+    }
+    else
+    {
+        _selectedEnemyId = _selectedEnemy->getID();
+        _selectedEnemyIndex = _gameScene->getEnemySoldiersByID(_selectedEnemyId)->getIndex(_selectedEnemy);
+    }
 }
 
 void Manager::setBuilding(Building* building)
 {
     _selectedBuilding = building;
     _selectedEnemy = nullptr;
+    //移动攻击.
+    if (_gameScene->getSelectedSoldiers()->size() > 0)
+    {
+        Vec2 direction = _gameScene->getSelectedSoldiers()->front()->getPosition()
+            - building->getPosition();
+        direction.normalize();
+        _moveController->setDestination(building->getPosition() + direction * 80);
+    }
+    
+    _selectedBuildingId = _selectedBuilding->getID();
+    _selectedBuildingIndex = _gameScene->
+        getEnemyBuildingsByID(_selectedBuildingId)->getIndex(_selectedBuilding);
+    log("set building id %d index %d", _selectedBuildingId, _selectedBuildingIndex);
 }
 
 void Manager::attack()
@@ -416,16 +454,11 @@ void Manager::attack()
     bool isInfantryAttack = false;
     bool isDogAttack = false;
     bool isTankAttack = false;
-    bool isBuildingDied = false;
-    bool isBuildingHurt = false;
-    bool isMySoldierDied = false;
-    Unit* myDiedSoldier = nullptr;
-    Tag selectedBuildingTag = NONE;
-    Vector<Unit*>* enemySoldiers = _gameScene->getEnemySoldiers();
     clock_t nowT = clock();
 
-    for (auto& soldier : *(_gameScene->getSoldiers()))
+    for (int i = 0; i < _gameScene->getSoldiers()->size(); ++i)
     {
+        auto soldier = _gameScene->getSoldiers()->at(i);
         bool isSoldierAttack = false;
 
         if (_selectedEnemy && soldier->canAttack(_selectedEnemy->getPosition())
@@ -437,93 +470,28 @@ void Manager::attack()
             case INFANTRY_TAG:
                 if (nowT - infantryPreT >= soldier->getUnitATKCD())
                 {
-                    if (_selectedEnemy->getPositionX() - soldier->getPositionX() > 0)
-                    {
-                        soldier->switchState(stateAttackRight);
-                    }
-                    else
-                    {
-                        soldier->switchState(stateAttackLeft);
-                    }
-                    soldier->attack(_selectedEnemy);
-
-                    if (_selectedEnemy->getUnitHP() <= 0)
-                    {
-                        _selectedEnemy->switchState(stateDeath);
-                        if (_gameScene->getSoldiers()->contains(_selectedEnemy))
-                        {
-                            isMySoldierDied = true;
-                            myDiedSoldier = _selectedEnemy;
-                        }
-                        else
-                        {
-                            enemySoldiers->eraseObject(_selectedEnemy);
-                            _gameScene->removeChild(_selectedEnemy);
-                        }
-                        _selectedEnemy = nullptr;
-                    }
+                    _gameScene->_client->sendMessage(ATTACK_UNIT, 
+                        getAttackMessage(soldier, _selectedEnemyId, _selectedEnemyIndex));
+                    //log("attack enemy id %d index %d", _selectedEnemyId, _selectedEnemyIndex);
+  
                     isInfantryAttack = isSoldierAttack = true;
                 }
                 break;
             case DOG_TAG:
                 if (nowT - dogPreT >= soldier->getUnitATKCD())
                 {
-                    if (_selectedEnemy->getPositionX() - soldier->getPositionX() > 0)
-                    {
-                        soldier->switchState(stateAttackRight);
-                    }
-                    else
-                    {
-                        soldier->switchState(stateAttackLeft);
-                    }
-                    soldier->attack(_selectedEnemy);
+                    _gameScene->_client->sendMessage(ATTACK_UNIT, 
+                        getAttackMessage(soldier, _selectedEnemyId, _selectedEnemyIndex));
 
-                    if (_selectedEnemy->getUnitHP() <= 0)
-                    {
-                        _selectedEnemy->switchState(stateDeath);
-                        if (_gameScene->getSoldiers()->contains(_selectedEnemy))
-                        {
-                            isMySoldierDied = true;
-                            myDiedSoldier = _selectedEnemy;
-                        }
-                        else
-                        {
-                            enemySoldiers->eraseObject(_selectedEnemy);
-                            _gameScene->removeChild(_selectedEnemy);
-                        }
-                        _selectedEnemy = nullptr;
-                    }
                     isDogAttack = isSoldierAttack = true;
                 }
                 break;
             case TANK_TAG:
                 if (nowT - tankPreT >= soldier->getUnitATKCD())
                 {
-                    if (_selectedEnemy->getPositionX() - soldier->getPositionX() > 0)
-                    {
-                        soldier->switchState(stateAttackRight);
-                    }
-                    else
-                    {
-                        soldier->switchState(stateAttackLeft);
-                    }
-                    soldier->attack(_selectedEnemy);
+                    _gameScene->_client->sendMessage(ATTACK_UNIT, 
+                        getAttackMessage(soldier, _selectedEnemyId, _selectedEnemyIndex));
 
-                    if (_selectedEnemy->getUnitHP() <= 0)
-                    {
-                        _selectedEnemy->switchState(stateDeath);
-                        if (_gameScene->getSoldiers()->contains(_selectedEnemy))
-                        {
-                            isMySoldierDied = true;
-                            myDiedSoldier = _selectedEnemy;
-                        }
-                        else
-                        {
-                            enemySoldiers->eraseObject(_selectedEnemy);
-                            _gameScene->removeChild(_selectedEnemy);
-                        }
-                        _selectedEnemy = nullptr;
-                    }
                     isTankAttack = isSoldierAttack = true;
                 }
                 break;
@@ -533,86 +501,32 @@ void Manager::attack()
         }
         else if (_selectedBuilding && soldier->canAttack(_selectedBuilding->getPosition()) && !isSoldierAttack)  // 如果选中了敌方建筑
         {
-            selectedBuildingTag = _selectedBuilding->getBuildingTag();
             switch (soldier->getUnitTag())
             {
             case INFANTRY_TAG:
                 if (nowT - infantryPreT >= soldier->getUnitATKCD())
                 {
-                    isBuildingHurt = true;
+                    _gameScene->_client->sendMessage(ATTACK_BUILDING,
+                        getAttackMessage(soldier, _selectedBuildingId, _selectedBuildingIndex));
 
-                    if (_selectedBuilding->getPositionX() - soldier->getPositionX() > 0)
-                    {
-                        soldier->switchState(stateAttackRight);
-                    }
-                    else
-                    {
-                        soldier->switchState(stateAttackLeft);
-                    }
-                    soldier->attack(_selectedBuilding);
-
-                    if (_selectedBuilding->getHP() <= 0)
-                    {
-                        _selectedBuilding->setDeath();
-                        isBuildingDied = true;
-                        _gameScene->getEnemyBuildings()->eraseObject(_selectedBuilding);
-                        _gameScene->removeChild(_selectedBuilding);
-                        _selectedBuilding = nullptr;
-                    }
                     isInfantryAttack = isSoldierAttack = true;
                 }
                 break;
             case DOG_TAG:
                 if (nowT - dogPreT >= soldier->getUnitATKCD())
                 {
-                    isBuildingHurt = true;
+                    _gameScene->_client->sendMessage(ATTACK_BUILDING,
+                        getAttackMessage(soldier, _selectedBuildingId, _selectedBuildingIndex));
 
-                    if (_selectedBuilding->getPositionX() - soldier->getPositionX() > 0)
-                    {
-                        soldier->switchState(stateAttackRight);
-                    }
-                    else
-                    {
-                        soldier->switchState(stateAttackLeft);
-                    }
-                    soldier->attack(_selectedBuilding);
-
-                    if (_selectedBuilding->getHP() <= 0)
-                    {
-                        _selectedBuilding->setDeath();
-                        isBuildingDied = true;
-                        _gameScene->getEnemyBuildings()->eraseObject(_selectedBuilding);
-                        _gameScene->removeChild(_selectedBuilding);
-                        _selectedBuilding = nullptr;
-                        isBuildingDied = true;
-                    }
                     isDogAttack = isSoldierAttack = true;
                 }
                 break;
             case TANK_TAG:
                 if (nowT - tankPreT >= soldier->getUnitATKCD())
                 {
-                    isBuildingHurt = true;
+                    _gameScene->_client->sendMessage(ATTACK_BUILDING,
+                        getAttackMessage(soldier, _selectedBuildingId, _selectedBuildingIndex));
 
-                    if (_selectedBuilding->getPositionX() - soldier->getPositionX() > 0)
-                    {
-                        soldier->switchState(stateAttackRight);
-                    }
-                    else
-                    {
-                        soldier->switchState(stateAttackLeft);
-                    }
-                    soldier->attack(_selectedBuilding);
-
-                    if (_selectedBuilding->getHP() <= 0)
-                    {
-                        _selectedBuilding->setDeath();
-                        isBuildingDied = true;
-                        _gameScene->getEnemyBuildings()->eraseObject(_selectedBuilding);
-                        _gameScene->removeChild(_selectedBuilding);
-                        _selectedBuilding = nullptr;
-                        isBuildingDied = true;
-                    }
                     isTankAttack = isSoldierAttack = true;
                 }
             }
@@ -620,92 +534,48 @@ void Manager::attack()
             continue;
         }
 
-        for (auto& enemy : *(enemySoldiers))
+        for (int id = 1; id <= 4 && !isSoldierAttack; ++id)
         {
-            if (isSoldierAttack)
+            for (int i = 0; i < _gameScene->getEnemySoldiersByID(id)->size() && !isSoldierAttack; ++i)
             {
-                break;
-            }
+                auto enemy = _gameScene->getEnemySoldiersByID(id)->at(i);
 
-            if (soldier->canAttack(enemy->getPosition()))
-            {
-                switch (soldier->getUnitTag())
+                if (soldier->canAttack(enemy->getPosition()))
                 {
-                case INFANTRY_TAG:
-                    if (nowT - infantryPreT >= soldier->getUnitATKCD())
+                    switch (soldier->getUnitTag())
                     {
-                        if (enemy->getPositionX() - soldier->getPositionX() > 0)
+                    case INFANTRY_TAG:
+                        if (nowT - infantryPreT >= soldier->getUnitATKCD())
                         {
-                            soldier->switchState(stateAttackRight);
-                        }
-                        else
-                        {
-                            soldier->switchState(stateAttackLeft);
-                        }
-                        soldier->attack(enemy);
+                            _gameScene->_client->sendMessage(ATTACK_UNIT,
+                                getAttackMessage(soldier, id, i));
 
-                        if (enemy->getUnitHP() <= 0)
-                        {
-                            enemy->switchState(stateDeath);
-                            enemySoldiers->eraseObject(enemy);
-                            _gameScene->removeChild(enemy);
+                            isInfantryAttack = isSoldierAttack = true;
                         }
-                        isInfantryAttack = isSoldierAttack = true;
-                    }
-                    break;
-                case DOG_TAG:
-                    if (nowT - dogPreT >= soldier->getUnitATKCD())
-                    {
-                        if (enemy->getPositionX() - soldier->getPositionX() > 0)
+                        break;
+                    case DOG_TAG:
+                        if (nowT - dogPreT >= soldier->getUnitATKCD())
                         {
-                            soldier->switchState(stateAttackRight);
-                        }
-                        else
-                        {
-                            soldier->switchState(stateAttackLeft);
-                        }
-                        soldier->attack(enemy);
+                            _gameScene->_client->sendMessage(ATTACK_UNIT,
+                                getAttackMessage(soldier, id, i));
 
-                        if (enemy->getUnitHP() <= 0)
-                        {
-                            enemy->switchState(stateDeath);
-                            enemySoldiers->eraseObject(enemy);
-                            _gameScene->removeChild(enemy);
+                            isDogAttack = isSoldierAttack = true;
                         }
-                        isDogAttack = isSoldierAttack = true;
-                    }
-                    break;
-                case TANK_TAG:
-                    if (nowT - tankPreT >= soldier->getUnitATKCD())
-                    {
-                        if (enemy->getPositionX() - soldier->getPositionX() > 0)
+                        break;
+                    case TANK_TAG:
+                        if (nowT - tankPreT >= soldier->getUnitATKCD())
                         {
-                            soldier->switchState(stateAttackRight);
-                        }
-                        else
-                        {
-                            soldier->switchState(stateAttackLeft);
-                        }
-                        soldier->attack(enemy);
+                            _gameScene->_client->sendMessage(ATTACK_UNIT,
+                                getAttackMessage(soldier, id, i));
 
-                        if (enemy->getUnitHP() <= 0)
-                        {
-                            enemy->switchState(stateDeath);
-                            enemySoldiers->eraseObject(enemy);
-                            _gameScene->removeChild(enemy);
+                            isTankAttack = isSoldierAttack = true;
                         }
-                        isTankAttack = isSoldierAttack = true;
+                        break;
                     }
                     break;
                 }
-                break;
             }
         }
-    }
-    if (isMySoldierDied)
-    {
-        _gameScene->getSoldiers()->eraseObject(myDiedSoldier);
-        _gameScene->removeChild(myDiedSoldier);
     }
 
     if (isInfantryAttack)
@@ -720,72 +590,61 @@ void Manager::attack()
     {
         tankPreT = nowT;
     }
-
-    if (isBuildingDied)
-    {
-        switch (selectedBuildingTag)
-        {
-        case POWER_PLANT_TAG:
-            _gameScene->decreasePowerPlant();            // 电厂数量减一 
-            this->resetPower();
-            break;
-
-        case MINE_TAG:
-            _gameScene->decreaseMine();                  // 矿场数量-1
-            _gameScene->addPower(buildingData::mineCostPower);
-            break;
-
-        case BARRACKS_TAG:
-            _gameScene->decreaseBarracks();
-            if (_gameScene->getBarracksNum())
-            {
-                for (auto& building : *(_gameScene->getBuildings()))
-                {
-                    if (building->getBuildingTag() == BARRACKS_TAG)
-                    {
-                        _gameScene->setBarracksPosition(building->getPosition());
-                    }
-                }
-            }
-            else
-            {
-                _isWaitToCreateSoldier = false;
-            }
-            _gameScene->addPower(buildingData::barracksCostPower);
-            break;
-
-        case CAR_FACTORY_TAG:
-            _gameScene->decreaseCarFactory();
-            if (_gameScene->getCarFactoryNum())
-            {
-                for (auto& building : *(_gameScene->getBuildings()))
-                {
-                    if (building->getBuildingTag() == CAR_FACTORY_TAG)
-                    {
-                        _gameScene->setCarFactoryPosition(building->getPosition());
-                    }
-                }
-            }
-            else
-            {
-                _isWaitToCreateCar = false;
-            }
-            _gameScene->addPower(buildingData::carFactoryCostPower);
-            break;
-        }
-    }
-    else if (isBuildingHurt)
-    {
-        switch (selectedBuildingTag)
-        {
-        case POWER_PLANT_TAG:          
-            this->resetPower();
-            break;
-        default:
-            break;
-        }
-    }
        
+}
+
+void Manager::buildingDied(Tag buildingTag)
+{
+    switch (buildingTag)
+    {
+    case POWER_PLANT_TAG:
+        _gameScene->decreasePowerPlant();            // 电厂数量减一 
+        this->resetPower();
+        break;
+
+    case MINE_TAG:
+        _gameScene->decreaseMine();                  // 矿场数量-1
+        _gameScene->addPower(buildingData::mineCostPower);
+        break;
+
+    case BARRACKS_TAG:
+        _gameScene->decreaseBarracks();
+        if (_gameScene->getBarracksNum())
+        {
+            for (auto& building : *(_gameScene->getBuildings()))
+            {
+                if (building->getBuildingTag() == BARRACKS_TAG)
+                {
+                    _gameScene->setBarracksPosition(building->getPosition());
+                }
+            }
+        }
+        else
+        {
+            _isWaitToCreateSoldier = false;
+        }
+        _gameScene->addPower(buildingData::barracksCostPower);
+        break;
+
+    case CAR_FACTORY_TAG:
+        _gameScene->decreaseCarFactory();
+        if (_gameScene->getCarFactoryNum())
+        {
+            for (auto& building : *(_gameScene->getBuildings()))
+            {
+                if (building->getBuildingTag() == CAR_FACTORY_TAG)
+                {
+                    _gameScene->setCarFactoryPosition(building->getPosition());
+                }
+            }
+        }
+        else
+        {
+            _isWaitToCreateCar = false;
+        }
+        _gameScene->addPower(buildingData::carFactoryCostPower);
+        break;
+    }
 }
 
 void Manager::addMoneyUpdate()
@@ -1030,6 +889,146 @@ void Manager::doCommands()
 			_gameScene->removeChild(_gameScene->getEnemySoldiers()->at(_index));
 			_gameScene->getEnemySoldiers()->erase(_index);
 		}
+        else if (_command[0] == ATTACK_UNIT[0])
+        {
+            readAttackCommand();
+            if (_isUnitDied[_enemyId][_enemyIndex] || _isUnitDied[_playerId][_index])
+            {
+                continue;
+            }
+            Unit* soldier;
+            Unit* enemy;
+            //====================get attacker through index========================
+            //cocos2d::log("get attacker playerId %d index %d", _playerId, _index);
+            if (_playerId == _gameScene->_localPlayerID)
+            {
+                soldier = _gameScene->getSoldiers()->at(_index);
+            }
+            else
+            {
+                soldier = _gameScene->getEnemySoldiersByID(_playerId)->at(_index);
+            }
+            //=================get enemy through index==================
+            if (_enemyId == _gameScene->_localPlayerID)
+            {
+                enemy = _gameScene->getSoldiers()->at(_enemyIndex);
+            }
+            else
+            {
+                enemy = _gameScene->getEnemySoldiersByID(_enemyId)->at(_enemyIndex);
+            }
+            //cocos2d::log("get enemy id %d index %d", _enemyId, _enemyIndex);
+            //=======================attack=================================
+            if (enemy->getPositionX() - soldier->getPositionX() > 0)
+            {
+                soldier->switchState(stateAttackRight);
+            }
+            else
+            {
+                soldier->switchState(stateAttackLeft);
+            }
+            soldier->attack(enemy);
+
+            if (enemy->getUnitHP() <= 0)
+            {
+                enemy->switchState(stateDeath);
+                _isUnitDied[_enemyId][_enemyIndex] = 1;
+                if (_gameScene->_localPlayerID == enemy->getID())
+                {
+                    _gameScene->getSoldiers()->erase(_enemyIndex);
+                }
+                else
+                {
+                    _gameScene->getEnemySoldiersByID(_enemyId)->erase(_enemyIndex);
+                }
+                _gameScene->removeChild(enemy);
+                if (_gameScene->_localPlayerID == 2)
+                {
+                    _gameScene->_client->sendMessage(UNIT_DIED, getDeathMessage(_enemyId, _enemyIndex));
+                }
+                if (_selectedEnemyId == _enemyId && _selectedEnemyIndex == _enemyIndex)
+                {
+                    _selectedEnemy = nullptr;
+                    _selectedEnemyId = _selectedEnemyIndex = 0;
+                }
+            }
+        }
+        else if (_command[0] == ATTACK_BUILDING[0])
+        {
+            readAttackCommand();
+            if (_isBuildingDied[_enemyId][_enemyIndex] || _isUnitDied[_playerId][_index])
+            {
+                continue;
+            }
+            Unit* soldier;
+            Building* enemy;
+            //====================get attacker through index========================
+            //cocos2d::log("get attacker playerId %d index %d", _playerId, _index);
+            if (_playerId == _gameScene->_localPlayerID)
+            {
+                soldier = _gameScene->getSoldiers()->at(_index);
+            }
+            else
+            {
+                soldier = _gameScene->getEnemySoldiersByID(_playerId)->at(_index);
+            }
+            
+            //=================get enemy through index==================
+            if (_enemyId == _gameScene->_localPlayerID)
+            {
+                enemy = _gameScene->getBuildings()->at(_enemyIndex);
+            }
+            else
+            {
+                enemy = _gameScene->getEnemyBuildingsByID(_enemyId)->at(_enemyIndex);
+            }
+
+            //cocos2d::log("get enemy id %d index %d", _enemyId, _enemyIndex);
+            //=======================attack=================================
+            if (enemy->getPositionX() - soldier->getPositionX() > 0)
+            {
+                soldier->switchState(stateAttackRight);
+            }
+            else
+            {
+                soldier->switchState(stateAttackLeft);
+            }
+            soldier->attack(enemy);
+
+            if (enemy->getHP() <= 0)
+            {
+                _isBuildingDied[_enemyId][_enemyIndex] = 1;
+                if (_gameScene->_localPlayerID == enemy->getID())
+                {
+                    _gameScene->getBuildings()->erase(_enemyIndex);
+                }
+                else
+                {
+                    _gameScene->getEnemyBuildingsByID(_enemyId)->erase(_enemyIndex);
+                }
+                _gameScene->removeChild(enemy);
+                if (_gameScene->_localPlayerID == 2)
+                {
+                    _gameScene->_client->sendMessage(BUILDING_DIED, getDeathMessage(_enemyId, _enemyIndex));
+                }
+                if (_selectedBuildingId == _enemyId && _selectedBuildingIndex == _enemyIndex)
+                {
+                    _selectedBuilding = nullptr;
+                    _selectedBuildingId = _selectedBuildingIndex = 0;
+                }
+            }
+        }
+        else if (_command[0] == UNIT_DIED[0])
+        {
+            readDeathCommand();
+            _isUnitDied[_enemyId][_enemyIndex] = 0;
+            log("unit die enemyid %d enemyindex %d", _enemyId, _enemyIndex);
+        }
+        else if (_command[0] == BUILDING_DIED[0])
+        {
+            readDeathCommand();
+            _isBuildingDied[_enemyId][_enemyIndex] = 0;
+        }
 		else if (_command[0] == DEAD_MESSAGE[0])
 		{
 			std::string sId(_command.begin() + 1, _command.begin() + 1);
@@ -1292,4 +1291,105 @@ void Manager::readRemoveUnitCommand()
 
 	_index = stringToNum<int>(index);
 	_playerId = stringToNum<int>(playerId);
+}
+
+std::string Manager::getAttackMessage(Unit* u, int enemyId, int enemyIndex)
+{
+    //格式：玩家id + 索引 + enemyId + 索引
+    std::stringstream ssPlayerId;
+    std::stringstream ssPlayerIndex;
+    std::stringstream ssEnemyId;
+    std::stringstream ssEnemyIndex;
+
+    cocos2d::log("get attack enemyIndex %d, enemyId %d", enemyIndex, enemyId);
+
+    ssPlayerId.fill(0);
+    ssPlayerId.width(2);
+    ssPlayerId << _gameScene->_localPlayerID;
+    std::string sId = ssPlayerId.str();
+    if (sId[0] == '\0')
+    {
+        sId[0] = '0';
+    }
+
+    auto index = _gameScene->getSoldiers()->getIndex(u);
+    ssPlayerIndex.fill(0);
+    ssPlayerIndex.width(2);
+    ssPlayerIndex << index;
+    std::string sIndex = ssPlayerIndex.str();
+    if (sIndex[0] == '\0')
+    {
+        sIndex[0] = '0';
+    }
+
+    ssEnemyId.fill(0);
+    ssEnemyId.width(2);
+    ssEnemyId << enemyId;
+    std::string sEnemyId = ssEnemyId.str();
+    if (sEnemyId[0] == '\0')
+    {
+        sEnemyId[0] = '0';
+    }
+
+    ssEnemyIndex.fill(0);
+    ssEnemyIndex.width(2);
+    ssEnemyIndex << enemyIndex;
+    std::string sEnemyIndex = ssEnemyIndex.str();
+    if (sEnemyIndex[0] == '\0')
+    {
+        sEnemyIndex[0] = '0';
+    }
+
+    return sId + sIndex + sEnemyId + sEnemyIndex;
+}
+
+void Manager::readAttackCommand()
+{
+    std::string playerId(_command.begin() + 1, _command.begin() + 3);
+    std::string index(_command.begin() + 3, _command.begin() + 5);
+    std::string enemyId(_command.begin() + 5, _command.begin() + 7);
+    std::string enemyIndex(_command.begin() + 7, _command.begin() + 9);
+
+    _index = stringToNum<int>(index);
+    _playerId = stringToNum<int>(playerId);
+    _enemyId = stringToNum<int>(enemyId);
+    _enemyIndex = stringToNum<int>(enemyIndex);
+
+    cocos2d::log("read command index %d, enemyIndex %d, enemyId %d", _index, _enemyIndex, _enemyId);
+}
+
+std::string Manager::getDeathMessage(int enemyId, int enemyIndex)
+{
+    //格式：enemyId + 索引
+    std::stringstream ssEnemyId;
+    std::stringstream ssEnemyIndex;
+
+    ssEnemyId.fill(0);
+    ssEnemyId.width(2);
+    ssEnemyId << enemyId;
+    std::string sEnemyId = ssEnemyId.str();
+    if (sEnemyId[0] == '\0')
+    {
+        sEnemyId[0] = '0';
+    }
+
+    ssEnemyIndex.fill(0);
+    ssEnemyIndex.width(2);
+    ssEnemyIndex << enemyIndex;
+    std::string sEnemyIndex = ssEnemyIndex.str();
+    if (sEnemyIndex[0] == '\0')
+    {
+        sEnemyIndex[0] = '0';
+    }
+
+    return sEnemyId + sEnemyIndex;
+}
+
+void Manager::readDeathCommand()
+{
+    std::string enemyId(_command.begin() + 1, _command.begin() + 3);
+    std::string enemyIndex(_command.begin() + 3, _command.begin() + 5);
+
+    _enemyId = stringToNum<int>(enemyId);
+    _enemyIndex = stringToNum<int>(enemyIndex);
 }

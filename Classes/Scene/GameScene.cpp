@@ -117,7 +117,6 @@ bool GameScene::init()
 	_barrier = _tileMap->getLayer("barrier");
 
 
-	this->dataInit();
 
 	/*update by czd*/
 	if (_inputData->getmapIndex() == 1)
@@ -484,6 +483,9 @@ bool GameScene::init()
 	_soldiers.pushBack(baseCar);
 	//log("%f %f", baseCar->getPosition().x, baseCar->getPosition().y);
 
+	this->dataInit();
+
+
 
 
 //===============================the first show of money and time===========================
@@ -594,25 +596,85 @@ void GameScene::dataInit()
 
 	_carFactoryPosition = _barracksPosition = Vec2::ZERO;
 
-    //To Do :id
-    auto baseCar = Unit::create(BASE_CAR_TAG);
-    if (_localPlayerID == 1)
+    //init base car
+    float right = MAPX - visibleSize.width / 2;
+    float left = visibleSize.width / 2 - MAPX + visibleSize.width;
+    float up = MAPY - visibleSize.height / 2;
+    float down = visibleSize.height / 2 - MAPY + visibleSize.height;
+    for (auto& player : _playerList)
     {
-        baseCar->setPosition(Vec2(MAPX - visibleSize.width / 2, MAPY - visibleSize.height / 2));
-        baseCar->setDestination(Vec2(MAPX - visibleSize.width / 2, MAPY - visibleSize.height / 2));
+        if (player.player_id == _localPlayerID)
+        {
+            continue;
+        }
+        auto baseCar = Unit::create(BASE_CAR_TAG, player.player_id);
+        switch (_localPlayerID)
+        {
+        case 1:
+            switch (player.player_id)
+            {
+            case 2:
+                baseCar->setPosition(Vec2(right, up));
+                break;
+            case 3:
+                baseCar->setPosition(Vec2(visibleSize.width / 2, up));
+                break;
+            case 4:
+                baseCar->setPosition(Vec2(right, visibleSize.height / 2));
+                break;
+            }
+            break;
+        case 2:
+            switch (player.player_id)
+            {
+            case 1:
+                baseCar->setPosition(Vec2(left, down));
+                break;
+            case 3:
+                baseCar->setPosition(Vec2(left, visibleSize.height));
+                break;
+            case 4:
+                baseCar->setPosition(Vec2(visibleSize.width, down));
+                break;
+            }
+            break;
+        case 3:
+            switch (player.player_id)
+            {
+            case 1:
+                baseCar->setPosition(Vec2(visibleSize.width, down));
+                break;
+            case 2:
+                baseCar->setPosition(Vec2(right, visibleSize.height));
+                break;
+            case 4:
+                baseCar->setPosition(Vec2(right, down));
+                break;
+            }
+            break;
+        case 4:
+            switch (player.player_id)
+            {
+            case 1:
+                baseCar->setPosition(Vec2(left, visibleSize.height));
+                break;
+            case 2:
+                baseCar->setPosition(Vec2(visibleSize.width / 2, up));
+                break;
+            case 3:
+                baseCar->setPosition(Vec2(left, up));
+                break;
+            }
+            break;
+        }
+        
+        baseCar->setGetDestination(true);
+        this->addChild(baseCar, 1);
+        _gameEventDispatcher->addEventListenerWithSceneGraphPriority
+        (_gameListener->clone(), baseCar);
+        pushEnemyUnitByID(baseCar, player.player_id);
+
     }
-    else
-    {
-		baseCar->setPosition(Vec2(visibleSize.width / 2 - MAPX + visibleSize.width,
-			visibleSize.height / 2 - MAPY + visibleSize.height));
-		baseCar->setDestination(Vec2(visibleSize.width / 2 - MAPX + visibleSize.width,
-			visibleSize.height / 2 - MAPY + visibleSize.height));
-    }
-    baseCar->setGetDestination(true);
-	baseCar->_bloodBarPt->setVisible(false);
-	baseCar->_bloodBarAsEnemyPt->setVisible(true);
-    this->addChild(baseCar, 1);
-    _enemySoldiers.pushBack(baseCar);
 
 	_isBaseExist = false;
 }
@@ -622,6 +684,44 @@ void GameScene::menuBackCallback(Ref *pSender)
 	//跳转到第一个场景，记得包含第一个场景的头文件：GameScene.h  
 	//Director::getInstance()->replaceScene(MyFirstScene::createScene());  
 	Director::getInstance()->popScene();
+}
+
+void GameScene::pushEnemyUnitByID(Unit* u, int id)
+{
+    switch (id)
+    {
+    case 1:
+        _enemySoldiers1.pushBack(u);
+        break;
+    case 2:
+        _enemySoldiers2.pushBack(u);
+        break;
+    case 3:
+        _enemySoldiers3.pushBack(u);
+        break;
+    case 4:
+        _enemySoldiers4.pushBack(u);
+        break;
+    }
+}
+
+void GameScene::pushEnemyBuildingByID(Building* b, int id)
+{
+    switch (id)
+    {
+    case 1:
+        _enemyBuildings1.pushBack(b);
+        break;
+    case 2:
+        _enemyBuildings2.pushBack(b);
+        break;
+    case 3:
+        _enemyBuildings3.pushBack(b);
+        break;
+    case 4:
+        _enemyBuildings4.pushBack(b);
+        break;
+    }
 }
 
 Vector<Unit*>* GameScene::getSelectedSoldiers()
@@ -637,6 +737,51 @@ Vector<Unit*>* GameScene::getSoldiers()
 Vector<Building*>* GameScene::getBuildings()
 {
 	return &_buildings;
+}
+
+Vector<Unit*>* GameScene::getEnemySoldiersByID(int id)
+{
+    switch (id)
+    {
+    case 1:
+        return &_enemySoldiers1;
+        break;
+    case 2:
+        return &_enemySoldiers2;
+        break;
+    case 3:
+        return &_enemySoldiers3;
+        break;
+    case 4:
+        return &_enemySoldiers4;
+        break;
+    default:
+        return nullptr;
+        break;
+    }
+    return nullptr;
+}
+
+Vector<Building*>* GameScene::getEnemyBuildingsByID(int id)
+{
+    switch (id)
+    {
+    case 1:
+        return &_enemyBuildings1;
+        break;
+    case 2:
+        return &_enemyBuildings2;
+        break;
+    case 3:
+        return &_enemyBuildings3;
+        break;
+    case 4:
+        return &_enemyBuildings4;
+        break;
+    default:
+        return nullptr;
+    }
+    return nullptr;
 }
 
 void GameScene::addMoney(int money)
@@ -736,13 +881,13 @@ void GameScene::update(float time)
 		Director::getInstance()->replaceScene(TransitionFade::create(1, EndingScene::createScene(false)));
 	}
 
-	_manager->attack();
 	_manager->addMoneyUpdate();
 
     _manager->waitCreateBuilding();
     _manager->waitCreateSoldier();
     _manager->waitCreateCar();
 
+    _manager->attack();
 	_manager->getMoveController()->moveSoldiers();
 
 	_manager->doCommands();
@@ -975,7 +1120,7 @@ void GameScene::showOnSmallMap() {
 
 void GameScene::moveSpritesWithMap(cocos2d::Vec2 direction)
 {
-    // my soldiers
+    //============== my soldiers==============================
     for (auto& soldier : _soldiers)
     {
         soldier->setPosition(soldier->getPosition() + direction);
@@ -989,25 +1134,41 @@ void GameScene::moveSpritesWithMap(cocos2d::Vec2 direction)
             *iter2 += direction;
         }
     }
-    // my buildings
+    //====================== my buildings==================================
     for (auto& building : _buildings)
     {
         building->setPosition(building->getPosition() + direction);
     }
-    // enemy soldiers
-    for (auto& soldier : _enemySoldiers)
+    //========================= enemy soldiers==============================
+    for (int i = 1; i <= 4; ++i)
     {
-        soldier->setPosition(soldier->getPosition() + direction);
-        if (!soldier->getGetDestination())
+        for (auto& soldier : *(getEnemySoldiersByID(i)))
         {
-            soldier->setDestination(soldier->getDestination() + direction);
+            //log("move with map %f %f", soldier->getPosition().x, soldier->getPosition().y);
+            //log("id %d", i);
+            //log("direciton %f %f",direction.x, direction.y);
+            soldier->setPosition(soldier->getPosition() + direction);
+            if (!soldier->getGetDestination())
+            {
+                soldier->setDestination(soldier->getDestination() + direction);
+            }
+            std::vector<Point>::iterator iter2;
+            for (iter2 = soldier->_route.begin(); iter2 != soldier->_route.end(); iter2++)
+            {
+                *iter2 += direction;
+            }
         }
     }
-    // enemy buildings
-    for (auto& building : _enemyBuildings)
+    
+    // ======================enemy buildings========================================
+    for (int i = 1; i <= 4; ++i)
     {
-        building->setPosition(building->getPosition() + direction);
+        for (auto& building : *(getEnemyBuildingsByID(i)))
+        {
+            building->setPosition(building->getPosition() + direction);
+        }
     }
+
     // barracks position
     if (_barracksNum)
     {
@@ -1042,6 +1203,18 @@ bool GameScene::isCollision(cocos2d::Vec2 position)
         if (Y > -0.5*X && Y < 0.5*X && 0.5*X - 100 < Y && Y < 100 - 0.5*X)
         {
             return true;
+        }
+    }
+    for (int i = 1; i <= 4; ++i)
+    {
+        for (auto &building : *(getEnemyBuildingsByID(i)))
+        {
+            auto X = position.x - building->getPositionX() + 100;
+            auto Y = position.y - building->getPositionY() + 30;
+            if (Y > -0.5*X && Y < 0.5*X && 0.5*X - 100 < Y && Y < 100 - 0.5*X)
+            {
+                return true;
+            }
         }
     }
     position.x = static_cast<int>(mapPosition.x / tileSize.width);

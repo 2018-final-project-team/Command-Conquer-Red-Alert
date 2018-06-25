@@ -30,11 +30,18 @@ private:
 	cocos2d::Vec2   _destinationForMessage;   /// Unit的目的地
 	std::string     _command;              /// 读取的远程信息
 	int             _index;                /// 需要移动的Unit在对应Vector中的索引
+    int             _enemyIndex;
 	int             _playerId;             /// 人物Id
+    int             _enemyId;
 	Tag             _tagForMessage;        ///建造建筑或Unit的Tag
     cocos2d::Vec2   _positionForMessage;  ///建造建筑的位置
 	Building*       _buildingForMessage;
 	Unit*           _unitForMessage;
+
+
+    int _isUnitDied[5][100];
+    int _isBuildingDied[5][100];
+
 
 
 	Panel* _panel;
@@ -62,6 +69,10 @@ private:
 //==========Attack================
     Unit* _selectedEnemy;              //被选中的士兵或建筑
     Building* _selectedBuilding;
+    int _selectedEnemyId;
+    int _selectedEnemyIndex;
+    int _selectedBuildingId;
+    int _selectedBuildingIndex;
 
 public:
     /**
@@ -142,6 +153,8 @@ public:
     */
     void attack();
 
+    void buildingDied(Tag buildingTag);
+
     /**
     * @brief 加钱 在Update函数里调用
     */
@@ -190,6 +203,18 @@ public:
 
 	//提取移除Unit命令
 	void Manager::readRemoveUnitCommand();
+    
+    //生成attack命令
+    std::string getAttackMessage(Unit* u, int enemyId, int enemyIndex);
+
+    //提取attack命令
+    void readAttackCommand();
+
+    //生成death命令
+    std::string getDeathMessage(int enemyId, int enemyIndex);
+
+    //提取death命令
+    void readDeathCommand();
 
 };
 

@@ -15,7 +15,7 @@ using namespace cocos2d;
 
 
 //创建建筑物时调用的方法
-Building* Building::create(Tag tag)
+Building* Building::create(Tag tag, int id)
 {
     //创建一个建筑物精灵对象
     Building* temp = new Building();
@@ -52,6 +52,8 @@ Building* Building::create(Tag tag)
     temp->autorelease();
     //拿到当前建筑物的_tag
     temp->_buildingTag = tag;
+	//id
+    temp->setID(id);
     //设置精灵自身Tag
     temp->setTag(tag);
 

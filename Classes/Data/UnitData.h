@@ -125,7 +125,7 @@ public:
 	CC_SYNTHESIZE(UnitState, _UnitState, UnitState );
     
     //生成单位的方法
-    static Unit * create(Tag unitTag);
+    static Unit * create(Tag unitTag, int id);
 
     // 用于寻路
     std::vector<cocos2d::Point> _route;

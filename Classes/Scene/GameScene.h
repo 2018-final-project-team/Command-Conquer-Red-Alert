@@ -56,10 +56,18 @@ private:
 
 	cocos2d::Vector<Unit*> _selectedSoldiers;
 
-	cocos2d::Vector<Unit*> _enemySoldiers;
+	cocos2d::Vector<Unit*>     _enemySoldiers1;        //第一个敌人的士兵队列.
+    cocos2d::Vector<Building*> _enemyBuildings1;       //第一个敌人的建筑队列.
+    cocos2d::Vector<Unit*>     _enemySoldiers2;        //第二个敌人的士兵队列.
+    cocos2d::Vector<Building*> _enemyBuildings2;       //第二个敌人的建筑队列.
+    cocos2d::Vector<Unit*>     _enemySoldiers3;        //第三个敌人的士兵队列.
+    cocos2d::Vector<Building*> _enemyBuildings3;       //第三个敌人的建筑队列.
+    cocos2d::Vector<Unit*>     _enemySoldiers4;        //第四个敌人的士兵队列.
+    cocos2d::Vector<Building*> _enemyBuildings4;       //第四个敌人的建筑队列.
+
+	//my soldiers and buildings
 	cocos2d::Vector<Unit*> _soldiers;
 	cocos2d::Vector<Building*> _buildings;
-    cocos2d::Vector<Building*> _enemyBuildings;
 
 	cocos2d::Point _touchBegan;
 	cocos2d::Point _touchEnd;
@@ -143,6 +151,10 @@ public:
 
 	void menuBackCallback(Ref *pSender);
 
+    void pushEnemyUnitByID(Unit* u, int id);
+
+    void pushEnemyBuildingByID(Building* b, int id);
+
 	/**
 	* @brief getSelectedSoldiers
 	* @return the address of _selectedSoldiers
@@ -155,11 +167,11 @@ public:
 	*/
 	cocos2d::Vector<Unit*>* getSoldiers();
 
-    /*
+   /*
     * @brief getEnemySoldiers
     * @return the address of enemy_soldiers
     */
-    cocos2d::Vector<Unit*> * getEnemySoldiers() { return &_enemySoldiers; }
+    cocos2d::Vector<Unit*> * getEnemySoldiersByID(int id);
 
 	/**
 	* @brief getBuildings
@@ -167,11 +179,11 @@ public:
 	*/
 	cocos2d::Vector<Building*>* getBuildings();
 
-    /*
+     /*
     * @brief getEnemyBuildings
     * @return the address of enemy_soldiers
     */
-    cocos2d::Vector<Building*> * getEnemyBuildings() { return &_enemyBuildings; }
+    cocos2d::Vector<Building*> * getEnemyBuildingsByID(int id);
 
 	/**
 	* @brief addMoney
