@@ -65,7 +65,7 @@ bool NetMenu::init()
 
     remote_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
         if (type == Widget::TouchEventType::ENDED) {
-			GameAudio::getInstance()->playEffect("Sound/button.mp3");
+			GameAudio::getInstance()->playEffect("Sound/button.wav");
 			initIPBox();
 			remote_button->setVisible(false);
 			local_button->setVisible(false);
@@ -83,7 +83,7 @@ bool NetMenu::init()
 			{
 				if (type == Widget::TouchEventType::ENDED)
 				{
-					GameAudio::getInstance()->playEffect("Sound/button.mp3");
+					GameAudio::getInstance()->playEffect("Sound/button.wav");
 					Director::getInstance()->pushScene(TransitionFade::create(1, NetMenu::createScene(_playerName)));
 				}
 			});
@@ -96,7 +96,7 @@ bool NetMenu::init()
                 }
                 else
                 {
-                    GameAudio::getInstance()->playEffect("Sound/button.mp3");
+                    GameAudio::getInstance()->playEffect("Sound/button.wav");
                 }
 				IP = IPInput->getString();
 				//log("IP    IP   %c", IP[0]);
@@ -146,7 +146,7 @@ bool NetMenu::init()
 
 					back_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
 						if (type == Widget::TouchEventType::ENDED) {
-							GameAudio::getInstance()->playEffect("Sound/button.mp3");
+							GameAudio::getInstance()->playEffect("Sound/button.wav");
 							removeChild(blackLayer);
 							IPBG->setVisible(true);
 							IPInput->setVisible(true);
@@ -156,7 +156,7 @@ bool NetMenu::init()
 
 					join_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
 						if (type == Widget::TouchEventType::ENDED) {
-							GameAudio::getInstance()->playEffect("Sound/button.mp3");
+							GameAudio::getInstance()->playEffect("Sound/button.wav");
 							auto client = Client::create(1);
 							client->_landlordIP = IP;
 							client->_with_server = false;
@@ -168,7 +168,7 @@ bool NetMenu::init()
 
 					create_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
 						if (type == Widget::TouchEventType::ENDED) {
-							GameAudio::getInstance()->playEffect("Sound/button.mp3");
+							GameAudio::getInstance()->playEffect("Sound/button.wav");
 							auto server = LocalServer::create();
 							this->addChild(server);
 							auto client = Client::create(1);
@@ -197,7 +197,7 @@ bool NetMenu::init()
     local_button->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 5 * 2));
     local_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
         if (type == Widget::TouchEventType::ENDED) {
-			GameAudio::getInstance()->playEffect("Sound/button.mp3");
+			GameAudio::getInstance()->playEffect("Sound/button.wav");
 			remote_button->setVisible(false);
 			local_button->setVisible(false);
 			return_button->setVisible(false);
@@ -233,7 +233,7 @@ bool NetMenu::init()
             
             back_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
                 if (type == Widget::TouchEventType::ENDED) {
-					GameAudio::getInstance()->playEffect("Sound/button.mp3");
+					GameAudio::getInstance()->playEffect("Sound/button.wav");
 					this->removeChild(blackLayer);
 					remote_button->setVisible(true);
 					local_button->setVisible(true);
@@ -244,7 +244,7 @@ bool NetMenu::init()
             
             join_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
                 if (type == Widget::TouchEventType::ENDED) {
-					GameAudio::getInstance()->playEffect("Sound/button.mp3");
+					GameAudio::getInstance()->playEffect("Sound/button.wav");
                     auto client = Client::create(2);
                     client->_with_server = false;
                     auto transition = TransitionSlideInL::create(0.5, SearchScene::createScene(client, _playerName));
@@ -255,7 +255,7 @@ bool NetMenu::init()
             
             create_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
                 if (type == Widget::TouchEventType::ENDED) {
-					GameAudio::getInstance()->playEffect("Sound/button.mp3");
+					GameAudio::getInstance()->playEffect("Sound/button.wav");
                     auto server = LocalServer::create();
                     this->addChild(server, 1);
                     auto client = Client::create(2);
@@ -281,7 +281,7 @@ bool NetMenu::init()
     
     return_button->addTouchEventListener([](Ref* pSender, Widget::TouchEventType type) {
         if (type == Widget::TouchEventType::ENDED) {
-			GameAudio::getInstance()->playEffect("Sound/button.mp3");
+			GameAudio::getInstance()->playEffect("Sound/button.wav");
 			Director::getInstance()->pushScene(TransitionFade::create(1, WelcomeScene::createScene()));
         }
     });

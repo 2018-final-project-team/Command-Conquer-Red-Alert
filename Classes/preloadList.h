@@ -33,7 +33,7 @@ namespace Preload
 
 	//音效文件名字符串数组
 	const std::array<std::string, 4> effect = {
-		"Sound/button.mp3",
+		"Sound/button.wav",
 		"Sound/bell.mp3",
 		"Sound/move.mp3",
 		"Sound/Explosion.mp3"
