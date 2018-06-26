@@ -43,6 +43,7 @@ private:
     int _isBuildingDied[5][100];
 
 
+
 	Panel* _panel;
     GameScene* _gameScene;
     MoveController* _moveController;
@@ -202,12 +203,18 @@ public:
 
 	//提取移除Unit命令
 	void Manager::readRemoveUnitCommand();
-
+    
     //生成attack命令
     std::string getAttackMessage(Unit* u, int enemyId, int enemyIndex);
 
     //提取attack命令
     void readAttackCommand();
+
+    //生成defense attack命令
+    std::string getDefenseAttackMessage(int index, int enemyId, int enemyIndex);
+
+    //提取defense attack命令
+    void readDefenseAttackCommand();
 
     //生成death命令
     std::string getDeathMessage(int enemyId, int enemyIndex);

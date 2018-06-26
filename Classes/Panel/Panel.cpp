@@ -132,6 +132,8 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 			case MINE_TAG:
 			case BARRACKS_TAG:
 			case CAR_FACTORY_TAG:
+			case SATELLITE_TAG:
+			case DEFENSE_BUILDING_TAG:
 				if (_selectedButton->getIsAble())
 				{
 					_gameScene->_manager->clickCreateBuildingByTag(static_cast<Tag>(_selectedButton->getIconTag()), clock());
@@ -258,6 +260,8 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(_iconButtonListener->clone(), _mineIcon);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(_iconButtonListener->clone(), _barracksIcon);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(_iconButtonListener->clone(), _carFactoryIcon);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(_iconButtonListener->clone(), _satelliteIcon);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(_iconButtonListener->clone(), _defenseBuildingIcon);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(_iconButtonListener->clone(), _infantryIcon);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(_iconButtonListener->clone(), _dogIcon);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(_iconButtonListener->clone(), _tankIcon);
@@ -275,6 +279,8 @@ bool Panel::initWithGameScene(GameScene* gameScene)
 	this->_mineIcon->retain();
 	this->_barracksIcon->retain();
 	this->_carFactoryIcon->retain();
+	this->_satelliteIcon->retain();
+	this->_defenseBuildingIcon->retain();
 	this->_infantryIcon->retain();
 	this->_dogIcon->retain();
 	this->_tankIcon->retain();
@@ -327,6 +333,11 @@ void Panel::checkIcon(Tag tag)
 		{
 			_buildingList.pushBack(_barracksIcon);
 			_buildingList.pushBack(_carFactoryIcon);
+			_buildingList.pushBack(_satelliteIcon);
+		}
+		if (_gameScene->getPowerPlantNum() && _gameScene->getBarracksNum())
+		{
+			_buildingList.pushBack(_defenseBuildingIcon);
 		}
 		break;
 	case SOLDIER_BUTTON:
@@ -354,8 +365,10 @@ void Panel::showIcon(Tag tag)
 	//================设置图标的坐标==================
 	for (int i = 0; i<_needToShow; i++)
 	{
-		float x = 0;
-		float y = 0 - (i + 1) * 80;
+		int col = i / 4;
+		int row = i % 4;
+		float x = -40 + col * 80;
+		float y = 0 - (row + 1) * 80;
 		_curList->at(i)->setPosition(Vec2(x, y));
 		this->addChild(_curList->at(i));
 	}
@@ -378,6 +391,8 @@ void Panel::addIcons()
 	_mineIcon = Icon::createIcon(MINE_TAG, sValue[MINE_TAG - 1], _gameScene);
 	_barracksIcon = Icon::createIcon(BARRACKS_TAG, sValue[BARRACKS_TAG - 1], _gameScene);
 	_carFactoryIcon = Icon::createIcon(CAR_FACTORY_TAG, sValue[CAR_FACTORY_TAG - 1], _gameScene);
+	_satelliteIcon = Icon::createIcon(SATELLITE_TAG, sValue[7], _gameScene);
+	_defenseBuildingIcon = Icon::createIcon(DEFENSE_BUILDING_TAG, sValue[8], _gameScene);
 	_infantryIcon = Icon::createIcon(INFANTRY_TAG, sValue[INFANTRY_TAG - 1], _gameScene);
 	_dogIcon = Icon::createIcon(DOG_TAG, sValue[DOG_TAG - 1], _gameScene);
 	_tankIcon = Icon::createIcon(TANK_TAG, sValue[TANK_TAG - 1], _gameScene);
@@ -398,6 +413,8 @@ void Panel::update(float dt)
 			case MINE_TAG:
 			case BARRACKS_TAG:
 			case CAR_FACTORY_TAG:
+			case SATELLITE_TAG:
+			case DEFENSE_BUILDING_TAG:
 				if (_gameScene->_manager->_canCreateBuilding && tag == _gameScene->_manager->getBuildingTag())
 				{
 					i->setStatus(eIconOK);

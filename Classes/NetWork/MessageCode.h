@@ -1,4 +1,3 @@
-
 #ifndef MessageCode_h
 #define MessageCode_h
 
@@ -135,6 +134,14 @@
             */
             #define BUILDING_DIED    "s"
             /** @} */
+
+/**
+            * @name 在游戏内广播defense attack消息
+            * @{
+            */
+            #define DEFENSE_ATTACK    "t"
+            /** @} */
+
 
 
 

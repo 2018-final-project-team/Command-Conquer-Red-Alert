@@ -8,6 +8,8 @@
 #include "cocos2d.h"
 #include "string"
 #include "TagData.h"
+#include "Data/Building.h"
+#include "Data/DefenseBuilding.h"
 
 
 //TODO: 加入动画和图片素材，之后实现。
@@ -84,6 +86,12 @@ public:
     
     //单位tag（步兵，狗，矿车，坦克）
     CC_SYNTHESIZE(Tag, _unitTag, UnitTag);
+
+    //单位id
+    CC_SYNTHESIZE(int, _id, ID);
+
+    //单位id
+    CC_SYNTHESIZE(int, _index, Index);
     
     //当前血量
     CC_SYNTHESIZE(int, _HP, UnitHP);
@@ -123,12 +131,9 @@ public:
 
 	//单位状态
 	CC_SYNTHESIZE(UnitState, _UnitState, UnitState );
-
-    //单位id
-    CC_SYNTHESIZE(int, _id, ID);
     
     //生成单位的方法
-    static Unit * create(Tag unitTag, int id);
+    static Unit * create(Tag unitTag, int id, int index);
 
     // 用于寻路
     std::vector<cocos2d::Point> _route;
@@ -140,6 +145,8 @@ public:
     /*
      */
     void getInjuredBy(Unit *);
+
+	void getInjuredBy(DefenseBuilding * enemy);
 
 	void decreaseHP(int num);
     /*
