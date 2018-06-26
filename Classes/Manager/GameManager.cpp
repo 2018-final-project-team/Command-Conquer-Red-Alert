@@ -1123,7 +1123,7 @@ void Manager::doCommands()
                 enemy = _gameScene->getEnemySoldierByIdIndex(_enemyId, _enemyIndex);
             }
             //==============attack===================
-            if (soldier)
+            if (enemy)
             {
                 soldier->attack(enemy);
 
