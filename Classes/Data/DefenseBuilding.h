@@ -1,4 +1,4 @@
-#ifndef _Defense_Building_H_
+﻿#ifndef _Defense_Building_H_
 #define _Defense_Building_H_
 
 #include "cocos2d.h"
@@ -13,6 +13,9 @@ private:
 	//单位攻击力
 	CC_SYNTHESIZE(int, _ATK, DefenseATK);
 
+    //id
+    CC_SYNTHESIZE(int, _id, ID);
+
 	//单位攻击间隔
 	CC_SYNTHESIZE(float, _ATKCD, DefenseATKCD);
 
@@ -21,7 +24,7 @@ private:
 public:
 
 	//建造建筑物的方法
-	static DefenseBuilding* create(Tag tag);
+	static DefenseBuilding* create(Tag tag, int id);
 
 	/*
 	*/

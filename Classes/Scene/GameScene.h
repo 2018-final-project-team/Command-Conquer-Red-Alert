@@ -40,6 +40,14 @@ public:
 
 	std::queue<std::string>    _commands;             ///每次读取的命令
 
+    int _unitIndex;
+
+    int _unitIndexDied[5000];
+
+    int _buildingIndex;
+
+    int _buildingIndexDied[5000];
+
 private:
 	
 	cocos2d::TMXLayer* _barrier;
@@ -167,11 +175,15 @@ public:
 	*/
 	cocos2d::Vector<Unit*>* getSoldiers();
 
+    Unit* getSoldierByIndex(int index);
+
    /*
     * @brief getEnemySoldiers
     * @return the address of enemy_soldiers
     */
     cocos2d::Vector<Unit*> * getEnemySoldiersByID(int id);
+
+    Unit* getEnemySoldierByIdIndex(int id, int index);
 
 	/**
 	* @brief getBuildings

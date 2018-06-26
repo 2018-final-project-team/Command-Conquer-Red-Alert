@@ -1,4 +1,4 @@
-//
+﻿//
 //  BuildingData.cpp
 //  CCRA
 //
@@ -15,7 +15,7 @@ using namespace cocos2d;
 
 
 //创建建筑物时调用的方法
-Building* Building::create(Tag tag, int id)
+Building* Building::create(Tag tag, int id, int iindex)
 {
     //创建一个建筑物精灵对象
     Building* temp = new Building();
@@ -54,6 +54,8 @@ Building* Building::create(Tag tag, int id)
     temp->_buildingTag = tag;
 	//id
     temp->setID(id);
+    //index
+    temp->setIndex(iindex);
     //设置精灵自身Tag
     temp->setTag(tag);
 
@@ -104,7 +106,13 @@ void Building::decreaseHP(int num)
 {
 	_hp -= num;
 
-	auto progressTo = ProgressTo::create(0.5f, 100 * _hp/_FullHp);
-	_bloodBarPt->runAction(progressTo);
-	_bloodBarAsEnemyPt->runAction(progressTo);
+	auto progressTo = ProgressTo::create(0.5f, 100 * _hp / _FullHp);
+	if (_bloodBarPt->isVisible())
+	{
+		_bloodBarPt->runAction(progressTo);
+	}
+	else
+	{
+		_bloodBarAsEnemyPt->runAction(progressTo);
+	}
 }

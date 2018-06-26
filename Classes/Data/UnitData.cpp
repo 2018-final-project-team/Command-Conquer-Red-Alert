@@ -15,7 +15,7 @@ USING_NS_CC;
 
 
 //创建单位,创建时按照typedef enum将对应值传入即可
-Unit * Unit::create(Tag unitTag, int id)
+Unit * Unit::create(Tag unitTag, int id, int index)
 {
     //创建精灵
     Unit * temp = new Unit();
@@ -30,6 +30,8 @@ Unit * Unit::create(Tag unitTag, int id)
 	temp->setLastTurn(stateWalkRight);
 
     temp->setID(id);
+
+    temp->setIndex(index);
 
 	//=======================如果创建的是基地车===========================
 	if (unitTag == BASE_CAR_TAG)
@@ -260,7 +262,7 @@ void Unit::attack(Unit * enemy)
 
 void Unit::attack(Building * enemy)
 {
-	enemy->setHP(enemy->getHP() - _ATK);
+	enemy->getInjuredBy(this);
     //==========TO DO:音效=====================
     GameAudio::getInstance()->playEffect("Sound/Explosion.mp3");
 }

@@ -1,4 +1,4 @@
-//
+﻿//
 //  Building.h
 //  CCRA
 //
@@ -64,6 +64,9 @@ public:
     //id of buildings
     CC_SYNTHESIZE(int, _id, ID);
 
+    //index of buildings
+    CC_SYNTHESIZE(int, _index, Index);
+
     //耗费的电
     CC_SYNTHESIZE(int, _castPower, CastPower);
 
@@ -85,7 +88,7 @@ public:
 	//bool updateMark;
 
 	//建造建筑物的方法
-	static Building* create(Tag tag, int id);
+	static Building* create(Tag tag, int id, int index);
 
 
 	void getInjuredBy(Unit *);

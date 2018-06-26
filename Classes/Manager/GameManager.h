@@ -210,6 +210,12 @@ public:
     //提取attack命令
     void readAttackCommand();
 
+    //生成defense attack命令
+    std::string getDefenseAttackMessage(int index, int enemyId, int enemyIndex);
+
+    //提取defense attack命令
+    void readDefenseAttackCommand();
+
     //生成death命令
     std::string getDeathMessage(int enemyId, int enemyIndex);
 

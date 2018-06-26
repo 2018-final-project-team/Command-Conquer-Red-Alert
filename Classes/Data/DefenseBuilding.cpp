@@ -1,4 +1,4 @@
-#include "DefenseBuilding.h"
+﻿#include "DefenseBuilding.h"
 #include "Scene/GameScene.h"
 #include "cocos2d.h"
 #include "Util/GameAudio.h"
@@ -8,7 +8,7 @@ using namespace cocos2d;
 
 
 //创建建筑物时调用的方法
-DefenseBuilding* DefenseBuilding::create(Tag tag)
+DefenseBuilding* DefenseBuilding::create(Tag tag, int id)
 {
 	//创建一个建筑物精灵对象
 	DefenseBuilding* temp = new DefenseBuilding();
@@ -19,32 +19,34 @@ DefenseBuilding* DefenseBuilding::create(Tag tag)
 
 	temp->setPhysicsBody(body);
 
+    temp->setID(id);
+
 	//初始化建筑物精灵对象
 	temp->initWithFile("GameItem/Building/Defense200.png");
-	//自动释放
+
 	temp->autorelease();
-	//拿到当前建筑物的_tag
+
 	temp->_buildingTag = tag;
-	//设置精灵自身Tag
+
 	temp->setTag(tag);
 
-	//设置血量
+
 	temp->_FullHp = 300;
 	temp->_hp = temp->_FullHp;
-	//根据_tag设置安装各建筑物时需要的金钱、电量
+
 	temp->_value = 200;
 	temp->_castPower = 100;
-	//卖掉建筑物时得到的金钱
+
 	temp->_sellValue = temp->_value / 2;
 
 	//设置攻击力
-	temp->_ATK = 300;
+	temp->_ATK = 30;
 
 	//设置攻击间隔
-	temp->_ATKCD = 2000;
+	temp->_ATKCD = 5000;
 
 	//设置单位攻击区域
-	temp->_ATKLimit = 350;
+	temp->_ATKLimit = 150;
 
 	//血槽
 	temp->_bloodBox = Sprite::create("GameItem/BloodBar/BuildingBloodBox.png");

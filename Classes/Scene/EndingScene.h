@@ -16,7 +16,7 @@ private:
 public:
 	static cocos2d::Scene* createScene(bool isWin);
 
-	virtual bool init();
+	bool initWithIsWin(bool isWin);
 
 	void menuCloseCallback(cocos2d::Ref* pSender);
 

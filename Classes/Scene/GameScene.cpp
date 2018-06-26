@@ -80,7 +80,10 @@ bool GameScene::init()
 
 
 	//_enemySoldiers.pushBack(Unit::create(BASE_CAR_TAG));
-
+    _unitIndex = 0;
+    std::memset(_unitIndexDied, 0, 5000 * sizeof(int));
+    _buildingIndex = 0;
+    std::memset(_buildingIndexDied, 0, 5000 * sizeof(int));
 
     auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -259,6 +262,7 @@ bool GameScene::init()
                 case BASE_TAG:
                 case BARRACKS_TAG:
 				case SATELLITE_TAG:
+				case DEFENSE_BUILDING_TAG:
                     for (auto& building : _buildings)
                     {
                         if (building == target)
@@ -314,9 +318,11 @@ bool GameScene::init()
 							Vec2 position = target->getPosition();
 							_client->sendMessage(REMOVE_UNIT, _manager->getRemoveUnitMessage(static_cast<Unit*>(target)));
 							_soldiers.eraseObject(static_cast<Unit*>(target), false);
+                            _unitIndexDied[static_cast<Unit*>(target)->getIndex()] = 1;
 							this->removeChild(target);
 							//创建基地
-							Building* base = Building::create(BASE_TAG, _localPlayerID);
+							Building* base = Building::create(BASE_TAG, _localPlayerID, _buildingIndex);
+                            ++_buildingIndex;
 							_gameEventDispatcher->addEventListenerWithSceneGraphPriority
 							(_gameListener->clone(), base);
 							base->setPosition(position);
@@ -473,7 +479,8 @@ bool GameScene::init()
 	this->addChild(menu, 4);
 
 //===================添加基地车==========================
-	auto baseCar = Unit::create(BASE_CAR_TAG, _localPlayerID);
+	auto baseCar = Unit::create(BASE_CAR_TAG, _localPlayerID, _unitIndex);
+    ++_unitIndex;
 	baseCar->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
     baseCar->setDestination(Vec2(visibleSize.width / 2, visibleSize.height / 2));
 	baseCar->setGetDestination(true);
@@ -607,7 +614,8 @@ void GameScene::dataInit()
         {
             continue;
         }
-        auto baseCar = Unit::create(BASE_CAR_TAG, player.player_id);
+        auto baseCar = Unit::create(BASE_CAR_TAG, player.player_id, _unitIndex);
+        ++_unitIndex;
         switch (_localPlayerID)
         {
         case 1:
@@ -669,6 +677,8 @@ void GameScene::dataInit()
         }
         
         baseCar->setGetDestination(true);
+        baseCar->_bloodBarPt->setVisible(false);
+        baseCar->_bloodBarAsEnemyPt->setVisible(true);
         this->addChild(baseCar, 1);
         _gameEventDispatcher->addEventListenerWithSceneGraphPriority
         (_gameListener->clone(), baseCar);
@@ -734,6 +744,18 @@ Vector<Unit*>* GameScene::getSoldiers()
 	return &_soldiers;
 }
 
+Unit* GameScene::getSoldierByIndex(int index)
+{
+    for (auto& soldier : _soldiers)
+    {
+        if (soldier->getIndex() == index)
+        {
+            return soldier;
+        }
+    }
+    return nullptr;
+}
+
 Vector<Building*>* GameScene::getBuildings()
 {
 	return &_buildings;
@@ -758,6 +780,52 @@ Vector<Unit*>* GameScene::getEnemySoldiersByID(int id)
     default:
         return nullptr;
         break;
+    }
+    return nullptr;
+}
+
+Unit* GameScene::getEnemySoldierByIdIndex(int id, int index)
+{
+    switch (id)
+    {
+    case 1:
+        for (auto& soldier : _enemySoldiers1)
+        {
+            if (soldier->getIndex() == index)
+            {
+                return soldier;
+            }
+        }
+        break;
+    case 2:
+        for (auto& soldier : _enemySoldiers2)
+        {
+            if (soldier->getIndex() == index)
+            {
+                return soldier;
+            }
+        }
+        break;
+    case 3:
+        for (auto& soldier : _enemySoldiers3)
+        {
+            if (soldier->getIndex() == index)
+            {
+                return soldier;
+            }
+        }
+        break;
+    case 4:
+        for (auto& soldier : _enemySoldiers4)
+        {
+            if (soldier->getIndex() == index)
+            {
+                return soldier;
+            }
+        }
+        break;
+    default:
+        return nullptr;
     }
     return nullptr;
 }
@@ -879,6 +947,7 @@ void GameScene::update(float time)
 	{
 		_client->sendMessage(DEAD_MESSAGE, std::to_string(_localPlayerID));
 		Director::getInstance()->replaceScene(TransitionFade::create(1, EndingScene::createScene(false)));
+		return;
 	}
 
 	_manager->addMoneyUpdate();
@@ -1264,11 +1333,13 @@ void GameScene::sellBuildingCallBack()
         //remove base
         _buildings.eraseObject(_sellBuilding, false);
         Vec2 position = _sellBuilding->getPosition();
+        _buildingIndexDied[_sellBuilding->getIndex()] = 1;
         this->removeChild(_sellBuilding);
         //create base car
-        Unit* baseCar = Unit::create(BASE_CAR_TAG, _localPlayerID);
+        Unit* baseCar = Unit::create(BASE_CAR_TAG, _localPlayerID, _unitIndex);
+        ++_unitIndex;
         _gameEventDispatcher->addEventListenerWithSceneGraphPriority
-        (_gameListener->clone(), baseCar);
+            (_gameListener->clone(), baseCar);
         baseCar->setPosition(position);
         baseCar->setDestination(position);
         baseCar->setGetDestination(true);
@@ -1289,6 +1360,7 @@ void GameScene::sellBuildingCallBack()
         
     Tag sellBuildingTag = _sellBuilding->getBuildingTag();
     _buildings.eraseObject(_sellBuilding);
+    _buildingIndexDied[_sellBuilding->getIndex()] = 1;
     removeChild(_sellBuilding);
     _sellBuilding = nullptr;
     switch (sellBuildingTag)

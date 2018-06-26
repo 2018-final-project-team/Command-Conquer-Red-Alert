@@ -89,6 +89,9 @@ public:
 
     //单位id
     CC_SYNTHESIZE(int, _id, ID);
+
+    //单位id
+    CC_SYNTHESIZE(int, _index, Index);
     
     //当前血量
     CC_SYNTHESIZE(int, _HP, UnitHP);
@@ -130,7 +133,7 @@ public:
 	CC_SYNTHESIZE(UnitState, _UnitState, UnitState );
     
     //生成单位的方法
-    static Unit * create(Tag unitTag, int id);
+    static Unit * create(Tag unitTag, int id, int index);
 
     // 用于寻路
     std::vector<cocos2d::Point> _route;
