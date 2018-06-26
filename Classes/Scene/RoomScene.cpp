@@ -1,3 +1,10 @@
+/*
+*  @file     RoomScene.cpp
+*  @brief    房间场景，房主机从菜单栏到游戏场景，客户机从搜索场景到游戏场景的过渡
+*  @brief    功能：选择国家，聊天，开始游戏
+*  @author   wxz
+*/
+
 #include <stdio.h>
 #include "ui/CocosGUI.h"
 #include "Scene/RoomScene.h"
@@ -8,8 +15,8 @@
 USING_NS_CC;
 using namespace ui;
 
-#define CLIENT_MODE 1
-#define SERVER_MODE 2
+#define CLIENT_MODE 1   //访客
+#define SERVER_MODE 2   //房主
 
 bool    finish_create;
 int     player_count;
@@ -58,12 +65,13 @@ bool RoomScene::init()
 	else {
 		this->initForClient();
 	}
-	//   this->addChild(client);
+
 	this->scheduleUpdate();
 
 	return true;
 }
 
+//访客房间的创建
 bool RoomScene::initForClient()
 {
 	if_self_joined = false;
@@ -134,7 +142,7 @@ bool RoomScene::initForClient()
 	{
 		if(type == Widget::TouchEventType::ENDED)
 		{
-			GameAudio::getInstance()->playEffect("Sound/button.mp3");
+			GameAudio::getInstance()->playEffect("Sound/button.wav");
 			// the transition effect
 			Director::getInstance()->pushScene(TransitionSlideInR::create(0.5, RoomScene::createScene(client, CLIENT_MODE, player_name)));
 		}
@@ -144,7 +152,7 @@ bool RoomScene::initForClient()
 	sulian_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
 		if (type == Widget::TouchEventType::ENDED) {
 			// the transition effect
-			GameAudio::getInstance()->playEffect("Sound/button.mp3");
+			GameAudio::getInstance()->playEffect("Sound/button.wav");
 			auto temp = new PlayerData(_owner_player_name, "sulian", 1);
 			_owner_player_data = temp;
 
@@ -170,7 +178,7 @@ bool RoomScene::initForClient()
 	mengjun_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
 		if (type == Widget::TouchEventType::ENDED) {
 			// the transition effect
-			GameAudio::getInstance()->playEffect("Sound/button.mp3");
+			GameAudio::getInstance()->playEffect("Sound/button.wav");
 			auto temp = new PlayerData(_owner_player_name, "mengjun", 1);
 			_owner_player_data = temp;
 
@@ -210,7 +218,7 @@ bool RoomScene::initForClient()
 	send_message_button->setTitleFontSize(20);
 	send_message_button->addTouchEventListener([&](Ref* pSender, Widget::TouchEventType type) {
 		if (type == Widget::TouchEventType::ENDED) {
-			GameAudio::getInstance()->playEffect("Sound/button.mp3");
+			GameAudio::getInstance()->playEffect("Sound/button.wav");
 
 			std::string message = std::to_string(findPlayerId()) + _chatWindow->getString();
 			client->sendMessage(CHAT_MESSAGE, message);
@@ -223,6 +231,8 @@ bool RoomScene::initForClient()
 	room->addChild(inputBar, 1);
 }
 
+
+//房主房间的创建
 bool RoomScene::initForServer()
 {
 	if_self_joined = true;
@@ -284,7 +294,7 @@ bool RoomScene::initForServer()
 	send_message_button->setTitleFontSize(20);
 	send_message_button->addTouchEventListener([&](Ref* pSender, Widget::TouchEventType type) {
 		if (type == Widget::TouchEventType::ENDED) {
-			GameAudio::getInstance()->playEffect("Sound/button.mp3");
+			GameAudio::getInstance()->playEffect("Sound/button.wav");
 
 			std::string message = std::to_string(findPlayerId()) + _chatWindow->getString();
 			if (player_count > 1) {
@@ -342,7 +352,7 @@ bool RoomScene::initForServer()
 
 	right_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
 		if (type == Widget::TouchEventType::ENDED) {
-			GameAudio::getInstance()->playEffect("Sound/button.mp3");
+			GameAudio::getInstance()->playEffect("Sound/button.wav");
 
 			small_map1->setVisible(false);
 			small_map2->setVisible(true);
@@ -354,7 +364,7 @@ bool RoomScene::initForServer()
 	});
 	left_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
 		if (type == Widget::TouchEventType::ENDED) {
-			GameAudio::getInstance()->playEffect("Sound/button.mp3");
+			GameAudio::getInstance()->playEffect("Sound/button.wav");
 
 			small_map2->setVisible(false);
 			small_map1->setVisible(true);
@@ -377,7 +387,7 @@ bool RoomScene::initForServer()
 
 	return_button->addTouchEventListener([this](Ref* pSender, Widget::TouchEventType type) {
 		if (type == Widget::TouchEventType::ENDED) {
-			GameAudio::getInstance()->playEffect("Sound/button.mp3");
+			GameAudio::getInstance()->playEffect("Sound/button.wav");
 
 
 			auto transition = TransitionSlideInR::create(0.5, NetMenu::createScene(_playerName));
@@ -394,7 +404,7 @@ bool RoomScene::initForServer()
 	start_button->setPosition(Vec2(visibleSize.width / 2, visibleSize.height*0.2));
 	start_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
 		if (type == Widget::TouchEventType::ENDED) {
-			GameAudio::getInstance()->playEffect("Sound/button.mp3");
+			GameAudio::getInstance()->playEffect("Sound/button.wav");
 
 			right_button->setVisible(false);
 			left_button->setVisible(false);
@@ -438,7 +448,7 @@ bool RoomScene::initForServer()
 			//Add event listner which remove the blackLayer and make the original button visible
 			back_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
 				if (type == Widget::TouchEventType::ENDED) {
-					GameAudio::getInstance()->playEffect("Sound/button.mp3");
+					GameAudio::getInstance()->playEffect("Sound/button.wav");
 
 					// the transition effect
 					this->removeChild(blackLayer);
@@ -470,7 +480,7 @@ bool RoomScene::initForServer()
 					start_game_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
                         if(type==Widget::TouchEventType::ENDED)
                         {
-                            GameAudio::getInstance()->playEffect("Sound/button.mp3");
+                            GameAudio::getInstance()->playEffect("Sound/button.wav");
                             if (player_list.size() == 1)
                             {
                                 start_game_button->setTitleText("Nobody together?");
@@ -504,7 +514,7 @@ bool RoomScene::initForServer()
 					start_game_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
                         if(type==Widget::TouchEventType::ENDED)
                         {
-                            GameAudio::getInstance()->playEffect("Sound/button.mp3");
+                            GameAudio::getInstance()->playEffect("Sound/button.wav");
 
                             if (player_list.size() == 1)
                             {
@@ -544,13 +554,16 @@ void RoomScene::update(float delta)
 	}
 
 
+	//客户机加入房间
 	if (roomMode == CLIENT_MODE && if_initial == false && player_count != 0)
 	{
 		if_initial = true;
+		//请求：发送房间内所有人信息
 		client->sendMessage(QUERY_FOR_PLAYERS_IN_ROOM, "whoin?");
 		player_count--;
 	}
 
+	//房主模式初始化房间，添加自己
 	if (current_count != player_count && roomMode == SERVER_MODE) {
 		current_count = player_count;
 		auto board = Button::create("PlayerBar.png", "PlayerBar.png");
@@ -604,6 +617,7 @@ void RoomScene::update(float delta)
 	if (temp != "no") {
 
 		//        std::cout << "room: " << "\t" <<temp << std::endl;
+
 
 		if (temp[0] == QUERY_FOR_ROOM[0] && roomMode == SERVER_MODE) {
 			client->sendMessage(ANSWER_FOR_ROOM, _owner_player_name);
@@ -687,7 +701,8 @@ void RoomScene::update(float delta)
 					_room_ptr->getContentSize().width / 2,
 					(_room_ptr->getContentSize().height - 90) / 6 * (6 - player_count)));
 			}
-			else {
+			else 
+			{
 				bool if_exist = false;
 				int i = temp.find('|');
 				std::string role = temp.substr(2, i - 2);

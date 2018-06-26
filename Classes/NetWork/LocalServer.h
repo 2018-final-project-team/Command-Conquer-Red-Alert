@@ -1,4 +1,4 @@
-﻿#ifndef _LocalServer_h_
+#ifndef _LocalServer_h_
 #define _LocalServer_h_
 
 #include "cocos2d.h"

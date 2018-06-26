@@ -1,3 +1,9 @@
+/*
+*  @file     SearchScene.cpp
+*  @brief    搜索场景，客户机从菜单栏到房间场景的过渡场景
+*  @brief    功能：搜索房间，连接房间
+*  @author   wxz
+*/
 
 #include <stdio.h>
 #include "Scene/RoomScene.h"
@@ -58,7 +64,7 @@ bool SearchScene::init()
 	{
 		if (type == Widget::TouchEventType::ENDED)
 		{
-			GameAudio::getInstance()->playEffect("Sound/button.mp3");
+			GameAudio::getInstance()->playEffect("Sound/button.wav");
 
 			Director::getInstance()->pushScene(TransitionFade::create(1, NetMenu::createScene(_static_player_name)));
 		}
@@ -119,7 +125,7 @@ void SearchScene::update(float delta)
 					in_button->addTouchEventListener([=](Ref* pSender, Widget::TouchEventType type) {
 						if (type == Widget::TouchEventType::ENDED) {
 
-							GameAudio::getInstance()->playEffect("Sound/button.mp3");
+							GameAudio::getInstance()->playEffect("Sound/button.wav");
 
 							client->_filter_mode = true;
 							client->sensitive_word = button_owner_name;

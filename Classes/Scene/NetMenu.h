@@ -1,4 +1,11 @@
-﻿#ifndef _NetMenu_h_
+﻿/*
+*  @file     NetMenu.h
+*  @brief    开始游戏到进入房间方式的选择
+*  @brief    功能：选择两种连接方式，选择创建或加入房间
+*  @author   wxz
+*/
+
+#ifndef _NetMenu_h_
 #define _NetMenu_h_
 #include <iostream>
 #include "cocos2d.h"

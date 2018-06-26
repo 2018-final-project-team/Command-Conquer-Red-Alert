@@ -1,4 +1,10 @@
-﻿#ifndef _RoomScene_h_
+﻿/*
+*  @file     RoomScene.h
+*  @brief    房间场景，房主机从菜单栏到游戏场景，客户机从搜索场景到游戏场景的过渡
+*  @brief    功能：选择国家，聊天，开始游戏
+*  @author   wxz
+*/
+#ifndef _RoomScene_h_
 #define _RoomScene_h_
 
 #include <iostream>
@@ -33,13 +39,6 @@ protected:
 public:
 	LevelData*          _game_data;                ///游戏信息
 
-												   /**
-												   * @brief                    Room的static create函数
-												   * @param    c               客户端指针
-												   * @param    mode            服务端or客户端
-												   * @param    _playerName     玩家姓名
-												   * @return   Scene*
-												   */
 	static cocos2d::Scene* createScene(Client* c, int mode, std::string _playerName);
 
 	/**

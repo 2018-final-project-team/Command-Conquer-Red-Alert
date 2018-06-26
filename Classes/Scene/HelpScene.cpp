@@ -93,7 +93,7 @@ bool HelpScene::init()
 
 void HelpScene::menuBackCallback(Ref *pSender)
 {
-	GameAudio::getInstance()->playEffect("Sound/button.mp3");
+	GameAudio::getInstance()->playEffect("Sound/button.wav");
 
 	Director::getInstance()->popScene();
 }

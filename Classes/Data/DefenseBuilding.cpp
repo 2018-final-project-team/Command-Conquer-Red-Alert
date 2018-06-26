@@ -7,52 +7,52 @@
 using namespace cocos2d;
 
 
-//´´½¨½¨ÖþÎïÊ±µ÷ÓÃµÄ·½·¨
+//åˆ›å»ºå»ºç­‘ç‰©æ—¶è°ƒç”¨çš„æ–¹æ³•
 DefenseBuilding* DefenseBuilding::create(Tag tag)
 {
-	//´´½¨Ò»¸ö½¨ÖþÎï¾«Áé¶ÔÏó
+	//åˆ›å»ºä¸€ä¸ªå»ºç­‘ç‰©ç²¾çµå¯¹è±¡
 	DefenseBuilding* temp = new DefenseBuilding();
-	//Ìí¼ÓÎïÀí
+	//æ·»åŠ ç‰©ç†
 	auto body = PhysicsBody::createCircle(temp->getContentSize().width / 2);
 
-	body->setContactTestBitmask(1);//ÉèÖÃÎª1£¬¿ªÆôÆäËû¸ÕÌåÓë´ËÎïÀí¸ÕÌå²úÉúÅö×²£¬ÉèÖÃËü²ÅÄÜ´¥·¢Åö×²¼ì²â»Øµ÷º¯Êý
+	body->setContactTestBitmask(1);//è®¾ç½®ä¸º1ï¼Œå¼€å¯å…¶ä»–åˆšä½“ä¸Žæ­¤ç‰©ç†åˆšä½“äº§ç”Ÿç¢°æ’žï¼Œè®¾ç½®å®ƒæ‰èƒ½è§¦å‘ç¢°æ’žæ£€æµ‹å›žè°ƒå‡½æ•°
 
 	temp->setPhysicsBody(body);
 
-	//³õÊ¼»¯½¨ÖþÎï¾«Áé¶ÔÏó
+	//åˆå§‹åŒ–å»ºç­‘ç‰©ç²¾çµå¯¹è±¡
 	temp->initWithFile("GameItem/Building/Defense200.png");
-	//×Ô¶¯ÊÍ·Å
+	//è‡ªåŠ¨é‡Šæ”¾
 	temp->autorelease();
-	//ÄÃµ½µ±Ç°½¨ÖþÎïµÄ_tag
+	//æ‹¿åˆ°å½“å‰å»ºç­‘ç‰©çš„_tag
 	temp->_buildingTag = tag;
-	//ÉèÖÃ¾«Áé×ÔÉíTag
+	//è®¾ç½®ç²¾çµè‡ªèº«Tag
 	temp->setTag(tag);
 
-	//ÉèÖÃÑªÁ¿
+	//è®¾ç½®è¡€é‡
 	temp->_FullHp = 300;
 	temp->_hp = temp->_FullHp;
-	//¸ù¾Ý_tagÉèÖÃ°²×°¸÷½¨ÖþÎïÊ±ÐèÒªµÄ½ðÇ®¡¢µçÁ¿
+	//æ ¹æ®_tagè®¾ç½®å®‰è£…å„å»ºç­‘ç‰©æ—¶éœ€è¦çš„é‡‘é’±ã€ç”µé‡
 	temp->_value = 200;
 	temp->_castPower = 100;
-	//Âôµô½¨ÖþÎïÊ±µÃµ½µÄ½ðÇ®
+	//å–æŽ‰å»ºç­‘ç‰©æ—¶å¾—åˆ°çš„é‡‘é’±
 	temp->_sellValue = temp->_value / 2;
 
-	//ÉèÖÃ¹¥»÷Á¦
+	//è®¾ç½®æ”»å‡»åŠ›
 	temp->_ATK = 300;
 
-	//ÉèÖÃ¹¥»÷¼ä¸ô
+	//è®¾ç½®æ”»å‡»é—´éš”
 	temp->_ATKCD = 2000;
 
-	//ÉèÖÃµ¥Î»¹¥»÷ÇøÓò
+	//è®¾ç½®å•ä½æ”»å‡»åŒºåŸŸ
 	temp->_ATKLimit = 350;
 
-	//Ñª²Û
+	//è¡€æ§½
 	temp->_bloodBox = Sprite::create("GameItem/BloodBar/BuildingBloodBox.png");
 	temp->_bloodBox->setScale(temp->getContentSize().width / 200);
 	temp->_bloodBox->setPosition(Vec2(temp->getContentSize().width / 2, temp->getContentSize().height + 10));
 	temp->addChild(temp->_bloodBox);
 
-	//ÑªÌõ
+	//è¡€æ¡
 	temp->_bloodBarPt = ProgressTimer::create(Sprite::create("GameItem/BloodBar/BuildingBloodBar.png"));
 	temp->_bloodBarPt->setScale(temp->getContentSize().width / 200);
 	temp->_bloodBarPt->setPosition(Vec2(temp->getContentSize().width / 2, temp->getContentSize().height + 10));
@@ -61,14 +61,14 @@ DefenseBuilding* DefenseBuilding::create(Tag tag)
 	temp->_bloodBarPt->setPercentage(100);
 	temp->addChild(temp->_bloodBarPt);
 
-	//ºìÉ«ÑªÌõ
+	//çº¢è‰²è¡€æ¡
 	temp->_bloodBarAsEnemyPt = ProgressTimer::create(Sprite::create("GameItem/BloodBar/BuildingBloodBarEnemy.png"));
 	temp->_bloodBarAsEnemyPt->setScale(temp->getContentSize().width / 200);
 	temp->_bloodBarAsEnemyPt->setPosition(Vec2(temp->getContentSize().width / 2, temp->getContentSize().height + 10));
 	temp->_bloodBarAsEnemyPt->setType(ProgressTimer::Type::BAR);
 	temp->_bloodBarAsEnemyPt->setMidpoint(Vec2(0, 0.5));
 	temp->_bloodBarAsEnemyPt->setPercentage(100);
-	temp->_bloodBarAsEnemyPt->setVisible(false);    //Ä¬ÈÏ²»ÏÔÊ¾
+	temp->_bloodBarAsEnemyPt->setVisible(false);    //é»˜è®¤ä¸æ˜¾ç¤º
 	temp->addChild(temp->_bloodBarAsEnemyPt);
 
 	return temp;
@@ -78,7 +78,7 @@ DefenseBuilding* DefenseBuilding::create(Tag tag)
 void DefenseBuilding::attack(Unit * enemy)
 {
 	enemy->getInjuredBy(this);
-	//==========TO DO:ÒôÐ§=====================
+	//==========TO DO:éŸ³æ•ˆ=====================
 	GameAudio::getInstance()->playEffect("Sound/Explosion.mp3");
 }
 

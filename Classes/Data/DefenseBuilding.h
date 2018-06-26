@@ -10,17 +10,17 @@ class Unit;
 class DefenseBuilding : public Building
 {
 private:
-	//µ¥Î»¹¥»÷Á¦
+	//å•ä½æ”»å‡»åŠ›
 	CC_SYNTHESIZE(int, _ATK, DefenseATK);
 
-	//µ¥Î»¹¥»÷¼ä¸ô
+	//å•ä½æ”»å‡»é—´éš”
 	CC_SYNTHESIZE(float, _ATKCD, DefenseATKCD);
 
-	//¹¥»÷ÇøÓò
+	//æ”»å‡»åŒºåŸŸ
 	CC_SYNTHESIZE(unsigned int, _ATKLimit, DefenseATKLimit);
 public:
 
-	//½¨Ôì½¨ÖşÎïµÄ·½·¨
+	//å»ºé€ å»ºç­‘ç‰©çš„æ–¹æ³•
 	static DefenseBuilding* create(Tag tag);
 
 	/*

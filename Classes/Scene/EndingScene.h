@@ -1,7 +1,7 @@
 /*
 *  @file     EndingScene.cpp
-*  @brief    ½áÊø³¡¾°
-*  @author   ÍõĞÇÖŞ
+*  @brief    ç»“æŸåœºæ™¯
+*  @author   ç‹æ˜Ÿæ´²
 */
 #ifndef _ENDINGSCENE_H_
 #define _ENDINGSCENE_H_
@@ -20,7 +20,7 @@ public:
 
 	void menuCloseCallback(cocos2d::Ref* pSender);
 
-	// ÓÃÓÚÌø×ªµ½ÆäËû³¡¾°µÄmenu»Øµ÷º¯Êı
+	// ç”¨äºè·³è½¬åˆ°å…¶ä»–åœºæ™¯çš„menuå›è°ƒå‡½æ•°
 	void menuWelcomeCallback(cocos2d::Ref *pSender);
 	
 	bool isWinner();

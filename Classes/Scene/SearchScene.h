@@ -1,4 +1,10 @@
-﻿
+﻿/*
+*  @file     SearchScene.h
+*  @brief    搜索场景，客户机从菜单栏到房间场景的过渡场景
+*  @brief    功能：搜索房间，连接房间
+*  @author   wxz
+*/
+
 #ifndef SearchScene_h
 #define SearchScene_h
 
