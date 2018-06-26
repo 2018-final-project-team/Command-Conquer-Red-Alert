@@ -141,6 +141,12 @@ int Client::client(void)
     
     if(client_mode == 2)
     {
+		//如果是MAC系统，ping局域网广播地址更新arp缓存
+		if (system_type == MAC)
+		{
+			system("ping -c 1 255.255.255.255");
+		}
+		
         system("arp -a > arp.txt");
 //        std::cout << "arp done" << std::endl;
         
