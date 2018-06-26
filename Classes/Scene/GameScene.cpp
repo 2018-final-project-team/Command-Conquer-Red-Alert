@@ -262,6 +262,7 @@ bool GameScene::init()
                 case BASE_TAG:
                 case BARRACKS_TAG:
 				case SATELLITE_TAG:
+				case DEFENSE_BUILDING_TAG:
                     for (auto& building : _buildings)
                     {
                         if (building == target)
@@ -946,6 +947,7 @@ void GameScene::update(float time)
 	{
 		_client->sendMessage(DEAD_MESSAGE, std::to_string(_localPlayerID));
 		Director::getInstance()->replaceScene(TransitionFade::create(1, EndingScene::createScene(false)));
+		return;
 	}
 
 	_manager->addMoneyUpdate();

@@ -262,7 +262,7 @@ void Unit::attack(Unit * enemy)
 
 void Unit::attack(Building * enemy)
 {
-	enemy->setHP(enemy->getHP() - _ATK);
+	enemy->getInjuredBy(this);
     //==========TO DO:音效=====================
     GameAudio::getInstance()->playEffect("Sound/Explosion.mp3");
 }

@@ -40,13 +40,13 @@ DefenseBuilding* DefenseBuilding::create(Tag tag, int id)
 	temp->_sellValue = temp->_value / 2;
 
 	//ÉèÖÃ¹¥»÷Á¦
-	temp->_ATK = 300;
+	temp->_ATK = 30;
 
 	//ÉèÖÃ¹¥»÷¼ä¸ô
-	temp->_ATKCD = 2000;
+	temp->_ATKCD = 5000;
 
 	//ÉèÖÃµ¥Î»¹¥»÷ÇøÓò
-	temp->_ATKLimit = 350;
+	temp->_ATKLimit = 150;
 
 	//Ñª²Û
 	temp->_bloodBox = Sprite::create("GameItem/BloodBar/BuildingBloodBox.png");

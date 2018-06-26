@@ -106,7 +106,13 @@ void Building::decreaseHP(int num)
 {
 	_hp -= num;
 
-	auto progressTo = ProgressTo::create(0.5f, 100 * _hp/_FullHp);
-	_bloodBarPt->runAction(progressTo);
-	_bloodBarAsEnemyPt->runAction(progressTo);
+	auto progressTo = ProgressTo::create(0.5f, 100 * _hp / _FullHp);
+	if (_bloodBarPt->isVisible())
+	{
+		_bloodBarPt->runAction(progressTo);
+	}
+	else
+	{
+		_bloodBarAsEnemyPt->runAction(progressTo);
+	}
 }
