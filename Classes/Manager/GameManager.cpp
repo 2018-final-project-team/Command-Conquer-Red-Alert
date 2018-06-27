@@ -477,9 +477,11 @@ void Manager::attack()
     static clock_t infantryPreT = clock();
     static clock_t dogPreT = clock();
     static clock_t tankPreT = clock();
+    static clock_t defensePreT = clock();
     bool isInfantryAttack = false;
     bool isDogAttack = false;
     bool isTankAttack = false;
+    bool isDefenseAttack = false;
     clock_t nowT = clock();
 
     for (int i = 0; i < _gameScene->getSoldiers()->size(); ++i)
@@ -607,7 +609,8 @@ void Manager::attack()
     for (int i = 0; i < _gameScene->getBuildings()->size(); ++i)
     {
         auto building = _gameScene->getBuildings()->at(i);
-        if (building->getBuildingTag() == DEFENSE_BUILDING_TAG)
+        if (building->getBuildingTag() == DEFENSE_BUILDING_TAG && 
+            nowT - defensePreT >= 1000)
         {
             auto soldier = static_cast<DefenseBuilding*>(building);
             bool att = false;
@@ -622,6 +625,7 @@ void Manager::attack()
                         _gameScene->_client->sendMessage
                         (DEFENSE_ATTACK, getDefenseAttackMessage(i, id, enemy->getIndex()));
                         att = true;
+                        isDefenseAttack = true;
                         break;
                     }
                 }
@@ -640,6 +644,10 @@ void Manager::attack()
     if (isTankAttack)
     {
         tankPreT = nowT;
+    }
+    if (isDefenseAttack)
+    {
+        defensePreT = nowT;
     }
        
 }
