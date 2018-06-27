@@ -76,6 +76,8 @@ bool Icon::initIcon(Tag tag, int money, GameScene* gameScene)
 	setIconTag(tag);
 
 	this->retain();
+
+	return true;
 }
 
 
