@@ -177,11 +177,11 @@ int Client::client(void)
 			getline(in, temp);
 			getline(in, temp);
 
+			int begin = temp.find(':');
 			int index = temp.find('.');
 			index = temp.find('.', index + 1);
 			index = temp.find('.', index + 1);
-			temp = temp.substr(6, index - 5);
-			//                std::cout << temp << std::endl;
+			temp = temp.substr(begin + 2, index - 5);
 			for (int j = 0; j < 255; ++j)
 			{
 				char num[4];
