@@ -572,14 +572,14 @@ void GameScene::onEnter()
     Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(listener, 1);
 }
 
-void GameScene::onExitTransitionDidStart()
-{
-    Layer::onExitTransitionDidStart();
-    _gameEventDispatcher->removeAllEventListeners();
-    //释放定时器
-    this->unscheduleUpdate();
-    this->unscheduleAllSelectors();
-}
+//void GameScene::onExitTransitionDidStart()
+//{
+//    Layer::onExitTransitionDidStart();
+//    _gameEventDispatcher->removeAllEventListeners();
+//    //释放定时器
+//    this->unscheduleUpdate();
+//    this->unscheduleAllSelectors();
+//}
 
 void GameScene::dataInit()
 {
@@ -945,6 +945,13 @@ void GameScene::update(float time)
 	//如果己方单位以全部被消灭，则广播自己死亡的消息
 	if (_soldiers.size() == 0 && _buildings.size() == 0)
 	{
+
+		_gameEventDispatcher->removeAllEventListeners();
+		//释放定时器
+		this->unscheduleUpdate();
+		this->unscheduleAllSelectors();
+
+
 		_client->sendMessage(DEAD_MESSAGE, std::to_string(_localPlayerID));
 		Director::getInstance()->replaceScene(TransitionFade::create(1, EndingScene::createScene(false)));
 		return;

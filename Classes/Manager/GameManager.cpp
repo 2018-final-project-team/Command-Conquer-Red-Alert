@@ -1179,6 +1179,12 @@ void Manager::doCommands()
 				_gameScene->_loserCnt++;
 				if (_gameScene->_loserCnt == _gameScene->_inputData->player_list.size() - 1)
 				{
+
+					_gameScene->_gameEventDispatcher->removeAllEventListeners();
+					//释放定时器
+					this->unscheduleUpdate();
+					this->unscheduleAllSelectors();
+
 					Director::getInstance()->replaceScene(TransitionFade::create(1, EndingScene::createScene(true)));
 				}
 			}

@@ -147,7 +147,7 @@ public:
 
     virtual void onEnter();
 
-    virtual void onExitTransitionDidStart();
+    //virtual void onExitTransitionDidStart();
 
 	// 初始化数据
 	void dataInit();
