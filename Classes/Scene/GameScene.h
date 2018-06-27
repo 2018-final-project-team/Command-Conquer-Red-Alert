@@ -5,8 +5,8 @@ const clock_t addMoneyDelay = 1000 * 10;
 
 #include <time.h>
 #include "cocos2d.h"
-#include "Data\UnitData.h"
-#include "Manager\GameManager.h"
+#include "Data/UnitData.h"
+#include "Manager/GameManager.h"
 #include "Panel/Panel.h"
 #include "NetWork/Client.h"
 #include "Data/ExternData.h"
