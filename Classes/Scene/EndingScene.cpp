@@ -9,12 +9,13 @@
 
 USING_NS_CC;
 
-
-Scene* EndingScene::createScene()
+Scene* EndingScene::createScene(bool isWin)
 {
 	auto scene = Scene::create();
 
 	auto layer = EndingScene::create();
+
+	layer->initWithIsWin(isWin);
 
 	scene->addChild(layer);
 
@@ -23,13 +24,15 @@ Scene* EndingScene::createScene()
 
 
 // on "init" you need to initialize your instance
-bool EndingScene::init()
+bool EndingScene::initWithIsWin(bool isWin)
 {
 	
 	if (!Layer::init())
 	{
 		return false;
 	}
+
+	_isWin = isWin;
 
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -90,7 +93,7 @@ bool EndingScene::init()
 	{
 		label = Label::createWithTTF("Congradulations", "fonts/Marker Felt.ttf", 40);
 	}
-	else if (isLoser())
+	else if (!isWinner())
 	{
 		label = Label::createWithTTF("Defeated", "fonts/Marker Felt.ttf", 40);
 	}
@@ -107,35 +110,35 @@ bool EndingScene::init()
 		this->addChild(label, 1);
 	}
 
-	//=====================label："Game Time"============================
-	auto timeLabel = Label::createWithTTF("GameTime:", "fonts/Marker Felt.ttf", 40);
-	timeLabel->setTextColor(Color4B::BLACK);
-	if (timeLabel == nullptr)
-	{
-		CCLOG("label loading error");
-	}
-	else
-	{
-		timeLabel->setPosition(Vec2(origin.x + visibleSize.width / 3,
-			origin.y + visibleSize.height/2 - timeLabel->getContentSize().height));
+	////=====================label："Game Time"============================
+	//auto timeLabel = Label::createWithTTF("GameTime:", "fonts/Marker Felt.ttf", 40);
+	//timeLabel->setTextColor(Color4B::BLACK);
+	//if (timeLabel == nullptr)
+	//{
+	//	CCLOG("label loading error");
+	//}
+	//else
+	//{
+	//	timeLabel->setPosition(Vec2(origin.x + visibleSize.width / 3,
+	//		origin.y + visibleSize.height/2 - timeLabel->getContentSize().height));
 
-		this->addChild(timeLabel, 1);
-	}
-	//=====================label："Score"============================
-	// Todo:judge for win/lose
-	auto scoreLabel = Label::createWithTTF("GameScore:", "fonts/Marker Felt.ttf", 40);
-	scoreLabel->setTextColor(Color4B::BLACK);
-	if (scoreLabel == nullptr)
-	{
-		CCLOG("label loading error");
-	}
-	else
-	{
-		scoreLabel->setPosition(Vec2(origin.x + visibleSize.width / 3,
-			origin.y + visibleSize.height/3 - scoreLabel->getContentSize().height));
+	//	this->addChild(timeLabel, 1);
+	//}
+	////=====================label："Score"============================
+	//// Todo:judge for win/lose
+	//auto scoreLabel = Label::createWithTTF("GameScore:", "fonts/Marker Felt.ttf", 40);
+	//scoreLabel->setTextColor(Color4B::BLACK);
+	//if (scoreLabel == nullptr)
+	//{
+	//	CCLOG("label loading error");
+	//}
+	//else
+	//{
+	//	scoreLabel->setPosition(Vec2(origin.x + visibleSize.width / 3,
+	//		origin.y + visibleSize.height/3 - scoreLabel->getContentSize().height));
 
-		this->addChild(scoreLabel, 1);
-	}
+	//	this->addChild(scoreLabel, 1);
+	//}
 
 	//=====================背景图片============================
 	auto background = Sprite::create("EndingScene/endingSceneBg.png");
@@ -173,16 +176,11 @@ void EndingScene::menuCloseCallback(Ref* pSender)
 
 void EndingScene::menuWelcomeCallback(Ref *pSender)
 {
-	Director::getInstance()->pushScene(TransitionFade::create(1, WelcomeScene::createScene()));
+	Director::getInstance()->replaceScene(TransitionFade::create(1, WelcomeScene::createScene()));
 }
 
 
 bool EndingScene::isWinner()
 {
-	return false;
-}
-
-bool EndingScene::isLoser()
-{
-	return true;
+	return _isWin;
 }

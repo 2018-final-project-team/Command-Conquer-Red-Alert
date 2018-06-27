@@ -1,4 +1,4 @@
-/*
+﻿/*
 *  @file     WelcomeScene.cpp
 *  @brief    欢迎（主）场景类，可通过此场景进入游戏、设置、帮助场景，可退出游戏
 *  @author   王亮
@@ -9,8 +9,13 @@
 #include "Scene/SettingsScene.h"
 #include "Scene/HelpScene.h"
 #include "Util/GameAnimation.h"
+#include "Scene/NetMenu.h"
+#include "Util/GameAudio.h"
 
 USING_NS_CC;
+
+static std::string _userName;
+
 
 
 Scene* WelcomeScene::createScene()
@@ -23,6 +28,19 @@ Scene* WelcomeScene::createScene()
 
 	return scene;
 
+}
+
+Scene* WelcomeScene::createScene(std::string playerName)
+{
+	auto scene = Scene::create();
+
+	_userName = playerName;
+
+	auto layer = WelcomeScene::create();
+
+	scene->addChild(layer);
+
+	return scene;
 }
 
 // Print useful error message instead of segfaulting when files are not there.
@@ -74,7 +92,7 @@ bool WelcomeScene::init()
 	auto startItem = MenuItemImage::create(
 		"StartNormal.png",
 		"StartSelected.png",
-		CC_CALLBACK_1(WelcomeScene::menuPlayCallback, this));
+		CC_CALLBACK_1(WelcomeScene::menuNetCallback, this));
 
 	if (startItem == nullptr ||
 		startItem->getContentSize().width <= 0 ||
@@ -242,15 +260,18 @@ void WelcomeScene::menuCloseCallback(Ref* pSender)
 }
 
 
-void WelcomeScene::menuPlayCallback(Ref *pSender)
+void WelcomeScene::menuNetCallback(Ref *pSender)
 {
-	Director::getInstance()->pushScene(TransitionFade::create(1, GameScene::createScene()));
+	GameAudio::getInstance()->playEffect("Sound/button.wav");
+	Director::getInstance()->replaceScene(TransitionFade::create(1, NetMenu::createScene(_userName)));
 }
 
 void WelcomeScene::menuSettingsCallback(cocos2d::Ref * pSender) {
+	GameAudio::getInstance()->playEffect("Sound/button.wav");
 	Director::getInstance()->pushScene(TransitionFade::create(1, SettingsScene::createScene()));
 }
 
 void WelcomeScene::menuHelpCallback(cocos2d::Ref * pSender) {
+	GameAudio::getInstance()->playEffect("Sound/button.wav");
 	Director::getInstance()->pushScene(TransitionFade::create(1, HelpScene::createScene()));
 }

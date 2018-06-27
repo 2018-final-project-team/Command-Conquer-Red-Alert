@@ -9,13 +9,13 @@
 #include "math.h"
 #include "Util/GameAnimation.h"
 #include "Util/GameAudio.h"
-#include "Building.h"
+
 
 USING_NS_CC;
 
 
 //创建单位,创建时按照typedef enum将对应值传入即可
-Unit * Unit::create(Tag unitTag)
+Unit * Unit::create(Tag unitTag, int id, int index)
 {
     //创建精灵
     Unit * temp = new Unit();
@@ -28,6 +28,10 @@ Unit * Unit::create(Tag unitTag)
     temp -> setPhysicsBody(body);
 
 	temp->setLastTurn(stateWalkRight);
+
+    temp->setID(id);
+
+    temp->setIndex(index);
 
 	//=======================如果创建的是基地车===========================
 	if (unitTag == BASE_CAR_TAG)
@@ -85,6 +89,15 @@ Unit * Unit::create(Tag unitTag)
 		temp->_bloodBarPt->setMidpoint(Vec2(0, 0.5));
 		temp->_bloodBarPt->setPercentage(100);
 		temp->addChild(temp->_bloodBarPt);
+
+		//红色血条
+		temp->_bloodBarAsEnemyPt = ProgressTimer::create(Sprite::create("GameItem/BloodBar/SoldierBloodBarEnemy.png"));
+		temp->_bloodBarAsEnemyPt->setPosition(Vec2(temp->getContentSize().width / 2, temp->getContentSize().height + 10));
+		temp->_bloodBarAsEnemyPt->setType(ProgressTimer::Type::BAR);
+		temp->_bloodBarAsEnemyPt->setMidpoint(Vec2(0, 0.5));
+		temp->_bloodBarAsEnemyPt->setPercentage(100);
+		temp->_bloodBarAsEnemyPt->setVisible(false);       //默认不显示
+		temp->addChild(temp->_bloodBarAsEnemyPt);
 
 		temp->_ring = Sprite::create("GameItem/ring/ring.png");
 		temp->_ring->setScale(temp->getContentSize().width / 30);
@@ -190,6 +203,15 @@ Unit * Unit::create(Tag unitTag)
     temp->_bloodBarPt->setPercentage(100);
     temp->addChild(temp->_bloodBarPt);
 
+	//红色血条
+	temp->_bloodBarAsEnemyPt = ProgressTimer::create(Sprite::create("GameItem/BloodBar/SoldierBloodBarEnemy.png"));
+	temp->_bloodBarAsEnemyPt->setPosition(Vec2(temp->getContentSize().width / 2, temp->getContentSize().height + 10));
+	temp->_bloodBarAsEnemyPt->setType(ProgressTimer::Type::BAR);
+	temp->_bloodBarAsEnemyPt->setMidpoint(Vec2(0, 0.5));
+	temp->_bloodBarAsEnemyPt->setPercentage(100);
+	temp->_bloodBarAsEnemyPt->setVisible(false);       //默认不显示
+	temp->addChild(temp->_bloodBarAsEnemyPt);
+
 	temp->_ring = Sprite::create("GameItem/ring/ring.png");
 	temp->_ring->setScale(temp->getContentSize().width / 30);
 	temp->_ring->setPosition(Vec2(temp->getContentSize().width / 2, 1));
@@ -211,12 +233,24 @@ void Unit::getInjuredBy(Unit * enemy)
     decreaseHP(enemy->_ATK);
 }
 
+void Unit::getInjuredBy(DefenseBuilding * enemy)
+{
+	decreaseHP(enemy->getDefenseATK());
+}
+
 void Unit::decreaseHP(int num)
 {
     _HP -= num;
 
     auto progressTo = ProgressTo::create(0.5f, 100 * _HP / _FullHP);
-    _bloodBarPt->runAction(progressTo);
+	if (_bloodBarPt->isVisible())
+	{
+		_bloodBarPt->runAction(progressTo);
+	}
+	else
+	{
+		_bloodBarAsEnemyPt->runAction(progressTo);
+	}
 }
 
 void Unit::attack(Unit * enemy)
@@ -225,9 +259,12 @@ void Unit::attack(Unit * enemy)
     //==========TO DO:音效=====================
 	GameAudio::getInstance()->playEffect("Sound/Explosion.mp3");
 }
+
 void Unit::attack(Building * enemy)
 {
-	
+	enemy->getInjuredBy(this);
+    //==========TO DO:音效=====================
+    GameAudio::getInstance()->playEffect("Sound/Explosion.mp3");
 }
 
 
@@ -417,6 +454,7 @@ void Unit::changeToAttackRight()
 //改变朝向
 void Unit::changeToUp()
 {
+	stopAllActions();
 	runAction(RepeatForever::create(Animate::create(
 		(AnimationCache::getInstance()->getAnimation(getUnitName() + "_back")))));
 }

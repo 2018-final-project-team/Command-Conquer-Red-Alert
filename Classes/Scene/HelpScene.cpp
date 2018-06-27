@@ -7,6 +7,7 @@
 #include "HelpScene.h"
 #include "Settings.h"
 #include "Scene/WelcomeScene.h"
+#include "Util/GameAudio.h"
 
 USING_NS_CC;
 
@@ -92,5 +93,7 @@ bool HelpScene::init()
 
 void HelpScene::menuBackCallback(Ref *pSender)
 {
+	GameAudio::getInstance()->playEffect("Sound/button.wav");
+
 	Director::getInstance()->popScene();
 }

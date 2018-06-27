@@ -42,7 +42,7 @@ bool Icon::initIcon(Tag tag, int money, GameScene* gameScene)
 
 
 	_icon = Sprite::create(String::createWithFormat("GameItem/Panel/icons_00%02d.png", tag)->getCString());
-	_icon->setScale(0.8);
+	_icon->setScale(0.6);
 	addChild(_icon, 0);
 
 
@@ -76,6 +76,8 @@ bool Icon::initIcon(Tag tag, int money, GameScene* gameScene)
 	setIconTag(tag);
 
 	this->retain();
+
+	return true;
 }
 
 
@@ -138,6 +140,14 @@ void Icon::setStatus(IconsStatus iconSta)
 		break;
 
 	case eIconPreForUnit:
+		if (progressTimer1 != nullptr)
+		{
+			this->removeChild(progressTimer1, true);
+		}
+		if (progressTimer2)
+		{
+			this->removeChild(progressTimer2, true);
+		}
 		_statusLabel->setVisible(false);
 		_invalidIcon->setVisible(false);
 		if (getMoney() > _gameScene->getMoney())
@@ -180,6 +190,14 @@ void Icon::setStatus(IconsStatus iconSta)
 		}
 		break;
 	case eIconQueuingForUnit:
+		if (progressTimer1 != nullptr)
+		{
+			this->removeChild(progressTimer1, true);
+		}
+		if (progressTimer2)
+		{
+			this->removeChild(progressTimer2, true);
+		}
 		if (_iconTag == INFANTRY_TAG)
 		{
 			_statusLabel->setString(std::to_string(_gameScene->getInfantryNum()));
@@ -230,7 +248,7 @@ void Icon::showProgressOfWait(float duration)   //单位为秒
 	progressTimer1->setReverseDirection(false);//动作是否逆序执行 默认false  
 
 	progressTimer2 = ProgressTimer::create(_icon);
-	progressTimer2->setScale(0.8);
+	progressTimer2->setScale(0.6);
 	progressTimer2->setType(ProgressTimerType::RADIAL);//设置模式 RADIAL:半径 BAR:进度条 默认RADIAL  
 	progressTimer2->setMidpoint(Vec2(0.5, 0.5));//设置百分比效果参考点 默认(0,0)  
 	progressTimer2->setReverseProgress(false);//动作是否反向执行 默认false  

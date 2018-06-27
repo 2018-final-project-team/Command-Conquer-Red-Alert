@@ -1,4 +1,4 @@
-/*
+﻿/*
 *  @file     SettingsScene.cpp
 *  @brief    设置场景类，可设置音乐、音效的打开/关闭
 *  @author   王亮
@@ -43,7 +43,15 @@ bool SettingsScene::init()
 	//=====================文本label：music============================
     auto musicLabel = createLabel("Background Music");
     auto musicCheckBox = createCheckBox([=](Ref*, ui::CheckBox::EventType type) {
-        GameAudio::getInstance()->setBgmOn(type == ui::CheckBox::EventType::SELECTED);
+		if (type == ui::CheckBox::EventType::SELECTED)
+		{
+			GameAudio::getInstance()->setBgmOn(true);
+		}
+		else
+		{
+			GameAudio::getInstance()->setBgmOn(false);
+
+		}
     });
     musicLabel->setPosition(Vec2(origin.x + visibleSize.width * 0.6, visibleSize.height * 0.7f));
     musicCheckBox->setPosition(Vec2(origin.x + visibleSize.width * 0.6 + 20, visibleSize.height * 0.7f));
@@ -53,13 +61,20 @@ bool SettingsScene::init()
 
 	//=====================文本label：effect============================
     auto effectLabel = createLabel("Effect Music");
-    auto effectCheckBox = createCheckBox([=](Ref*, ui::CheckBox::EventType type)
-    {
-        GameAudio::getInstance()->setEffectOn(type == ui::CheckBox::EventType::SELECTED);
+	auto effectCheckBox = createCheckBox([=](Ref*, ui::CheckBox::EventType type)
+	{
+		if (type == ui::CheckBox::EventType::SELECTED)
+		{
+			GameAudio::getInstance()->setEffectOn(true);
+		}
+		else 
+		{
+			GameAudio::getInstance()->setEffectOn(false);
+		}
     });
     effectLabel->setPosition(Vec2(origin.x + visibleSize.width * 0.6, visibleSize.height * 0.6f));
     effectCheckBox->setPosition(Vec2(origin.x + visibleSize.width * 0.6 + 20, visibleSize.height * 0.6f));
-    effectCheckBox->setSelected(GameAudio::getInstance()->getBgmOn());
+    effectCheckBox->setSelected(GameAudio::getInstance()->getEffectOn());
     addChild(effectLabel);
     addChild(effectCheckBox);
 
@@ -109,6 +124,7 @@ void SettingsScene::onEnter()
 
 void SettingsScene::menuOkCallback(cocos2d::Ref * pSender)
 {
+	GameAudio::getInstance()->playEffect("Sound/button.wav");
     Director::getInstance()->popScene();
 }
 

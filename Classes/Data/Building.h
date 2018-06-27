@@ -1,4 +1,4 @@
-//
+﻿//
 //  Building.h
 //  CCRA
 //
@@ -24,6 +24,10 @@ namespace buildingData
     const int barracksCostPower = 300;
     const int carFactoryCostMoney = 500;
     const int carFactoryCostPower = 500;
+	const int satelliteCostMoney = 300;
+	const int satelliteCostPower = 200;
+	const int defenseBuildingCostMoney = 200;
+	const int defenseBuildingCostPower = 100;
 
     namespace EnoughPower
     {
@@ -31,6 +35,8 @@ namespace buildingData
         const int mineWait = 5 * 1000;
         const int barracksWait = 5 * 1000;
         const int carFactoryWait = 5 * 1000;
+		const int satelliteWait = 3 * 1000;
+		const int defenseBuildingWait = 3 * 1000;
     }
 
     namespace NotEnoughPower
@@ -39,6 +45,8 @@ namespace buildingData
         const int mineWait = 10 * 1000;
         const int barracksWait = 10 * 1000;
         const int carFactoryWait = 10 * 1000;
+		const int satelliteWait = 6 * 1000;
+		const int defenseBuildingWait = 6 * 1000;
     }
 
 }
@@ -48,9 +56,16 @@ class Building : public cocos2d::Sprite
 public:
     cocos2d::Sprite* _bloodBox;           //血槽Sprite
     cocos2d::ProgressTimer* _bloodBarPt;     //血条ProgressTimer
+	cocos2d::ProgressTimer* _bloodBarAsEnemyPt;     //红色血条ProgressTimer
 
 	//建筑物的tag（基地、电厂、矿场、兵营、战车工厂）
-	CC_SYNTHESIZE(Tag, _buildingTag, BuildingTag);
+    CC_SYNTHESIZE(Tag, _buildingTag, BuildingTag);
+
+    //id of buildings
+    CC_SYNTHESIZE(int, _id, ID);
+
+    //index of buildings
+    CC_SYNTHESIZE(int, _index, Index);
 
     //耗费的电
     CC_SYNTHESIZE(int, _castPower, CastPower);
@@ -73,7 +88,7 @@ public:
 	//bool updateMark;
 
 	//建造建筑物的方法
-	static Building* create(Tag tag);
+	static Building* create(Tag tag, int id, int index);
 
 
 	void getInjuredBy(Unit *);
