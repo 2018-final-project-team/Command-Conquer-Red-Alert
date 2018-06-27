@@ -49,8 +49,8 @@ bool NetMenu::init()
     selectMapIndex = 0;
 
 
-	auto remote_button = Button::create("button_normal.png", "button_select.png");
-    auto local_button = Button::create("button_normal.png", "button_select.png");
+	auto remote_button = Button::create("button_normal.png", "button_selected.png");
+    auto local_button = Button::create("button_normal.png", "button_selected.png");
 	auto return_button = Button::create("backNormal.png", "backSelected.png");
 	remote_button->setTitleText("manual input IP");
 	local_button->setTitleText("auto search IP");
